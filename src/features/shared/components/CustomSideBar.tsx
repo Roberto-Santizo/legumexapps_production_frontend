@@ -1,4 +1,4 @@
-import { LayoutDashboard, LogOut, NotebookIcon, UserCog, Users } from "lucide-react";
+import { Box, Database, LayoutDashboard, LogOut, NotebookIcon, UserCog, Users } from "lucide-react";
 import { logout } from "@/features/auth/auth";
 import { useDispatch, useSelector } from "react-redux";
 import { CustomNavLink } from "./CustomNavLink";
@@ -38,6 +38,8 @@ export function CustomSideBar() {
           <CustomNavLink to="/usuarios" text="Usuarios" icon={<Users />} />
           <CustomNavLink to="/lineas" text="Lineas" icon={<NotebookIcon />} />
           <CustomNavLink to="/posiciones" text="Posiciones" icon={<UserCog />} />
+          <CustomNavLink to="/skus" text="SKUS" icon={<Database />} />
+          <CustomNavLink to="/items-material-empaque" text="Items ME" icon={<Box />} />
         </ul>
       </nav>
 

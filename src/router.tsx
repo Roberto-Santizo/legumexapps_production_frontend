@@ -1,7 +1,11 @@
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { NotFound, ProtectedLayout, PublicLayout } from "@/features/shared/shared";
 import { Login } from "@/features/auth/auth";
 import { Dashboard } from "@/features/dashboard/Dashboard";
-import { NotFound, ProtectedLayout, PublicLayout } from "@/features/shared/shared";
+import { CreateSku, IndexSkus, ShowSku, UpdateSku } from "@/features/skus/skus";
+import { CreatePosition, IndexPositions, ShowPosition, UpdatePosition } from "@/features/positions/positions";
+import { CreatePackingMaterial, IndexPackingMaterials, ShowPackingMaterial, UpdatePackingMaterial } from "@/features/packing-materials/packing-materials";
+import { CreateLine, IndexLines, ShowLine, UpdateLine } from "@/features/lines/lines";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
 export default function AppRouter() {
     return (
@@ -18,6 +22,34 @@ export default function AppRouter() {
 
                 <Route element={<ProtectedLayout />}>
                     <Route path="/dashboard" element={<Dashboard />} />
+                </Route>
+
+                <Route element={<ProtectedLayout />}>
+                    <Route path="/lineas" element={<IndexLines />} />
+                    <Route path="/lineas/crear" element={<CreateLine />} />
+                    <Route path="/lineas/:id/editar" element={<UpdateLine />} />
+                    <Route path="/lineas/:id" element={<ShowLine />} />
+                </Route>
+
+                <Route element={<ProtectedLayout />}>
+                    <Route path="/posiciones" element={<IndexPositions />} />
+                    <Route path="/posiciones/crear" element={<CreatePosition />} />
+                    <Route path="/posiciones/:id/editar" element={<UpdatePosition />} />
+                    <Route path="/posiciones/:id" element={<ShowPosition />} />
+                </Route>
+
+                <Route element={<ProtectedLayout />}>
+                    <Route path="/skus" element={<IndexSkus />} />
+                    <Route path="/skus/crear" element={<CreateSku />} />
+                    <Route path="/skus/:code/editar" element={<UpdateSku />} />
+                    <Route path="/skus/:code" element={<ShowSku />} />
+                </Route>
+
+                <Route element={<ProtectedLayout />}>
+                    <Route path="/items-material-empaque" element={<IndexPackingMaterials />} />
+                    <Route path="/items-material-empaque/crear" element={<CreatePackingMaterial />} />
+                    <Route path="/items-material-empaque/:id/editar" element={<UpdatePackingMaterial />} />
+                    <Route path="/items-material-empaque/:id" element={<ShowPackingMaterial />} />
                 </Route>
             </Routes>
         </BrowserRouter>
