@@ -1,0 +1,26 @@
+import type { Line, LineForm, LinesDatasource, LinesRepository, PaginatedLines } from "@/features/lines/lines";
+
+export class LinesRepositoryImpl implements LinesRepository {
+    constructor(private datasource: LinesDatasource) {}
+
+    createLine(payload: LineForm): Promise<string> {
+       return this.datasource.createLine(payload);
+    }
+
+    getLines(limit: string, page: string): Promise<PaginatedLines> {
+        return this.datasource.getLines(limit, page);
+    }
+
+    getLineByCode(code: string): Promise<Line> {
+        return this.datasource.getLineByCode(code);
+    }
+    
+    updateLineByCode(code: string, payload: LineForm): Promise<string> {
+        return this.datasource.updateLineByCode(code, payload);
+    }
+
+    delete(code: string): Promise<string> {
+        return this.datasource.delete(code);
+    }
+
+}

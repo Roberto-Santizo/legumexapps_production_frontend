@@ -20,3 +20,4 @@ export * from './DateFormField';
 export * from './DateCard';
 export * from './Title';
 export * from './DonutSummaryCard';
+export * from './ErrorComponent';
