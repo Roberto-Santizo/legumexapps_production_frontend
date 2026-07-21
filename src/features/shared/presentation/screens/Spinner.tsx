@@ -1,0 +1,13 @@
+export function Spinner() {
+  return (
+    <div className="flex h-full items-center justify-center">
+      <div className="flex flex-col items-center gap-4">
+        <div className="h-10 w-10 animate-spin rounded-full border-2 border-slate-200 border-t-slate-800" />
+
+        <p className="text-sm text-slate-500">
+          Cargando información...
+        </p>
+      </div>
+    </div>
+  );
+}
