@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { store } from './config/config';
 import { StrictMode } from 'react'
-import { Toaster } from 'sonner';
+import { Toaster } from './features/shared/components/Toaster';
 import { AppInitializer } from './features/shared/core/initializer/AppInitializer';
 import './index.css'
 import AppRouter from './router';

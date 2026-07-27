@@ -1,8 +1,8 @@
 import { createContext } from "react";
-import { SonnerNotificationProvider, type NotificationAdapter } from "../../shared";
+import { ToastNotificationProvider, type NotificationAdapter } from "@/features/shared/shared";
 
 export const NotificationContext = createContext<NotificationAdapter | null>(null);
-const notificationProvider = new SonnerNotificationProvider();
+const notificationProvider = new ToastNotificationProvider();
 
 export const NotificationProvider = ({ children, container }: { children: React.ReactNode, container: React.ReactNode }) => {
     return (
