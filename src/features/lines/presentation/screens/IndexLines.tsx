@@ -1,5 +1,5 @@
 import { CustomFilledButton, CustomNavTable, ErrorComponent, LoadingData, Pagination, Table, Tbody, Td, Th, Thead, Title, Tr, usePagination } from "@/features/shared/shared";
-import { EyeIcon, PlusIcon } from "lucide-react";
+import { EditIcon, EyeIcon, PlusIcon } from "lucide-react";
 import { linesRepositoryProvider } from "@/features/lines/lines";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -43,8 +43,9 @@ export function IndexLines() {
                             <Tr>
                                 <Td>{line.name}</Td>
                                 <Td>{line.code}</Td>
-                                <Td>
+                                <Td className="flex gap-3">
                                     <CustomNavTable icon={<EyeIcon />} onClick={() => navigate(`/lineas/${line.code}`)} />
+                                    <CustomNavTable icon={<EditIcon />} onClick={() => navigate(`/lineas/${line.code}/editar`)} />
                                 </Td>
                             </Tr>
 

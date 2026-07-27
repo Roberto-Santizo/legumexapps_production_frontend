@@ -1,6 +1,6 @@
-import { LineSchema, PaginatedLinesSchema, type Line, type LineForm, type LinesDatasource, type PaginatedLines } from "@/features/lines/lines";
 import { ApiResponseSchema } from "@/features/shared/shared";
 import { isAxiosError, type AxiosInstance } from "axios";
+import { LineSchema, PaginatedLinesSchema, type Line, type LineForm, type LinesDatasource, type PaginatedLines } from "@/features/lines/lines";
 
 export class LinesDatasourceImpl implements LinesDatasource {
     constructor(private api: AxiosInstance, private url = '/lines') { }
@@ -58,11 +58,25 @@ export class LinesDatasourceImpl implements LinesDatasource {
         }
     }
 
-    updateLineByCode(code: string, payload: LineForm): Promise<string> {
-        throw new Error('Method not implemented.');
+    async updateLineByCode(code: string, payload: LineForm): Promise<string> {
+          try {
+            const url = `${this.url}/${code}`
+            const { data } = await this.api.put(url, payload);
+            const response = ApiResponseSchema.safeParse(data);
+
+            if (response.success) {
+                return response.data.message;
+            }
+
+            throw new Error("Información no válida");
+        } catch (error) {
+            if (isAxiosError(error)) throw new Error(error.response?.data.message);
+
+            throw new Error("Error no controlado");
+        }
     }
 
-    deleteLineByCode(code: string): Promise<string> {
+    deleteLineByCode(_: string): Promise<string> {
         throw new Error('Method not implemented.');
     }
 

@@ -13,8 +13,14 @@ export function ShowLine() {
 
     if (isLoading) return <Loading />
     if (data) return (
-        <div>
+        <div className="space-y-5">
             <Title title="Línea" subtitle="Información de la línea" />
+
+            <section>
+                <p className="">{data.name}</p>
+                <p className="">{data.code}</p>
+                <p className="">{data.shift ? 'AM' : 'PM'}</p>
+            </section>
         </div>
     )
 }
