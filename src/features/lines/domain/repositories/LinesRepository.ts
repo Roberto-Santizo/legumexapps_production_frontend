@@ -5,5 +5,5 @@ export abstract class LinesRepository {
     abstract getLines(limit: string, page: string): Promise<PaginatedLines>;
     abstract getLineByCode(code: string): Promise<Line>;
     abstract updateLineByCode(code: string, payload: LineForm): Promise<string>;
-    abstract delete(code: string): Promise<string>;
+    abstract deleteLineByCode(code: string): Promise<string>;
 }

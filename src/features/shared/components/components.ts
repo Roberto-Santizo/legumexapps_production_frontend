@@ -21,3 +21,5 @@ export * from './DateCard';
 export * from './Title';
 export * from './DonutSummaryCard';
 export * from './ErrorComponent';
+export * from './CustomNavTable';
+export * from './CustomForm';

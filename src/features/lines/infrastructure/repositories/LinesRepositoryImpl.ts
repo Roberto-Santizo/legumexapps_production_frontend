@@ -19,8 +19,8 @@ export class LinesRepositoryImpl implements LinesRepository {
         return this.datasource.updateLineByCode(code, payload);
     }
 
-    delete(code: string): Promise<string> {
-        return this.datasource.delete(code);
+    deleteLineByCode(code: string): Promise<string> {
+        return this.datasource.deleteLineByCode(code);
     }
 
 }

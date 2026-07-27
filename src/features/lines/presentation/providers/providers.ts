@@ -1,1 +1,1 @@
-export * from './linesRepositoryProvider'
+export * from './LinesProvider'

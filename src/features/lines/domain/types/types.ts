@@ -7,4 +7,5 @@ export type PaginatedLines = z.infer<typeof PaginatedLinesSchema>;
 export type LineForm = {
     name: string;
     code: string;
+    shift: number;
 }

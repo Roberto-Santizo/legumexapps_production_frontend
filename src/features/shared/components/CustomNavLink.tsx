@@ -8,25 +8,22 @@ type Props = {
 
 export function CustomNavLink({ text, icon, to }: Props) {
     return (
-        <NavLink
-            to={to}
-            className={({ isActive }) =>
-                `
-            group flex items-center gap-3 rounded-xl px-4 py-3
-            text-sm font-medium
-            transition-all duration-200 ease-out
-            ${isActive
-                    ? "bg-blue-50 text-blue-700 shadow-sm"
-                    : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+        <li>
+            <NavLink
+                to={to}
+                className={({ isActive }) =>
+                    `group flex items-center gap-2.5 rounded-lg border px-3 py-2 text-[13px] font-medium transition-colors [&>svg]:size-4 ${isActive
+                        ? "border-line bg-surface text-ink shadow-[0_1px_2px_rgba(0,0,0,0.04)]"
+                        : "border-transparent text-ink-muted hover:bg-black/[0.04] hover:text-ink"
+                    }`
                 }
-        `
-            }
-        >
-            <span className="text-lg transition-transform duration-200 group-hover:scale-110">
-                {icon}
-            </span>
+            >
+                <span className="flex shrink-0 [&>svg]:size-4">
+                    {icon}
+                </span>
 
-            <span>{text}</span>
-        </NavLink>
+                <span>{text}</span>
+            </NavLink>
+        </li>
     )
 }

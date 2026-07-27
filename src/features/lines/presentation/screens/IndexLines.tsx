@@ -1,9 +1,11 @@
-import { ErrorComponent, LoadingData, Pagination, Table, Tbody, Td, Th, Thead, Title, Tr, usePagination } from "@/features/shared/shared";
-import { useQuery } from "@tanstack/react-query";
+import { CustomFilledButton, CustomNavTable, ErrorComponent, LoadingData, Pagination, Table, Tbody, Td, Th, Thead, Title, Tr, usePagination } from "@/features/shared/shared";
+import { EyeIcon, PlusIcon } from "lucide-react";
 import { linesRepositoryProvider } from "@/features/lines/lines";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 
 export function IndexLines() {
+    const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
     const { page, rowsPerPage } = usePagination(searchParams);
 
@@ -17,7 +19,16 @@ export function IndexLines() {
     if (isError) return <ErrorComponent message={error.message} />
     if (data) return (
         <div className="space-y-5">
-            <Title title="Líneas" subtitle="Listado de líneas registradas" />
+            <div className="flex justify-between items-center">
+
+                <Title title="Líneas" subtitle="Listado de líneas registradas" />
+                <CustomFilledButton
+                    label="Crear Línea"
+                    type="button"
+                    icon={<PlusIcon />}
+                    onClick={() => navigate('/lineas/crear')}
+                />
+            </div>
 
             <section>
                 <Table>
@@ -32,6 +43,9 @@ export function IndexLines() {
                             <Tr>
                                 <Td>{line.name}</Td>
                                 <Td>{line.code}</Td>
+                                <Td>
+                                    <CustomNavTable icon={<EyeIcon />} onClick={() => navigate(`/lineas/${line.code}`)} />
+                                </Td>
                             </Tr>
 
                         ))}
