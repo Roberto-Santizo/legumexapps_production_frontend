@@ -1,4 +1,5 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { CreateClient, IndexClients, ShowClient, UpdateClient } from "@/features/clients/clients";
 import { CreateLine, IndexLines, ShowLine, UpdateLine } from "@/features/lines/lines";
 import { CreatePackingMaterial, IndexPackingMaterials, ShowPackingMaterial, UpdatePackingMaterial } from "@/features/packing-materials/packing-materials";
 import { CreatePosition, IndexPositions, ShowPosition, UpdatePosition } from "@/features/positions/positions";
@@ -61,11 +62,18 @@ export default function AppRouter() {
                     <Route path="/items-materia-prima/:id" element={<ShowRawMaterial />} />
                 </Route>
 
-                 <Route element={<ProtectedLayout />}>
+                <Route element={<ProtectedLayout />}>
                     <Route path="/tiempos-muertos" element={<IndexTimeouts />} />
                     <Route path="/tiempos-muertos/crear" element={<CreateTimeout />} />
                     <Route path="/tiempos-muertos/:id/editar" element={<UpdateTimeout />} />
                     <Route path="/tiempos-muertos/:id" element={<ShowTimeout />} />
+                </Route>
+
+                <Route element={<ProtectedLayout />}>
+                    <Route path="/clientes" element={<IndexClients />} />
+                    <Route path="/clientes/crear" element={<CreateClient />} />
+                    <Route path="/clientes/:id/editar" element={<UpdateClient />} />
+                    <Route path="/clientes/:id" element={<ShowClient />} />
                 </Route>
             </Routes>
         </BrowserRouter>
