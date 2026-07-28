@@ -4,6 +4,7 @@ import { CreatePackingMaterial, IndexPackingMaterials, ShowPackingMaterial, Upda
 import { CreatePosition, IndexPositions, ShowPosition, UpdatePosition } from "@/features/positions/positions";
 import { CreateRawMaterial, IndexRawMaterials, ShowRawMaterial, UpdateRawMaterial } from "@/features/raw-materials/raw-materials";
 import { CreateSku, IndexSkus, ShowSku, UpdateSku } from "@/features/skus/skus";
+import { CreateTimeout, IndexTimeouts, ShowTimeout, UpdateTimeout } from "@/features/timeouts/timeouts";
 import { Dashboard } from "@/features/dashboard/Dashboard";
 import { Login } from "@/features/auth/auth";
 import { NotFound, ProtectedLayout, PublicLayout } from "@/features/shared/shared";
@@ -58,6 +59,13 @@ export default function AppRouter() {
                     <Route path="/items-materia-prima/crear" element={<CreateRawMaterial />} />
                     <Route path="/items-materia-prima/:id/editar" element={<UpdateRawMaterial />} />
                     <Route path="/items-materia-prima/:id" element={<ShowRawMaterial />} />
+                </Route>
+
+                 <Route element={<ProtectedLayout />}>
+                    <Route path="/tiempos-muertos" element={<IndexTimeouts />} />
+                    <Route path="/tiempos-muertos/crear" element={<CreateTimeout />} />
+                    <Route path="/tiempos-muertos/:id/editar" element={<UpdateTimeout />} />
+                    <Route path="/tiempos-muertos/:id" element={<ShowTimeout />} />
                 </Route>
             </Routes>
         </BrowserRouter>

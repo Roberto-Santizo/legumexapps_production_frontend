@@ -1,4 +1,4 @@
-import { Box, Database, LayoutDashboard, NotebookIcon, UserCog, type LucideIcon } from "lucide-react";
+import { Box, Database, LayoutDashboard, NotebookIcon, UserCog, Clock, type LucideIcon } from "lucide-react";
 
 export type NavItem = {
     to: string;
@@ -31,6 +31,12 @@ export const NAV_SECTIONS: NavSection[] = [
             { to: "/skus", text: "Sku's", icon: Database },
             { to: "/items-material-empaque", text: "Material De Empaque Items", icon: Box },
             { to: "/items-materia-prima", text: "Materia Prima Items", icon: Box },
+        ],
+    },
+    {
+        label: "Operacion",
+        items: [
+            { to: "/tiempos-muertos", text: "Tiempos Muertos", icon: Clock },
         ],
     },
 ];
