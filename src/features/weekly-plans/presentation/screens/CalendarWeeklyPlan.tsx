@@ -1,9 +1,9 @@
 import { Calendar, ModalWeeklyPlanTasksByDate, weeklyPlanProvider } from '@/features/weekly-plans/weekly-plans';
-import { ModalCreateWeeklyPlanTask } from '@/features/weekly-plan-tasks/weekly-plan-tasks';
+import { DrawerWeeklyPlanTasks, ModalCreateWeeklyPlanTask } from '@/features/weekly-plan-tasks/weekly-plan-tasks';
 import { CustomFilledButton, handleSetQueryParam, Loading, Title } from '@/features/shared/shared';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { PlusIcon } from 'lucide-react';
+import { MenuIcon, PlusIcon } from 'lucide-react';
 import { useState } from 'react';
 
 export function CalendarWeeklyPlan() {
@@ -11,6 +11,7 @@ export function CalendarWeeklyPlan() {
   const location = useLocation();
   const navigate = useNavigate();
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showTasksDrawer, setShowTasksDrawer] = useState(false);
 
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['getWeeklyPlanTasksForCalendarById', id],
@@ -24,12 +25,22 @@ export function CalendarWeeklyPlan() {
     <div className="space-y-5">
       <div className="flex justify-between items-center">
         <Title title="Calendario" subtitle="Calendario de planificación" />
-        <CustomFilledButton
-          label="Crear Tarea"
-          type="button"
-          icon={<PlusIcon />}
-          onClick={() => setShowCreateModal(true)}
-        />
+        <div className="flex items-center gap-3">
+          <CustomFilledButton
+            label="Crear Tarea"
+            type="button"
+            icon={<PlusIcon />}
+            onClick={() => setShowCreateModal(true)}
+          />
+
+          <button
+            type="button"
+            onClick={() => setShowTasksDrawer(true)}
+            className="rounded-lg border border-line p-2 text-ink hover:bg-gray-100 transition"
+          >
+            <MenuIcon className="h-5 w-5" />
+          </button>
+        </div>
       </div>
 
       <section>
@@ -42,6 +53,11 @@ export function CalendarWeeklyPlan() {
         modal={showCreateModal}
         closeModal={() => setShowCreateModal(false)}
         refetch={refetch}
+      />
+
+      <DrawerWeeklyPlanTasks
+        open={showTasksDrawer}
+        closeDrawer={() => setShowTasksDrawer(false)}
       />
     </div>
   )

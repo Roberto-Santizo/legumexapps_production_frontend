@@ -22,9 +22,9 @@ export class WeeklyPlanTaskDatasourceImpl implements WeeklyPlanTaskDatasource {
         }
     }
 
-    async getWeeklyPlanTasks(limit: string, page: string): Promise<PaginatedWeeklyPlanTasks> {
+    async getWeeklyPlanTasks(weeklyPlanId: string, limit: string, page: string): Promise<PaginatedWeeklyPlanTasks> {
         try {
-            const url = `${this.url}?limit=${limit}&page=${page}`;
+            const url = `${this.url}?weeklyPlanId=${weeklyPlanId}&limit=${limit}&page=${page}`;
             const { data } = await this.api.get(url);
             const response = PaginatedWeeklyPlanTasksSchema.safeParse(data);
 

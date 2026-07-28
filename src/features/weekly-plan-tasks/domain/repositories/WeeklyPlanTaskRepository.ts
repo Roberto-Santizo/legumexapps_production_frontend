@@ -2,7 +2,7 @@ import type { WeeklyPlanTask, WeeklyPlanTaskForm, PaginatedWeeklyPlanTasks } fro
 
 export abstract class WeeklyPlanTaskRepository {
     abstract createWeeklyPlanTask(payload: WeeklyPlanTaskForm): Promise<string>;
-    abstract getWeeklyPlanTasks(limit: string, page: string): Promise<PaginatedWeeklyPlanTasks>;
+    abstract getWeeklyPlanTasks(weeklyPlanId: string, limit: string, page: string): Promise<PaginatedWeeklyPlanTasks>;
     abstract getWeeklyPlanTaskById(id: string): Promise<WeeklyPlanTask>;
     abstract updateWeeklyPlanTaskById(id: string, payload: WeeklyPlanTaskForm): Promise<string>;
     abstract deleteWeeklyPlanTaskById(id: string): Promise<string>;

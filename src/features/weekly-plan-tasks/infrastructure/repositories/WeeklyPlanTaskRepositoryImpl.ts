@@ -7,8 +7,8 @@ export class WeeklyPlanTaskRepositoryImpl implements WeeklyPlanTaskRepository {
         return this.datasource.createWeeklyPlanTask(payload);
     }
 
-    getWeeklyPlanTasks(limit: string, page: string): Promise<PaginatedWeeklyPlanTasks> {
-        return this.datasource.getWeeklyPlanTasks(limit, page);
+    getWeeklyPlanTasks(weeklyPlanId: string, limit: string, page: string): Promise<PaginatedWeeklyPlanTasks> {
+        return this.datasource.getWeeklyPlanTasks(weeklyPlanId, limit, page);
     }
 
     getWeeklyPlanTaskById(id: string): Promise<WeeklyPlanTask> {

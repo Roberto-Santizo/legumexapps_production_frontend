@@ -3,14 +3,14 @@ import { WeeklyPlanTaskDatasourceImpl, WeeklyPlanTaskRepositoryImpl, } from "@/f
 import api from "@/config/http/axios";
 
 export class WeeklyPlanTaskProvider {
-    constructor(private repository: WeeklyPlanTaskRepository) {}
+    constructor(private repository: WeeklyPlanTaskRepository) { }
 
     createWeeklyPlanTask(payload: WeeklyPlanTaskForm): Promise<string> {
         return this.repository.createWeeklyPlanTask(payload);
     }
 
-    getWeeklyPlanTasks(limit: string, page: string): Promise<PaginatedWeeklyPlanTasks> {
-        return this.repository.getWeeklyPlanTasks(limit, page);
+    getWeeklyPlanTasks(weeklyPlanId: string, limit: string, page: string): Promise<PaginatedWeeklyPlanTasks> {
+        return this.repository.getWeeklyPlanTasks(weeklyPlanId, limit, page);
     }
 
     getWeeklyPlanTaskById(id: string): Promise<WeeklyPlanTask> {

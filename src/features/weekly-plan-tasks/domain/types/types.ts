@@ -7,7 +7,7 @@ export type WeeklyPlanTask = z.infer<typeof WeeklyPlanTaskSchema>;
 export type WeeklyPlanTaskForm = {
     boxes: number;
     destination: string;
-    operation_date: string;
+    operation_date: string | null;
     weekly_plan_id: number;
     line_sku_id: number;
 }
