@@ -1,6 +1,5 @@
-import { weeklyPlanProvider } from "@/features/weekly-plans/weekly-plans";
-import { performanceProvider } from "@/features/performances/performances";
 import { DateFormField, SelectFormField, TextFormField } from "@/features/shared/shared";
+import { performanceProvider } from "@/features/performances/performances";
 import { useQuery } from "@tanstack/react-query";
 import type { Control, FieldErrors, UseFormRegister } from "react-hook-form";
 import type { WeeklyPlanTaskForm } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
@@ -12,33 +11,18 @@ type Props = {
 }
 
 export function WeeklyPlanTaskFormComponent({ register, errors, control }: Props) {
-    const { data: weeklyPlansData } = useQuery({
-        queryKey: ['getWeeklyPlans'],
-        queryFn: () => weeklyPlanProvider.getWeeklyPlans('', '')
-    });
-
     const { data: performancesData } = useQuery({
         queryKey: ['getPerformances'],
         queryFn: () => performanceProvider.getPerformances('', '')
     });
 
-    const weeklyPlanOptions = weeklyPlansData?.data.map(weeklyPlan => ({ value: weeklyPlan.id, label: `Semana ${weeklyPlan.week} - ${weeklyPlan.year}` })) ?? [];
     const performanceOptions = performancesData?.data.map(performance => ({ value: performance.id, label: `${performance.sku} - ${performance.line}` })) ?? [];
 
     return (
         <>
             <SelectFormField<WeeklyPlanTaskForm>
-                name="weekly_plan_id"
-                label="Plan Semanal"
-                control={control}
-                validation={{ required: 'El campo es requerido' }}
-                options={weeklyPlanOptions}
-                errorMessage={errors.weekly_plan_id?.message}
-            />
-
-            <SelectFormField<WeeklyPlanTaskForm>
                 name="line_sku_id"
-                label="Rendimiento"
+                label="SKU"
                 control={control}
                 validation={{ required: 'El campo es requerido' }}
                 options={performanceOptions}

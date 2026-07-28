@@ -1,14 +1,18 @@
 import { Calendar, ModalWeeklyPlanTasksByDate, weeklyPlanProvider } from '@/features/weekly-plans/weekly-plans';
-import { handleSetQueryParam, Loading, Title } from '@/features/shared/shared';
+import { ModalCreateWeeklyPlanTask } from '@/features/weekly-plan-tasks/weekly-plan-tasks';
+import { CustomFilledButton, handleSetQueryParam, Loading, Title } from '@/features/shared/shared';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
+import { PlusIcon } from 'lucide-react';
+import { useState } from 'react';
 
 export function CalendarWeeklyPlan() {
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, refetch } = useQuery({
     queryKey: ['getWeeklyPlanTasksForCalendarById', id],
     queryFn: () => weeklyPlanProvider.getWeeklyPlanTasksForCalendarById(id!)
   });
@@ -18,13 +22,27 @@ export function CalendarWeeklyPlan() {
   if (isLoading) return <Loading />
   if (data) return (
     <div className="space-y-5">
-      <Title title="Calendario" subtitle="Calendario de planificación" />
+      <div className="flex justify-between items-center">
+        <Title title="Calendario" subtitle="Calendario de planificación" />
+        <CustomFilledButton
+          label="Crear Tarea"
+          type="button"
+          icon={<PlusIcon />}
+          onClick={() => setShowCreateModal(true)}
+        />
+      </div>
 
       <section>
         <Calendar onDateClick={onDateClick} events={data} />
       </section>
 
       <ModalWeeklyPlanTasksByDate events={data} />
+
+      <ModalCreateWeeklyPlanTask
+        modal={showCreateModal}
+        closeModal={() => setShowCreateModal(false)}
+        refetch={refetch}
+      />
     </div>
   )
 }
