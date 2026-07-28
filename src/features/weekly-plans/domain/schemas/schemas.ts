@@ -7,6 +7,15 @@ export const WeeklyPlanSchema = z.object({
     year: z.number()
 });
 
+export const CalendarEventItemSchema = z.object({
+    id: z.string(),
+    title: z.string(),
+    date: z.string(),
+    color: z.string()
+});
+
 export const PaginatedWeeklyPlansSchema = ApiPaginatedResponseSchema.extend({
     data: z.array(WeeklyPlanSchema)
 });
+
+

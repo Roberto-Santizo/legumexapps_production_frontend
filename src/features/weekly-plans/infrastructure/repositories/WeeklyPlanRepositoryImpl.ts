@@ -1,7 +1,11 @@
-import type { WeeklyPlanDatasource, WeeklyPlan, WeeklyPlanForm, WeeklyPlanRepository, PaginatedWeeklyPlans } from "@/features/weekly-plans/weekly-plans";
+import type { WeeklyPlanDatasource, WeeklyPlan, WeeklyPlanForm, WeeklyPlanRepository, PaginatedWeeklyPlans, CalendarEventItem } from "@/features/weekly-plans/weekly-plans";
 
 export class WeeklyPlanRepositoryImpl implements WeeklyPlanRepository {
     constructor(private datasource: WeeklyPlanDatasource) { }
+
+    getWeeklyPlanTasksForCalendarById(id: string): Promise<CalendarEventItem[]> {
+        return this.datasource.getWeeklyPlanTasksForCalendarById(id);
+    }
 
     createWeeklyPlan(payload: WeeklyPlanForm): Promise<string> {
         return this.datasource.createWeeklyPlan(payload);

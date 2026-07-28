@@ -24,6 +24,10 @@ export class WeeklyPlanProvider {
     deleteWeeklyPlanById(id: string): Promise<string> {
         return this.repository.deleteWeeklyPlanById(id);
     }
+
+    getWeeklyPlanTasksForCalendarById(id: string){
+        return this.repository.getWeeklyPlanTasksForCalendarById(id);
+    }
 }
 
 const datasource = new WeeklyPlanDatasourceImpl(api);
