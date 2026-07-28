@@ -44,8 +44,8 @@ export default function AppRouter() {
                 <Route element={<ProtectedLayout />}>
                     <Route path="/skus" element={<IndexSkus />} />
                     <Route path="/skus/crear" element={<CreateSku />} />
-                    <Route path="/skus/:code/editar" element={<UpdateSku />} />
-                    <Route path="/skus/:code" element={<ShowSku />} />
+                    <Route path="/skus/:id/editar" element={<UpdateSku />} />
+                    <Route path="/skus/:id" element={<ShowSku />} />
                 </Route>
 
                 <Route element={<ProtectedLayout />}>
