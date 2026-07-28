@@ -1,4 +1,4 @@
-import { Calendar, weeklyPlanProvider } from '@/features/weekly-plans/weekly-plans';
+import { Calendar, ModalWeeklyPlanTasksByDate, weeklyPlanProvider } from '@/features/weekly-plans/weekly-plans';
 import { handleSetQueryParam, Loading, Title } from '@/features/shared/shared';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -23,6 +23,8 @@ export function CalendarWeeklyPlan() {
       <section>
         <Calendar onDateClick={onDateClick} events={data} />
       </section>
+
+      <ModalWeeklyPlanTasksByDate events={data} />
     </div>
   )
 }
