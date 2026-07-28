@@ -1,4 +1,3 @@
-import { ChevronsUpDown } from "lucide-react";
 import { CustomNavLink } from "./CustomNavLink";
 import { NAV_SECTIONS } from "@/features/shared/shared";
 
@@ -23,15 +22,6 @@ export function CustomSideBar({ collapsed = false }: Props) {
                     Producción
                 </span>
             </div>
-
-            <button
-                type="button"
-                className="flex shrink-0 items-center gap-2 rounded-lg border border-line bg-surface px-2.5 py-2 text-[13px] text-ink transition-colors hover:border-line-strong"
-            >
-                <span className="size-2 shrink-0 rounded-full bg-amber-500" />
-                <span className="flex-1 truncate text-left">Producción</span>
-                <ChevronsUpDown className="size-3.5 shrink-0 text-ink-subtle" />
-            </button>
 
             <nav className="flex-1 overflow-y-auto">
                 {NAV_SECTIONS.map((section, index) => (
