@@ -10,6 +10,7 @@ import { CreateTimeout, IndexTimeouts, ShowTimeout, UpdateTimeout } from "@/feat
 import { Dashboard } from "@/features/dashboard/Dashboard";
 import { Login } from "@/features/auth/auth";
 import { NotFound, ProtectedLayout, PublicLayout } from "@/features/shared/shared";
+import { CreateWeeklyPlan, IndexWeeklyPlans, ShowWeeklyPlan, UpdateWeeklyPlan } from "@/features/weekly-plans/weekly-plans";
 
 export default function AppRouter() {
     return (
@@ -82,6 +83,13 @@ export default function AppRouter() {
                     <Route path="/rendimientos/crear" element={<CreatePerformance />} />
                     <Route path="/rendimientos/:id/editar" element={<UpdatePerformance />} />
                     <Route path="/rendimientos/:id" element={<ShowPerformance />} />
+                </Route>
+
+                  <Route element={<ProtectedLayout />}>
+                    <Route path="/planes-semanales" element={<IndexWeeklyPlans />} />
+                    <Route path="/planes-semanales/crear" element={<CreateWeeklyPlan />} />
+                    <Route path="/planes-semanales/:id/editar" element={<UpdateWeeklyPlan />} />
+                    <Route path="/planes-semanales/:id" element={<ShowWeeklyPlan />} />
                 </Route>
             </Routes>
         </BrowserRouter>
