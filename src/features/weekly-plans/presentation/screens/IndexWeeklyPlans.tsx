@@ -1,5 +1,5 @@
-import { CustomFilledButton, CustomNavTable, Loading, Pagination, Table, Tbody, Td, Th, Thead, Title, Tr, useNotification, usePagination } from "@/features/shared/shared";
-import { EditIcon, EyeIcon, PlusIcon, TrashIcon } from "lucide-react";
+import { ActionsMenu, CustomFilledButton, Loading, Pagination, Table, Tbody, Td, Th, Thead, Title, Tr, useNotification, usePagination } from "@/features/shared/shared";
+import { CalendarIcon, EditIcon, EyeIcon, PlusIcon, TrashIcon } from "lucide-react";
 import { weeklyPlanProvider } from "@/features/weekly-plans/weekly-plans";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -54,10 +54,15 @@ export function IndexWeeklyPlans() {
                             <Tr>
                                 <Td>{item.week}</Td>
                                 <Td>{item.year}</Td>
-                                <Td className="flex gap-3">
-                                    <CustomNavTable icon={<EyeIcon />} onClick={() => navigate(`/planes-semanales/${item.id}`)} />
-                                    <CustomNavTable icon={<EditIcon />} onClick={() => navigate(`/planes-semanales/${item.id}/editar`)} />
-                                    <CustomNavTable icon={<TrashIcon />} onClick={() => handleDeleteItem(`${item.id}`)} />
+                                <Td>
+                                    <ActionsMenu
+                                        items={[
+                                            { label: "Ver Detalles", icon: <EyeIcon />, onClick: () => navigate(`/planes-semanales/${item.id}`) },
+                                            { label: "Calendario", icon: <CalendarIcon />, onClick: () => navigate(`/planes-semanales/calendario/${item.id}`) },
+                                            { label: "Editar", icon: <EditIcon />, onClick: () => navigate(`/planes-semanales/${item.id}/editar`) },
+                                            { label: "Eliminar", icon: <TrashIcon />, onClick: () => handleDeleteItem(`${item.id}`), danger: true },
+                                        ]}
+                                    />
                                 </Td>
                             </Tr>
 

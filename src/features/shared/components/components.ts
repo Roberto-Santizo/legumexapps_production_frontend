@@ -22,5 +22,6 @@ export * from './Title';
 export * from './DonutSummaryCard';
 export * from './ErrorComponent';
 export * from './CustomNavTable';
+export * from './ActionsMenu';
 export * from './CustomForm';
 export * from './Toaster';
