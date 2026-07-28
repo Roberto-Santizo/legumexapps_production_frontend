@@ -1,8 +1,8 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { weeklyPlanTaskProvider } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
+import { ModalAssignOperationDate, weeklyPlanTaskProvider } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
 import { XIcon } from "lucide-react";
 
 type Props = {
@@ -12,12 +12,20 @@ type Props = {
 
 export function DrawerWeeklyPlanTasks({ open, closeDrawer }: Props) {
     const { id } = useParams();
+    const [selectedTasksIds, setSelectedTasksIds] = useState<string[]>([]);
+    const [assignOperationDateModal, setAssignOperationDateModal] = useState(false);
 
     const { data, isLoading } = useQuery({
         queryKey: ['getWeeklyPlanTasksDrawer', id],
-        queryFn: () => weeklyPlanTaskProvider.getWeeklyPlanTasks(id!, '', ''),
+        queryFn: () => weeklyPlanTaskProvider.getWeeklyPlanTasks(id!, 'true', '', ''),
         enabled: open && !!id
     });
+
+    const toggleTaskSelection = (taskId: string) => {
+        setSelectedTasksIds((prev) =>
+            prev.includes(taskId) ? prev.filter((id) => id !== taskId) : [...prev, taskId]
+        );
+    }
 
     return (
         <Transition appear show={open} as={Fragment}>
@@ -51,12 +59,23 @@ export function DrawerWeeklyPlanTasks({ open, closeDrawer }: Props) {
                                         Tareas del Plan Semanal
                                     </Dialog.Title>
 
-                                    <button
-                                        onClick={closeDrawer}
-                                        className="rounded-md p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition"
-                                    >
-                                        <XIcon className="h-5 w-5" />
-                                    </button>
+                                    <div className="flex items-center gap-3">
+                                        {selectedTasksIds.length > 0 && (
+                                            <button
+                                                onClick={() => setAssignOperationDateModal(true)}
+                                                className="rounded-lg bg-ink px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-ink/90 cursor-pointer"
+                                            >
+                                                Asignar fecha de operación
+                                            </button>
+                                        )}
+
+                                        <button
+                                            onClick={closeDrawer}
+                                            className="rounded-md p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition"
+                                        >
+                                            <XIcon className="h-5 w-5" />
+                                        </button>
+                                    </div>
                                 </div>
 
                                 <div className="flex-1 overflow-y-auto p-6 space-y-3">
@@ -71,19 +90,28 @@ export function DrawerWeeklyPlanTasks({ open, closeDrawer }: Props) {
                                     )}
 
                                     {data?.data.map((task) => (
-                                        <div key={task.id} className="rounded-lg border border-line p-4 space-y-2">
-                                            <div className="flex items-center justify-between">
-                                                <span className="text-sm font-semibold text-ink">{task.sku_name}</span>
-                                                <span className="text-md text-ink-subtle">{task.operation_date_string}</span>
-                                            </div>
+                                        <div key={task.id} className="flex items-start gap-3 rounded-lg border border-line p-4">
+                                            <input
+                                                type="checkbox"
+                                                className="mt-1 h-4 w-4 cursor-pointer"
+                                                checked={selectedTasksIds.includes(String(task.id))}
+                                                onChange={() => toggleTaskSelection(String(task.id))}
+                                            />
 
-                                            <p className="text-xs text-ink-subtle">Línea: {task.line_name}</p>
-                                            <p className="text-xs text-ink-subtle">Destino: {task.destination}</p>
+                                            <div className="flex-1 space-y-2">
+                                                <div className="flex items-center justify-between">
+                                                    <span className="text-sm font-semibold text-ink">{task.sku_name}</span>
+                                                    <span className="text-md text-ink-subtle">{task.operation_date_string}</span>
+                                                </div>
 
-                                            <div className="flex gap-4 text-xs text-ink-subtle">
-                                                <span>Cajas: {task.produced_boxes ?? 0}/{task.boxes}</span>
-                                                <span>Pallets: {task.produced_pallets ?? 0}/{task.pallets}</span>
-                                                <span>Horas: {task.hours}</span>
+                                                <p className="text-xs text-ink-subtle">Línea: {task.line_name}</p>
+                                                <p className="text-xs text-ink-subtle">Destino: {task.destination}</p>
+
+                                                <div className="flex gap-4 text-xs text-ink-subtle">
+                                                    <span>Cajas: {task.produced_boxes ?? 0}/{task.boxes}</span>
+                                                    <span>Pallets: {task.produced_pallets ?? 0}/{task.pallets}</span>
+                                                    <span>Horas: {task.hours}</span>
+                                                </div>
                                             </div>
                                         </div>
                                     ))}
@@ -93,6 +121,12 @@ export function DrawerWeeklyPlanTasks({ open, closeDrawer }: Props) {
                     </div>
                 </div>
             </Dialog>
+
+            <ModalAssignOperationDate
+                modal={assignOperationDateModal}
+                closeModal={() => setAssignOperationDateModal(false)}
+                tasksIds={selectedTasksIds}
+            />
         </Transition>
     )
 }

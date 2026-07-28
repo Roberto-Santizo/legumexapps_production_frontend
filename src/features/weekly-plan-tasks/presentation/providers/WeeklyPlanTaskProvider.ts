@@ -9,8 +9,8 @@ export class WeeklyPlanTaskProvider {
         return this.repository.createWeeklyPlanTask(payload);
     }
 
-    getWeeklyPlanTasks(weeklyPlanId: string, limit: string, page: string): Promise<PaginatedWeeklyPlanTasks> {
-        return this.repository.getWeeklyPlanTasks(weeklyPlanId, limit, page);
+    getWeeklyPlanTasks(weeklyPlanId: string, flagOperationDate: string, limit: string, page: string): Promise<PaginatedWeeklyPlanTasks> {
+        return this.repository.getWeeklyPlanTasks(weeklyPlanId, flagOperationDate, limit, page);
     }
 
     getWeeklyPlanTaskById(id: string): Promise<WeeklyPlanTask> {

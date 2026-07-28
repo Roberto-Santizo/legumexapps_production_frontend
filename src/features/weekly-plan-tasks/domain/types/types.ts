@@ -11,3 +11,8 @@ export type WeeklyPlanTaskForm = {
     weekly_plan_id: number;
     line_sku_id: number;
 }
+
+export type AssignOperationDateForm = {
+    tasks_ids: string[];
+    operation_date: string;
+}
