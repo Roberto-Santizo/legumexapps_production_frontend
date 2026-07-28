@@ -1,11 +1,12 @@
-import { NotFound, ProtectedLayout, PublicLayout } from "@/features/shared/shared";
-import { Login } from "@/features/auth/auth";
-import { Dashboard } from "@/features/dashboard/Dashboard";
-import { CreateSku, IndexSkus, ShowSku, UpdateSku } from "@/features/skus/skus";
-import { CreatePosition, IndexPositions, ShowPosition, UpdatePosition } from "@/features/positions/positions";
-import { CreatePackingMaterial, IndexPackingMaterials, ShowPackingMaterial, UpdatePackingMaterial } from "@/features/packing-materials/packing-materials";
-import { CreateLine, IndexLines, ShowLine, UpdateLine } from "@/features/lines/lines";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { CreateLine, IndexLines, ShowLine, UpdateLine } from "@/features/lines/lines";
+import { CreatePackingMaterial, IndexPackingMaterials, ShowPackingMaterial, UpdatePackingMaterial } from "@/features/packing-materials/packing-materials";
+import { CreatePosition, IndexPositions, ShowPosition, UpdatePosition } from "@/features/positions/positions";
+import { CreateRawMaterial, IndexRawMaterials, ShowRawMaterial, UpdateRawMaterial } from "@/features/raw-materials/raw-materials";
+import { CreateSku, IndexSkus, ShowSku, UpdateSku } from "@/features/skus/skus";
+import { Dashboard } from "@/features/dashboard/Dashboard";
+import { Login } from "@/features/auth/auth";
+import { NotFound, ProtectedLayout, PublicLayout } from "@/features/shared/shared";
 
 export default function AppRouter() {
     return (
@@ -50,6 +51,13 @@ export default function AppRouter() {
                     <Route path="/items-material-empaque/crear" element={<CreatePackingMaterial />} />
                     <Route path="/items-material-empaque/:id/editar" element={<UpdatePackingMaterial />} />
                     <Route path="/items-material-empaque/:id" element={<ShowPackingMaterial />} />
+                </Route>
+
+                <Route element={<ProtectedLayout />}>
+                    <Route path="/items-materia-prima" element={<IndexRawMaterials />} />
+                    <Route path="/items-materia-prima/crear" element={<CreateRawMaterial />} />
+                    <Route path="/items-materia-prima/:id/editar" element={<UpdateRawMaterial />} />
+                    <Route path="/items-materia-prima/:id" element={<ShowRawMaterial />} />
                 </Route>
             </Routes>
         </BrowserRouter>

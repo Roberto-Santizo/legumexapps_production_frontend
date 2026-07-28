@@ -30,6 +30,7 @@ export const NAV_SECTIONS: NavSection[] = [
         items: [
             { to: "/skus", text: "Sku's", icon: Database },
             { to: "/items-material-empaque", text: "Material De Empaque Items", icon: Box },
+            { to: "/items-materia-prima", text: "Materia Prima Items", icon: Box },
         ],
     },
 ];
