@@ -2,6 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { CreateClient, IndexClients, ShowClient, UpdateClient } from "@/features/clients/clients";
 import { CreateLine, IndexLines, ShowLine, UpdateLine } from "@/features/lines/lines";
 import { CreatePackingMaterial, IndexPackingMaterials, ShowPackingMaterial, UpdatePackingMaterial } from "@/features/packing-materials/packing-materials";
+import { CreatePerformance, IndexPerformances, ShowPerformance, UpdatePerformance } from "@/features/performances/performances";
 import { CreatePosition, IndexPositions, ShowPosition, UpdatePosition } from "@/features/positions/positions";
 import { CreateRawMaterial, IndexRawMaterials, ShowRawMaterial, UpdateRawMaterial } from "@/features/raw-materials/raw-materials";
 import { CreateSku, IndexSkus, ShowSku, UpdateSku } from "@/features/skus/skus";
@@ -74,6 +75,13 @@ export default function AppRouter() {
                     <Route path="/clientes/crear" element={<CreateClient />} />
                     <Route path="/clientes/:id/editar" element={<UpdateClient />} />
                     <Route path="/clientes/:id" element={<ShowClient />} />
+                </Route>
+
+                 <Route element={<ProtectedLayout />}>
+                    <Route path="/rendimientos" element={<IndexPerformances />} />
+                    <Route path="/rendimientos/crear" element={<CreatePerformance />} />
+                    <Route path="/rendimientos/:id/editar" element={<UpdatePerformance />} />
+                    <Route path="/rendimientos/:id" element={<ShowPerformance />} />
                 </Route>
             </Routes>
         </BrowserRouter>
