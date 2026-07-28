@@ -26,10 +26,10 @@ export const NAV_SECTIONS: NavSection[] = [
         ],
     },
     {
-        label: "Catálogos",
+        label: "Productos",
         items: [
-            { to: "/skus", text: "SKUS", icon: Database },
-            { to: "/items-material-empaque", text: "Items ME", icon: Box },
+            { to: "/skus", text: "Sku's", icon: Database },
+            { to: "/items-material-empaque", text: "Material De Empaque Items", icon: Box },
         ],
     },
 ];
