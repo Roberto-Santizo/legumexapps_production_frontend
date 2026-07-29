@@ -1,3 +1,4 @@
 export * from './datasources/datasources';
 export * from './repositories/repositories';
-export * from './utils/utils';
+export * from './schemas/schemas';
+export * from './types/types';

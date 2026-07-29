@@ -1,5 +1,5 @@
 import { DateFormField, SelectFormField, TextFormField } from "@/features/shared/shared";
-import { performanceProvider } from "@/features/performances/performances";
+import { peformancesOptions, performanceProvider } from "@/features/performances/performances";
 import { useQuery } from "@tanstack/react-query";
 import type { Control, FieldErrors, UseFormRegister } from "react-hook-form";
 import type { WeeklyPlanTaskForm } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
@@ -16,16 +16,14 @@ export function WeeklyPlanTaskFormComponent({ register, errors, control }: Props
         queryFn: () => performanceProvider.getPerformances('', '')
     });
 
-    const performanceOptions = performancesData?.data.map(performance => ({ value: performance.id, label: `${performance.sku} - ${performance.line}` })) ?? [];
-
-    return (
+    if (performancesData) return (
         <>
             <SelectFormField<WeeklyPlanTaskForm>
                 name="line_sku_id"
                 label="SKU"
                 control={control}
                 validation={{ required: 'El campo es requerido' }}
-                options={performanceOptions}
+                options={peformancesOptions(performancesData.data)}
                 errorMessage={errors.line_sku_id?.message}
             />
 
