@@ -1,5 +1,5 @@
 import { CustomFilledButton, CustomForm, Modal, useNotification } from "@/features/shared/shared";
-import { SkuPackingMaterialFormComponent, skuPackingMaterialProvider, type SkuPackingMaterialForm } from "@/features/sku-packing-materials/sku-packing-materials";
+import { SkuRawMaterialFormComponent, skuRawMaterialProvider, type SkuRawMaterialForm } from "@/features/skus-raw-materials/skus-raw-materials";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -12,13 +12,13 @@ type Props = {
     itemId: string;
 }
 
-export function ModalUpdateSkuPackingMaterial({ modal, closeModal, refetch, itemId }: Props) {
+export function ModalUpdateSkuRawMaterial({ modal, closeModal, refetch, itemId }: Props) {
     const notification = useNotification();
     const { id } = useParams();
-    
+
     const { data } = useQuery({
-        queryKey: ['getSkuPackingMaterialById', itemId],
-        queryFn: () => skuPackingMaterialProvider.getSkuPackingMaterialById(itemId),
+        queryKey: ['getSkuRawMaterialById', itemId],
+        queryFn: () => skuRawMaterialProvider.getSkuRawMaterialById(itemId),
         enabled: !!itemId
     });
 
@@ -28,10 +28,10 @@ export function ModalUpdateSkuPackingMaterial({ modal, closeModal, refetch, item
         control,
         setValues,
         formState: { errors }
-    } = useForm<SkuPackingMaterialForm>();
+    } = useForm<SkuRawMaterialForm>();
 
     const { mutate, isPending } = useMutation({
-        mutationFn: (payload: SkuPackingMaterialForm) => skuPackingMaterialProvider.updateSkuPackingMaterialById(itemId, payload),
+        mutationFn: (payload: SkuRawMaterialForm) => skuRawMaterialProvider.updateSkuRawMaterialById(itemId, payload),
         onSuccess: (message) => {
             notification.success(message);
             closeModal();
@@ -44,13 +44,13 @@ export function ModalUpdateSkuPackingMaterial({ modal, closeModal, refetch, item
 
     useEffect(() => {
         if (data) {
-            const { id, sku, packing_material, ...rest } = data;
+            const { id, sku, raw_material, ...rest } = data;
             setValues(rest);
         }
     }, [data]);
 
-    const onSubmit = (payload: SkuPackingMaterialForm) => {
-        payload.sku_code = id!;
+    const onSubmit = (payload: SkuRawMaterialForm) => {
+        payload.stock_keeping_unit_code = id!;
         mutate(payload);
     }
 
@@ -58,7 +58,7 @@ export function ModalUpdateSkuPackingMaterial({ modal, closeModal, refetch, item
         <Modal modal={modal} closeModal={closeModal} title="Editar Item">
             {data && (
                 <CustomForm onSubmit={handleSubmit(onSubmit)}>
-                    <SkuPackingMaterialFormComponent register={register} errors={errors} control={control} />
+                    <SkuRawMaterialFormComponent register={register} errors={errors} control={control} />
                     <CustomFilledButton type="submit" label="Guardar Cambios" disabled={isPending} />
                 </CustomForm>
             )}

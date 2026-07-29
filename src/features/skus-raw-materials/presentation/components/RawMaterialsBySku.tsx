@@ -1,25 +1,26 @@
 import { ActionsMenu, CustomFilledButton, Table, Tbody, Td, Th, Thead, Tr, useNotification } from "@/features/shared/shared";
 import { EditIcon, PackageSearch, TrashIcon } from "lucide-react";
-import { ModalCreateSkuPackingMaterial, ModalUpdateSkuPackingMaterial, skuPackingMaterialProvider } from "@/features/sku-packing-materials/sku-packing-materials";
+import { ModalCreateSkuRawMaterial, ModalUpdateSkuRawMaterial, skuRawMaterialProvider } from "@/features/skus-raw-materials/skus-raw-materials";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useState } from "react";
 
-export function ItemsBySku() {
+
+export function RawMaterialsBySku() {
     const { id } = useParams();
-    const [modal, setModal] = useState(false);
-    const [searchParams, setSearchParams] = useSearchParams();
     const notification = useNotification();
     const navigate = useNavigate();
-    const itemId = searchParams.get('packingMaterialItemId');
+    const [searchParams, setSearchParams] = useSearchParams();
+    const itemId = searchParams.get('rawMaterialItemId');
+    const [modal, setModal] = useState(false);
 
     const { data, refetch } = useQuery({
-        queryKey: ['getSkuPackingMaterialsBySku', id],
-        queryFn: () => skuPackingMaterialProvider.getSkuPackingMaterials(id!, '', '')
+        queryKey: ['getSkuRawMaterialsBySku', id],
+        queryFn: () => skuRawMaterialProvider.getSkuRawMaterials(id!, '', '')
     });
 
     const { mutate } = useMutation({
-        mutationFn: (id: string) => skuPackingMaterialProvider.deleteSkuPackingMaterialById(id),
+        mutationFn: (id: string) => skuRawMaterialProvider.deleteSkuRawMaterialById(id),
         onSuccess: (message) => {
             notification.success(message);
             refetch();
@@ -34,14 +35,14 @@ export function ItemsBySku() {
     }
 
     const closeUpdateModal = () => {
-        searchParams.delete('packingMaterialItemId');
+        searchParams.delete('rawMaterialItemId');
         setSearchParams(searchParams);
     }
 
     if (data) return (
         <section className="space-y-3">
             <div className="flex justify-between items-center">
-                <h2 className="text-sm font-semibold text-ink">Receta de Material de Empaque</h2>
+                <h2 className="text-sm font-semibold text-ink">Receta de Materia Prima</h2>
                 <CustomFilledButton
                     label="Agregar Item"
                     type="button"
@@ -49,13 +50,13 @@ export function ItemsBySku() {
                 />
             </div>
 
-            <ModalCreateSkuPackingMaterial
+            <ModalCreateSkuRawMaterial
                 modal={modal}
                 closeModal={() => setModal(false)}
                 refetch={refetch}
             />
 
-            <ModalUpdateSkuPackingMaterial
+            <ModalUpdateSkuRawMaterial
                 modal={!!itemId}
                 closeModal={closeUpdateModal}
                 refetch={refetch}
@@ -66,26 +67,20 @@ export function ItemsBySku() {
             {data.data.length ? (
                 <Table>
                     <Thead>
-                        <Th text="Material de Empaque" />
-                        <Th text="Código" />
-                        <Th text="Libras por Item" />
-                        <Th text="Creado" />
-                        <Th text="Actualizado" />
+                        <Th text="Materia Prima" />
+                        <Th text="Porcentaje" />
                         <Th text="" />
                     </Thead>
 
                     <Tbody>
                         {data.data.map(item => (
-                            <Tr key={item.packing_material_id}>
-                                <Td>{item.packing_material}</Td>
-                                <Td>{item.packing_material_code}</Td>
-                                <Td>{item.lbs_per_item}</Td>
-                                <Td>{item.created_at}</Td>
-                                <Td>{item.updated_at}</Td>
+                            <Tr key={item.raw_material_id}>
+                                <Td>{item.raw_material}</Td>
+                                <Td>{item.percentage}</Td>
                                 <Td>
                                     <ActionsMenu
                                         items={[
-                                            { label: "Editar", icon: <EditIcon />, onClick: () => navigate(`?packingMaterialItemId=${item.id}`), danger: false },
+                                            { label: "Editar", icon: <EditIcon />, onClick: () => navigate(`?rawMaterialItemId=${item.id}`), danger: false },
                                             { label: "Eliminar", icon: <TrashIcon />, onClick: () => handleDeleteItem(`${item.id}`), danger: true },
                                         ]}
                                     />
@@ -97,7 +92,7 @@ export function ItemsBySku() {
             ) : (
                 <div className="flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-line bg-surface py-10 text-center">
                     <PackageSearch className="size-6 text-ink-subtle" />
-                    <p className="text-sm text-ink-muted">No hay materiales de empaque registrados</p>
+                    <p className="text-sm text-ink-muted">No hay materias primas registradas</p>
                 </div>
             )}
         </section>

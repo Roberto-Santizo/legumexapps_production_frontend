@@ -1,5 +1,6 @@
 import { Loading, Title } from "@/features/shared/shared";
 import { ItemsBySku } from "@/features/sku-packing-materials/sku-packing-materials";
+import { RawMaterialsBySku } from "@/features/skus-raw-materials/skus-raw-materials";
 import { skuProvider } from "@/features/skus/skus";
 import { Boxes, Building2, Hash, Layers, Package } from "lucide-react";
 import { useParams } from "react-router-dom";
@@ -61,6 +62,7 @@ export function ShowSku() {
             </section>
 
             <ItemsBySku />
+            <RawMaterialsBySku />
         </div>
     )
 }
