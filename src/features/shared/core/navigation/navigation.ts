@@ -37,6 +37,7 @@ export const NAV_SECTIONS: NavSection[] = [
         label: "Operacion",
         items: [
             { to: "/planes-semanales", text: "Planes Semanales", icon: Book },
+            { to: "/draft-planes-semanales", text: "Draft Planes Semanales", icon: Book },
             { to: "/tiempos-muertos", text: "Tiempos Muertos", icon: Clock },
             { to: "/clientes", text: "Clientes", icon: UserStar },
             { to: "/rendimientos", text: "Rendimientos", icon: ChartAreaIcon },

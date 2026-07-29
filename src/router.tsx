@@ -1,6 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { CalendarWeeklyPlan, CreateWeeklyPlan, IndexWeeklyPlans, ShowWeeklyPlan, UpdateWeeklyPlan } from "@/features/weekly-plans/weekly-plans";
 import { CreateClient, IndexClients, ShowClient, UpdateClient } from "@/features/clients/clients";
+import { CreateDraftWeeklyPlan, IndexDraftWeeklyPlans, ShowDraftWeeklyPlan, UpdateDraftWeeklyPlan } from "@/features/draft-weekly-plans/draft-weekly-plans";
 import { CreateLine, IndexLines, ShowLine, UpdateLine } from "@/features/lines/lines";
 import { CreatePackingMaterial, IndexPackingMaterials, ShowPackingMaterial, UpdatePackingMaterial } from "@/features/packing-materials/packing-materials";
 import { CreatePerformance, IndexPerformances, ShowPerformance, UpdatePerformance } from "@/features/performances/performances";
@@ -78,19 +79,26 @@ export default function AppRouter() {
                     <Route path="/clientes/:id" element={<ShowClient />} />
                 </Route>
 
-                 <Route element={<ProtectedLayout />}>
+                <Route element={<ProtectedLayout />}>
                     <Route path="/rendimientos" element={<IndexPerformances />} />
                     <Route path="/rendimientos/crear" element={<CreatePerformance />} />
                     <Route path="/rendimientos/:id/editar" element={<UpdatePerformance />} />
                     <Route path="/rendimientos/:id" element={<ShowPerformance />} />
                 </Route>
 
-                  <Route element={<ProtectedLayout />}>
+                <Route element={<ProtectedLayout />}>
                     <Route path="/planes-semanales" element={<IndexWeeklyPlans />} />
                     <Route path="/planes-semanales/calendario/:id" element={<CalendarWeeklyPlan />} />
                     <Route path="/planes-semanales/crear" element={<CreateWeeklyPlan />} />
                     <Route path="/planes-semanales/:id/editar" element={<UpdateWeeklyPlan />} />
                     <Route path="/planes-semanales/:id" element={<ShowWeeklyPlan />} />
+                </Route>
+
+                <Route element={<ProtectedLayout />}>
+                    <Route path="/draft-planes-semanales" element={<IndexDraftWeeklyPlans />} />
+                    <Route path="/draft-planes-semanales/crear" element={<CreateDraftWeeklyPlan />} />
+                    <Route path="/draft-planes-semanales/:id/editar" element={<UpdateDraftWeeklyPlan />} />
+                    <Route path="/draft-planes-semanales/:id" element={<ShowDraftWeeklyPlan />} />
                 </Route>
             </Routes>
         </BrowserRouter>
