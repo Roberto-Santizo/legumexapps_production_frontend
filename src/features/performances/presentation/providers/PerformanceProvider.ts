@@ -1,4 +1,4 @@
-import { type Performance, type PerformanceForm, type PerformanceRepository, type PaginatedPerformances } from "@/features/performances/performances";
+import { type Performance, type PerformanceForm, type PerformanceRepository, type PaginatedPerformances, type PerformanceFilters } from "@/features/performances/performances";
 import { PerformanceDatasourceImpl, PerformanceRepositoryImpl } from "@/features/performances/infrastructure/infrastructure";
 import api from "@/config/http/axios";
 
@@ -9,8 +9,8 @@ export class PerformanceProvider {
         return this.repository.createPerformance(payload);
     }
 
-    getPerformances(limit: string, page: string): Promise<PaginatedPerformances> {
-        return this.repository.getPerformances(limit, page);
+    getPerformances(limit: string, page: string, filters?: PerformanceFilters): Promise<PaginatedPerformances> {
+        return this.repository.getPerformances(limit, page, filters);
     }
 
     getPerformanceById(id: string): Promise<Performance> {

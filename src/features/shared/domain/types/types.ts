@@ -1,5 +1,5 @@
 import { BarChartDatumSchema, FileResponseSchema } from '@/features/shared/shared';
-import z from 'zod';
+import z, { type ZodSchema } from 'zod';
 
 export type Option = {
     label: string;
@@ -29,3 +29,9 @@ export type ToastItem = {
     action?: ToastAction;
     duration: number;
 };
+
+
+export type UseUrlFiltersProps<T> = {
+    schema: ZodSchema<T>;
+    defaults: T;
+}

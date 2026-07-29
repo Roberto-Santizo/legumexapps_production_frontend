@@ -1,14 +1,9 @@
-import { linesRepositoryProvider } from "@/features/lines/lines";
-import { skuProvider } from "@/features/skus/skus";
+import { linesOptions, linesRepositoryProvider } from "@/features/lines/lines";
+import { paymentMethodOptions, type PerformanceForm } from "@/features/performances/performances";
 import { SelectFormField, TextFormField } from "@/features/shared/shared";
+import { skuOptions, skuProvider } from "@/features/skus/skus";
 import { useQuery } from "@tanstack/react-query";
 import type { Control, FieldErrors, UseFormRegister } from "react-hook-form";
-import type { PerformanceForm } from "@/features/performances/performances";
-
-const paymentMethodOptions = [
-    { value: 0, label: "Horas Linea" },
-    { value: 1, label: "Horas Rendimiento" }
-];
 
 type Props = {
     register: UseFormRegister<PerformanceForm>;
@@ -27,17 +22,14 @@ export function PerformanceFormComponent({ register, errors, control }: Props) {
         queryFn: () => linesRepositoryProvider.getLines('', '')
     });
 
-    const skuOptions = skusData?.data.map(sku => ({ value: sku.id, label: sku.code })) ?? [];
-    const lineOptions = linesData?.data.map(line => ({ value: line.id, label: line.name })) ?? [];
-
-    return (
+    if(linesData && skusData) return (
         <>
             <SelectFormField<PerformanceForm>
                 name="sku_id"
                 label="SKU"
                 control={control}
                 validation={{ required: 'El campo es requerido' }}
-                options={skuOptions}
+                options={skuOptions(skusData.data)}
                 errorMessage={errors.sku_id?.message}
             />
 
@@ -46,7 +38,7 @@ export function PerformanceFormComponent({ register, errors, control }: Props) {
                 label="Línea"
                 control={control}
                 validation={{ required: 'El campo es requerido' }}
-                options={lineOptions}
+                options={linesOptions(linesData.data)}
                 errorMessage={errors.line_id?.message}
             />
 

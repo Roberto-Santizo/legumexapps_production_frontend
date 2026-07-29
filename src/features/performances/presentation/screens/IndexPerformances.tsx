@@ -1,19 +1,22 @@
 import { CustomFilledButton, CustomNavTable, Loading, Pagination, Table, Tbody, Td, Th, Thead, Title, Tr, useNotification, usePagination } from "@/features/shared/shared";
-import { EditIcon, EyeIcon, PlusIcon, TrashIcon } from "lucide-react";
-import { performanceProvider } from "@/features/performances/performances";
+import { EditIcon, EyeIcon, FilterIcon, PlusIcon, TrashIcon } from "lucide-react";
+import { PerformanceFiltersComponent, performanceProvider, usePerformancesFilters } from "@/features/performances/performances";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useState } from "react";
 
 export function IndexPerformances() {
     const navigate = useNavigate();
     const notification = useNotification();
+    const [showFilters, setShowFilters] = useState(false);
 
     const [searchParams, setSearchParams] = useSearchParams();
+    const { filters } = usePerformancesFilters();
     const { page, rowsPerPage } = usePagination(searchParams);
 
     const { data, isLoading, refetch } = useQuery({
-        queryKey: ['getPerformances', page + 1, rowsPerPage],
-        queryFn: () => performanceProvider.getPerformances(`${rowsPerPage}`, `${page + 1}`)
+        queryKey: ['getPerformances', page + 1, rowsPerPage, filters],
+        queryFn: () => performanceProvider.getPerformances(`${rowsPerPage}`, `${page + 1}`, filters)
     });
 
     const { mutate } = useMutation({
@@ -33,13 +36,23 @@ export function IndexPerformances() {
         <div className="space-y-5">
             <div className="flex justify-between items-center">
                 <Title title="Rendimientos" subtitle="Listado de rendimientos registrados" />
-                <CustomFilledButton
-                    label="Crear Rendimiento"
-                    type="button"
-                    icon={<PlusIcon />}
-                    onClick={() => navigate('/rendimientos/crear')}
-                />
+                <div className="flex gap-3">
+                    <CustomFilledButton
+                        label="Crear Rendimiento"
+                        type="button"
+                        icon={<PlusIcon />}
+                        onClick={() => navigate('/rendimientos/crear')}
+                    />
+                    <CustomFilledButton
+                        label="Filtros"
+                        type="button"
+                        icon={<FilterIcon />}
+                        onClick={() => setShowFilters(true)}
+                    />
+                </div>
             </div>
+
+            <PerformanceFiltersComponent close={() => setShowFilters(false)} showFilters={showFilters} />
 
             <section>
                 <Table>
@@ -55,7 +68,7 @@ export function IndexPerformances() {
 
                     <Tbody>
                         {data.data.map(item => (
-                            <Tr>
+                            <Tr key={item.id}>
                                 <Td>{item.sku}</Td>
                                 <Td>{item.line}</Td>
                                 <Td>{item.lbs_performance}</Td>

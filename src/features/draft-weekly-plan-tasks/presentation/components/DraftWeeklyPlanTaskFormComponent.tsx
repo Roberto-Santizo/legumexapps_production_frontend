@@ -1,5 +1,5 @@
-import { DateFormField, SelectFormField, TextFormField, type Option } from "@/features/shared/shared";
-import { linesRepositoryProvider } from "@/features/lines/lines";
+import { DateFormField, SelectFormField, TextFormField } from "@/features/shared/shared";
+import { linesOptions, linesRepositoryProvider } from "@/features/lines/lines";
 import { skuOptions, skuProvider } from "@/features/skus/skus";
 import { useQuery } from "@tanstack/react-query";
 import type { Control, FieldErrors, UseFormRegister } from "react-hook-form";
@@ -22,7 +22,6 @@ export function DraftWeeklyPlanTaskFormComponent({ register, errors, control }: 
         queryFn: () => linesRepositoryProvider.getLines('', '')
     });
 
-    const lineOptions: Option[] = linesData?.data.map(line => ({ value: line.id, label: line.code })) ?? [];
 
     if (skusData && linesData) return (
         <>
@@ -40,7 +39,7 @@ export function DraftWeeklyPlanTaskFormComponent({ register, errors, control }: 
                 label="Línea"
                 control={control}
                 validation={{}}
-                options={lineOptions}
+                options={linesOptions(linesData.data)}
                 errorMessage={errors.line_id?.message}
             />
 

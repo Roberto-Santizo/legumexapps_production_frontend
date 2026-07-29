@@ -1,6 +1,6 @@
 import { ApiResponseSchema } from "@/features/shared/shared";
 import { isAxiosError, type AxiosInstance } from "axios";
-import { PerformanceSchema, PaginatedPerformancesSchema, type PerformanceDatasource, type Performance, type PerformanceForm, type PaginatedPerformances } from "@/features/performances/performances";
+import { PerformanceSchema, PaginatedPerformancesSchema, type PerformanceDatasource, type Performance, type PerformanceForm, type PaginatedPerformances, type PerformanceFilters } from "@/features/performances/performances";
 
 export class PerformanceDatasourceImpl implements PerformanceDatasource {
     constructor(private api: AxiosInstance, private url = '/performances') { }
@@ -22,9 +22,15 @@ export class PerformanceDatasourceImpl implements PerformanceDatasource {
         }
     }
 
-    async getPerformances(limit: string, page: string): Promise<PaginatedPerformances> {
+    async getPerformances(limit: string, page: string, filters?: PerformanceFilters): Promise<PaginatedPerformances> {
         try {
-            const url = `${this.url}?limit=${limit}&page=${page}`;
+            const params = new URLSearchParams({ limit, page });
+
+            Object.entries(filters ?? {}).forEach(([key, value]) => {
+                if (value) params.append(key, value);
+            });
+
+            const url = `${this.url}?${params.toString()}`;
             const { data } = await this.api.get(url);
             const response = PaginatedPerformancesSchema.safeParse(data);
 

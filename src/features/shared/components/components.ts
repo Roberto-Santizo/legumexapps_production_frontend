@@ -15,6 +15,7 @@ export * from './SelectFormField';
 export * from './InfoCard';
 export * from './SpinnerComponent';
 export * from './Modal';
+export * from './Drawer';
 export * from './FileFormField';
 export * from './DateFormField';
 export * from './DateCard';

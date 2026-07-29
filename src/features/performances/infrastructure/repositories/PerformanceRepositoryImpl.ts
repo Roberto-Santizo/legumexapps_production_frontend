@@ -1,4 +1,4 @@
-import type { PerformanceDatasource, Performance, PerformanceForm, PerformanceRepository, PaginatedPerformances } from "@/features/performances/performances";
+import type { PerformanceDatasource, Performance, PerformanceForm, PerformanceRepository, PaginatedPerformances, PerformanceFilters } from "@/features/performances/performances";
 
 export class PerformanceRepositoryImpl implements PerformanceRepository {
     constructor(private datasource: PerformanceDatasource) { }
@@ -7,8 +7,8 @@ export class PerformanceRepositoryImpl implements PerformanceRepository {
         return this.datasource.createPerformance(payload);
     }
 
-    getPerformances(limit: string, page: string): Promise<PaginatedPerformances> {
-        return this.datasource.getPerformances(limit, page);
+    getPerformances(limit: string, page: string, filters?: PerformanceFilters): Promise<PaginatedPerformances> {
+        return this.datasource.getPerformances(limit, page, filters);
     }
 
     getPerformanceById(id: string): Promise<Performance> {
