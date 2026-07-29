@@ -20,6 +20,7 @@ export * from './DateFormField';
 export * from './DateCard';
 export * from './Title';
 export * from './DonutSummaryCard';
+export * from './BarChartCard';
 export * from './ErrorComponent';
 export * from './CustomNavTable';
 export * from './ActionsMenu';

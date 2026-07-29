@@ -1,7 +1,12 @@
 import type { DraftWeeklyPlan, DraftWeeklyPlanDatasource, DraftWeeklyPlanForm, DraftWeeklyPlanRepository, PaginatedDraftWeeklyPlans } from "@/features/draft-weekly-plans/draft-weekly-plans";
+import type { BarChartDatum } from "@/features/shared/shared";
 
 export class DraftWeeklyPlanRepositoryImpl implements DraftWeeklyPlanRepository {
     constructor(private datasource: DraftWeeklyPlanDatasource) { }
+
+    getHoursPerLineByDraftWeeklyPlanId(id: string): Promise<BarChartDatum[]> {
+        return this.datasource.getHoursPerLineByDraftWeeklyPlanId(id);
+    }
 
     createDraftWeeklyPlan(payload: DraftWeeklyPlanForm): Promise<string> {
         return this.datasource.createDraftWeeklyPlan(payload);

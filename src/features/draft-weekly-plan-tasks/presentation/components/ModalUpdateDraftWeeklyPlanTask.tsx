@@ -10,9 +10,10 @@ type Props = {
     closeModal: () => void;
     refetch: () => void;
     taskId: string;
+     callback?: () => void;
 }
 
-export function ModalUpdateDraftWeeklyPlanTask({ modal, closeModal, refetch, taskId }: Props) {
+export function ModalUpdateDraftWeeklyPlanTask({ modal, closeModal, refetch, taskId, callback }: Props) {
     const notification = useNotification();
     const { id } = useParams();
 
@@ -35,6 +36,7 @@ export function ModalUpdateDraftWeeklyPlanTask({ modal, closeModal, refetch, tas
         onSuccess: (message) => {
             notification.success(message);
             closeModal();
+            callback?.();
             refetch();
         },
         onError: (err) => {

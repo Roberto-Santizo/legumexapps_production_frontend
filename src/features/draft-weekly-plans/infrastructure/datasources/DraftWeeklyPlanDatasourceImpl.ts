@@ -1,9 +1,28 @@
-import { ApiResponseSchema } from "@/features/shared/shared";
+import { ApiResponseSchema, BarChartDatumSchema, type BarChartDatum } from "@/features/shared/shared";
 import { isAxiosError, type AxiosInstance } from "axios";
 import { DraftWeeklyPlanSchema, PaginatedDraftWeeklyPlansSchema, type DraftWeeklyPlan, type DraftWeeklyPlanDatasource, type DraftWeeklyPlanForm, type PaginatedDraftWeeklyPlans } from "@/features/draft-weekly-plans/draft-weekly-plans";
+import { z } from "zod";
 
 export class DraftWeeklyPlanDatasourceImpl implements DraftWeeklyPlanDatasource {
     constructor(private api: AxiosInstance, private url = '/draft-weekly-plans') { }
+
+    async getHoursPerLineByDraftWeeklyPlanId(id: string): Promise<BarChartDatum[]> {
+        try {
+            const url = `${this.url}/${id}/hoursPerLine`;
+            const { data } = await this.api.get(url);
+            const response = z.array(BarChartDatumSchema).safeParse(data['data']);
+
+            if (response.success) {
+                return response.data;
+            }
+
+            throw new Error("Información no válida");
+        } catch (error) {
+            if (isAxiosError(error)) throw new Error(error.response?.data.message);
+
+            throw new Error("Error no controlado");
+        }
+    }
 
     async createDraftWeeklyPlan(payload: DraftWeeklyPlanForm): Promise<string> {
         try {

@@ -8,9 +8,10 @@ type Props = {
     modal: boolean;
     closeModal: () => void;
     refetch: () => void;
+    callback?: () => void;
 }
 
-export function ModalCreateDraftWeeklyPlanTask({ modal, closeModal, refetch }: Props) {
+export function ModalCreateDraftWeeklyPlanTask({ modal, closeModal, refetch, callback}: Props) {
     const notification = useNotification();
     const { id } = useParams();
 
@@ -28,6 +29,7 @@ export function ModalCreateDraftWeeklyPlanTask({ modal, closeModal, refetch }: P
             notification.success(message);
             reset();
             closeModal();
+            callback?.();
             refetch();
         },
         onError: (err) => {

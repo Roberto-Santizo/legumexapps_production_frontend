@@ -2,7 +2,7 @@ import { ClipboardList, EditIcon, PlusIcon, TrashIcon } from "lucide-react";
 import { ActionsMenu, CustomFilledButton, useNotification } from "@/features/shared/shared";
 import { draftWeeklyPlanTaskProvider, ModalCreateDraftWeeklyPlanTask, ModalUpdateDraftWeeklyPlanTask } from "@/features/draft-weekly-plan-tasks/draft-weekly-plan-tasks";
 import { useParams } from "react-router-dom";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
 export function DraftWeeklyPlanTasksSidebar() {
@@ -10,6 +10,9 @@ export function DraftWeeklyPlanTasksSidebar() {
     const notification = useNotification();
     const [taskId, setTaskId] = useState('');
     const [createModal, setCreateModal] = useState(false);
+    const queryClient = useQueryClient();
+
+    const refetchHoursPerLine = () => queryClient.invalidateQueries({ queryKey: ['getHoursPerLineByDraftWeeklyPlanId', id] });
 
     const { data, isLoading, refetch } = useQuery({
         queryKey: ['getDraftWeeklyPlanTasksSidebar', id],
@@ -20,6 +23,7 @@ export function DraftWeeklyPlanTasksSidebar() {
         mutationFn: (id: string) => draftWeeklyPlanTaskProvider.deleteDraftWeeklyPlanTaskById(id),
         onSuccess: (message) => {
             notification.success(message);
+            refetchHoursPerLine();
             refetch();
         },
         onError: (err) => {
@@ -87,6 +91,7 @@ export function DraftWeeklyPlanTasksSidebar() {
                 modal={createModal}
                 closeModal={() => setCreateModal(false)}
                 refetch={refetch}
+                callback={() => refetchHoursPerLine()}
             />
 
             <ModalUpdateDraftWeeklyPlanTask
@@ -94,6 +99,7 @@ export function DraftWeeklyPlanTasksSidebar() {
                 closeModal={closeUpdateModal}
                 refetch={refetch}
                 taskId={taskId}
+                callback={() => refetchHoursPerLine()}
             />
         </aside>
     )

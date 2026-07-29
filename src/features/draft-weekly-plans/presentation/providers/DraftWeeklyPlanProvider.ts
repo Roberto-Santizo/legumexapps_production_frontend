@@ -24,6 +24,10 @@ export class DraftWeeklyPlanProvider {
     deleteDraftWeeklyPlanById(id: string): Promise<string> {
         return this.repository.deleteDraftWeeklyPlanById(id);
     }
+
+    getHoursPerLineByDraftWeeklyPlanId(id: string){
+        return this.repository.getHoursPerLineByDraftWeeklyPlanId(id);
+    }
 }
 
 const datasource = new DraftWeeklyPlanDatasourceImpl(api);

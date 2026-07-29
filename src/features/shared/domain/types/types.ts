@@ -1,4 +1,4 @@
-import { FileResponseSchema } from '@/features/shared/shared';
+import { BarChartDatumSchema, FileResponseSchema } from '@/features/shared/shared';
 import z from 'zod';
 
 export type Option = {
@@ -12,6 +12,7 @@ export type FileForm = {
 
 export type DynamicFormValues = Record<string, number | string>;
 export type FileResponse = z.infer<typeof FileResponseSchema>;
+export type BarChartDatum = z.infer<typeof BarChartDatumSchema>;
 
 export type ToastVariant = "success" | "error" | "warning" | "info" | "question";
 

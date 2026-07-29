@@ -16,3 +16,8 @@ export const FileResponseSchema = z.object({
     file: z.base64(),
     fileName: z.string()
 });
+
+export const BarChartDatumSchema = z.object({
+    label: z.string(),
+    value: z.number()
+});

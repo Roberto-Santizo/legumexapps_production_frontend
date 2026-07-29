@@ -1,4 +1,5 @@
 import type { DraftWeeklyPlan, DraftWeeklyPlanForm, PaginatedDraftWeeklyPlans } from "@/features/draft-weekly-plans/draft-weekly-plans";
+import type { BarChartDatum } from "@/features/shared/shared";
 
 export abstract class DraftWeeklyPlanRepository {
     abstract createDraftWeeklyPlan(payload: DraftWeeklyPlanForm): Promise<string>;
@@ -6,4 +7,6 @@ export abstract class DraftWeeklyPlanRepository {
     abstract getDraftWeeklyPlanById(id: string): Promise<DraftWeeklyPlan>;
     abstract updateDraftWeeklyPlanById(id: string, payload: DraftWeeklyPlanForm): Promise<string>;
     abstract deleteDraftWeeklyPlanById(id: string): Promise<string>;
+
+    abstract getHoursPerLineByDraftWeeklyPlanId(id: string): Promise<BarChartDatum[]>;
 }
