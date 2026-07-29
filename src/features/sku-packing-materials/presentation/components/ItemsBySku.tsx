@@ -1,13 +1,16 @@
 import { ActionsMenu, CustomFilledButton, Table, Tbody, Td, Th, Thead, Tr, useNotification } from "@/features/shared/shared";
-import { PackageSearch, TrashIcon } from "lucide-react";
-import { ModalCreateSkuPackingMaterial, skuPackingMaterialProvider } from "@/features/sku-packing-materials/sku-packing-materials";
+import { EditIcon, PackageSearch, TrashIcon } from "lucide-react";
+import { ModalCreateSkuPackingMaterial, ModalUpdateSkuPackingMaterial, skuPackingMaterialProvider } from "@/features/sku-packing-materials/sku-packing-materials";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useState } from "react";
 
 export function ItemsBySku() {
     const { id } = useParams();
     const notification = useNotification();
+    const navigate = useNavigate();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const itemId = searchParams.get('itemId');
     const [modal, setModal] = useState(false);
 
     const { data, refetch } = useQuery({
@@ -30,6 +33,11 @@ export function ItemsBySku() {
         notification.question('¿Desea eliminar el item?', 'Eliminar', 'Una vez eliminado no será tomando en cuenta en tareas programadas', () => mutate(id));
     }
 
+    const closeUpdateModal = () => {
+        searchParams.delete('itemId');
+        setSearchParams(searchParams);
+    }
+
     if (data) return (
         <section className="space-y-3">
             <div className="flex justify-between items-center">
@@ -47,6 +55,15 @@ export function ItemsBySku() {
                 refetch={refetch}
             />
 
+            {itemId && (
+                <ModalUpdateSkuPackingMaterial
+                    modal={!!itemId}
+                    closeModal={closeUpdateModal}
+                    refetch={refetch}
+                    itemId={itemId}
+                />
+            )}
+
 
             {data.data.length ? (
                 <Table>
@@ -54,6 +71,8 @@ export function ItemsBySku() {
                         <Th text="Material de Empaque" />
                         <Th text="Código" />
                         <Th text="Libras por Item" />
+                        <Th text="Creado" />
+                        <Th text="Actualizado" />
                         <Th text="" />
                     </Thead>
 
@@ -63,9 +82,12 @@ export function ItemsBySku() {
                                 <Td>{item.packing_material}</Td>
                                 <Td>{item.packing_material_code}</Td>
                                 <Td>{item.lbs_per_item}</Td>
+                                <Td>{item.created_at}</Td>
+                                <Td>{item.updated_at}</Td>
                                 <Td>
                                     <ActionsMenu
                                         items={[
+                                            { label: "Editar", icon: <EditIcon />, onClick: () => navigate(`?itemId=${item.id}`), danger: false },
                                             { label: "Eliminar", icon: <TrashIcon />, onClick: () => handleDeleteItem(`${item.id}`), danger: true },
                                         ]}
                                     />
