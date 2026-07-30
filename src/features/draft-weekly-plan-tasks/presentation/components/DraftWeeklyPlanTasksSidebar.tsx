@@ -1,8 +1,9 @@
+import { ActionsMenu, CustomFilledButton, FadeInUp, useNotification } from "@/features/shared/shared";
+import { AnimatePresence } from "framer-motion";
 import { ClipboardList, EditIcon, PlusIcon, TrashIcon } from "lucide-react";
-import { ActionsMenu, CustomFilledButton, useNotification } from "@/features/shared/shared";
 import { draftWeeklyPlanTaskProvider, ModalCreateDraftWeeklyPlanTask, ModalUpdateDraftWeeklyPlanTask } from "@/features/draft-weekly-plan-tasks/draft-weekly-plan-tasks";
-import { useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useParams } from "react-router-dom";
 import { useState } from "react";
 
 export function DraftWeeklyPlanTasksSidebar() {
@@ -36,7 +37,7 @@ export function DraftWeeklyPlanTasksSidebar() {
     const closeUpdateModal = () => setTaskId('');
 
     return (
-        <aside className="flex w-full max-h-screen shrink-0 flex-col space-y-3 lg:w-80 shadow-xl p-5">
+        <aside className="flex w-full h-dvh hrink-0 flex-col space-y-3 lg:w-80 shadow-xl p-5">
             <div className="flex items-center justify-between">
                 <h3 className="text-sm font-semibold text-ink">Tareas</h3>
                 <CustomFilledButton
@@ -61,30 +62,34 @@ export function DraftWeeklyPlanTasksSidebar() {
                     </div>
                 )}
 
-                {data?.data.map(task => (
-                    <div key={task.id} className="space-y-2 rounded-lg border border-line p-4">
-                        <div className="flex items-center justify-between">
-                            <span className="text-sm font-semibold text-ink">{task.sku_name}</span>
-                            <div className="flex items-center gap-2">
-                                <span className="text-xs text-ink-subtle">{task.operation_date_string}</span>
-                                <ActionsMenu
-                                    items={[
-                                        { label: "Editar", icon: <EditIcon />, onClick: () => setTaskId(`${task.id}`), danger: false },
-                                        { label: "Eliminar", icon: <TrashIcon />, onClick: () => handleDeleteTask(`${task.id}`), danger: true },
-                                    ]}
-                                />
+                <AnimatePresence>
+                    {data?.data.map(task => (
+                        <FadeInUp key={task.id}>
+                            <div className="space-y-2 rounded-lg border border-line p-4">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-sm font-semibold text-ink">{task.sku_name}</span>
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-xs text-ink-subtle">{task.operation_date_string}</span>
+                                        <ActionsMenu
+                                            items={[
+                                                { label: "Editar", icon: <EditIcon />, onClick: () => setTaskId(`${task.id}`), danger: false },
+                                                { label: "Eliminar", icon: <TrashIcon />, onClick: () => handleDeleteTask(`${task.id}`), danger: true },
+                                            ]}
+                                        />
+                                    </div>
+                                </div>
+
+                                <p className="text-xs text-ink-subtle">Línea: {task.line_name ?? '-'}</p>
+                                <p className="text-xs text-ink-subtle">Destino: {task.destination}</p>
+
+                                <div className="flex gap-4 text-xs text-ink-subtle">
+                                    <span>Cajas: {task.boxes}</span>
+                                    <span>Horas: {task.hours}</span>
+                                </div>
                             </div>
-                        </div>
-
-                        <p className="text-xs text-ink-subtle">Línea: {task.line_name ?? '-'}</p>
-                        <p className="text-xs text-ink-subtle">Destino: {task.destination}</p>
-
-                        <div className="flex gap-4 text-xs text-ink-subtle">
-                            <span>Cajas: {task.boxes}</span>
-                            <span>Horas: {task.hours}</span>
-                        </div>
-                    </div>
-                ))}
+                        </FadeInUp>
+                    ))}
+                </AnimatePresence>
             </div>
 
             <ModalCreateDraftWeeklyPlanTask

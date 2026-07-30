@@ -4,3 +4,4 @@ export * from './domain/domain';
 export * from './infrastructure/infrastructure';
 export * from './core/core';
 export * from './hooks/hooks';
+export * from './animations/animations';
