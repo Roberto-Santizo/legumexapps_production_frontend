@@ -1,11 +1,13 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, type ReactNode } from "react";
+import { XIcon } from "lucide-react";
 
 type Props = {
   drawer: boolean;
   closeDrawer: () => void;
   title: string;
   children: ReactNode;
+  headerActions?: ReactNode;
   width?: string;
 };
 
@@ -14,6 +16,7 @@ export function Drawer({
   closeDrawer,
   title,
   children,
+  headerActions,
   width = "sm:max-w-md",
 }: Props) {
   return (
@@ -55,12 +58,16 @@ export function Drawer({
                     {title}
                   </Dialog.Title>
 
-                  <button
-                    onClick={closeDrawer}
-                    className="rounded-md p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition"
-                  >
-                    ✕
-                  </button>
+                  <div className="flex items-center gap-3">
+                    {headerActions}
+
+                    <button
+                      onClick={closeDrawer}
+                      className="rounded-md p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition"
+                    >
+                      <XIcon className="h-5 w-5" />
+                    </button>
+                  </div>
                 </div>
 
                 <div className="p-6 flex-1 overflow-y-auto">
