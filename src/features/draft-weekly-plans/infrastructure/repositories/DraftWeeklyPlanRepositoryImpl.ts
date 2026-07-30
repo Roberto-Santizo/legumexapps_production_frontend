@@ -4,6 +4,10 @@ import type { BarChartDatum } from "@/features/shared/shared";
 export class DraftWeeklyPlanRepositoryImpl implements DraftWeeklyPlanRepository {
     constructor(private datasource: DraftWeeklyPlanDatasource) { }
 
+    confirmDraftWeeklyPlan(id: string): Promise<string> {
+        return this.datasource.confirmDraftWeeklyPlan(id);
+    }
+
     getPackingMaterialNecessityById(id: string): Promise<BarChartDatum[]> {
         return this.datasource.getPackingMaterialNecessityById(id);
     }

@@ -7,6 +7,7 @@ export abstract class DraftWeeklyPlanDatasource {
     abstract getDraftWeeklyPlanById(id: string): Promise<DraftWeeklyPlan>;
     abstract updateDraftWeeklyPlanById(id: string, payload: DraftWeeklyPlanForm): Promise<string>;
     abstract deleteDraftWeeklyPlanById(id: string): Promise<string>;
+    abstract confirmDraftWeeklyPlan(id: string): Promise<string>;
 
     abstract getHoursPerLineByDraftWeeklyPlanId(id: string): Promise<BarChartDatum[]>;
     abstract getPackingMaterialNecessityById(id: string): Promise<BarChartDatum[]>;

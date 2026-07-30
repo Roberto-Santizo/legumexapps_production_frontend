@@ -13,24 +13,29 @@ export function DraftWeeklyPlanTasksSidebar() {
     const [createModal, setCreateModal] = useState(false);
     const queryClient = useQueryClient();
 
-    const refetchHoursPerLine = () => queryClient.invalidateQueries({ queryKey: ['getHoursPerLineByDraftWeeklyPlanId', id] });
-
     const { data, isLoading, refetch } = useQuery({
         queryKey: ['getDraftWeeklyPlanTasksSidebar', id],
         queryFn: () => draftWeeklyPlanTaskProvider.getDraftWeeklyPlanTasks(id!, '', '')
     });
 
+    const refetchPlanData = () => {
+        queryClient.invalidateQueries({ queryKey: ['getHoursPerLineByDraftWeeklyPlanId', id] });
+        queryClient.invalidateQueries({ queryKey: ['getPackingMaterialNecessityById', id] });
+        queryClient.invalidateQueries({ queryKey: ['getRawNecessityById', id] });
+        refetch();
+    }
+
     const { mutate } = useMutation({
         mutationFn: (id: string) => draftWeeklyPlanTaskProvider.deleteDraftWeeklyPlanTaskById(id),
         onSuccess: (message) => {
             notification.success(message);
-            refetchHoursPerLine();
-            refetch();
+            refetchPlanData();
         },
         onError: (err) => {
             notification.error(err.message);
         }
     });
+
 
     const handleDeleteTask = (id: string) => notification.question('¿Desea eliminar la tarea?', 'Eliminar', 'La tarea se eliminará del sistema', () => mutate(id));
 
@@ -95,16 +100,14 @@ export function DraftWeeklyPlanTasksSidebar() {
             <ModalCreateDraftWeeklyPlanTask
                 modal={createModal}
                 closeModal={() => setCreateModal(false)}
-                refetch={refetch}
-                callback={() => refetchHoursPerLine()}
+                callback={() => refetchPlanData()}
             />
 
             <ModalUpdateDraftWeeklyPlanTask
                 modal={!!taskId}
                 closeModal={closeUpdateModal}
-                refetch={refetch}
                 taskId={taskId}
-                callback={() => refetchHoursPerLine()}
+                callback={() => refetchPlanData()}
             />
         </aside>
     )

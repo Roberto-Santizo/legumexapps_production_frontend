@@ -7,11 +7,10 @@ import { useParams } from "react-router-dom";
 type Props = {
     modal: boolean;
     closeModal: () => void;
-    refetch: () => void;
     callback?: () => void;
 }
 
-export function ModalCreateDraftWeeklyPlanTask({ modal, closeModal, refetch, callback }: Props) {
+export function ModalCreateDraftWeeklyPlanTask({ modal, closeModal, callback }: Props) {
     const notification = useNotification();
     const { id } = useParams();
 
@@ -31,7 +30,6 @@ export function ModalCreateDraftWeeklyPlanTask({ modal, closeModal, refetch, cal
             reset();
             closeModal();
             callback?.();
-            refetch();
         },
         onError: (err) => {
             notification.error(err.message);

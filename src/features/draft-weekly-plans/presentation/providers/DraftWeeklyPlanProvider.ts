@@ -36,6 +36,10 @@ export class DraftWeeklyPlanProvider {
     getRawNecessityById(id: string){
         return this.repository.getRawNecessityById(id);
     }
+
+    confirmDraftWeeklyPlan(id: string){
+        return this.repository.confirmDraftWeeklyPlan(id);
+    }
 }
 
 const datasource = new DraftWeeklyPlanDatasourceImpl(api);

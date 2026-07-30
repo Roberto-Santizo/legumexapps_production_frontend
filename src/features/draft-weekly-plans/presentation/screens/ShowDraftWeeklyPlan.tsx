@@ -1,13 +1,14 @@
-import { BarChartCard, CustomFilledButton, FadeInDown, FadeInLeft, FadeInUp, Loading, Title } from "@/features/shared/shared";
+import { BarChartCard, CustomFilledButton, FadeInDown, FadeInLeft, FadeInUp, Loading, Title, useNotification } from "@/features/shared/shared";
 import { draftWeeklyPlanProvider } from "@/features/draft-weekly-plans/draft-weekly-plans";
 import { DraftWeeklyPlanTasksSidebar } from "@/features/draft-weekly-plan-tasks/draft-weekly-plan-tasks";
 import { useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 export function ShowDraftWeeklyPlan() {
     const { id } = useParams();
+    const notification = useNotification();
 
-    const { data, isLoading } = useQuery({
+    const { data, isLoading, refetch } = useQuery({
         queryKey: ['getDraftWeeklyPlanById', id],
         queryFn: () => draftWeeklyPlanProvider.getDraftWeeklyPlanById(id!)
     });
@@ -27,6 +28,21 @@ export function ShowDraftWeeklyPlan() {
         queryFn: () => draftWeeklyPlanProvider.getRawNecessityById(id!)
     });
 
+    const { mutate, isPending } = useMutation({
+        mutationFn: () => draftWeeklyPlanProvider.confirmDraftWeeklyPlan(id!),
+        onSuccess: (message) => {
+            notification.success(message);
+            refetch();
+        },
+        onError: (err) => {
+            notification.error(err.message);
+        }
+    });
+
+    const handleConfirmPlan = () => {
+        notification.question('¿Desea confirmar el plan?', 'Confirmar', 'Al confirmar el plan no se puede deshacer la acción', () => mutate());
+    }
+
     if (isLoading) return <Loading />
     if (data && hoursPerLine && packingMaterialNecessity && rawMaterialNecessity) return (
         <div className="space-y-5">
@@ -37,6 +53,8 @@ export function ShowDraftWeeklyPlan() {
                     <CustomFilledButton
                         label="Confirmar Plan"
                         type="button"
+                        disabled={isPending}
+                        onClick={() => handleConfirmPlan()}
                     />
                 )}
             </div>

@@ -6,6 +6,24 @@ import { z } from "zod";
 export class DraftWeeklyPlanDatasourceImpl implements DraftWeeklyPlanDatasource {
     constructor(private api: AxiosInstance, private url = '/draft-weekly-plans') { }
 
+    async confirmDraftWeeklyPlan(id: string): Promise<string> {
+        try {
+            const url = `${this.url}/${id}/confirm`;
+            const { data } = await this.api.post(url);
+            const response = ApiResponseSchema.safeParse(data);
+
+            if (response.success) {
+                return response.data.message;
+            }
+
+            throw new Error("Información no válida");
+        } catch (error) {
+            if (isAxiosError(error)) throw new Error(error.response?.data.message);
+
+            throw new Error("Error no controlado");
+        }
+    }
+
     async getPackingMaterialNecessityById(id: string): Promise<BarChartDatum[]> {
         try {
             const url = `${this.url}/${id}/packingMaterialNecessity`;
