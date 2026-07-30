@@ -1,12 +1,14 @@
 import type { WeeklyPlanTask } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
+import { SplitIcon } from "lucide-react";
 
 type Props = {
     task: WeeklyPlanTask;
     toggleTaskSelection: (taskId: string) => void;
     selectedTasksIds: string[];
+    onSplitTask?: (task: WeeklyPlanTask) => void;
 }
 
-export function WeeklyPlanTaskDrawerComponent({ task, toggleTaskSelection, selectedTasksIds }: Props) {
+export function WeeklyPlanTaskDrawerComponent({ task, toggleTaskSelection, selectedTasksIds, onSplitTask }: Props) {
     const selected = selectedTasksIds.includes(String(task.id));
 
     return (
@@ -33,9 +35,22 @@ export function WeeklyPlanTaskDrawerComponent({ task, toggleTaskSelection, selec
                         </p>
                     </div>
 
-                    <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700">
-                        {task.status}
-                    </span>
+                    <div className="flex items-center gap-2">
+                        <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700">
+                            {task.status}
+                        </span>
+
+                        {onSplitTask && (
+                            <button
+                                type="button"
+                                onClick={(e) => { e.preventDefault(); onSplitTask(task); }}
+                                title="Dividir Tarea"
+                                className="rounded-md p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                            >
+                                <SplitIcon className="size-4" />
+                            </button>
+                        )}
+                    </div>
                 </div>
 
                 <div className="mt-5 grid grid-cols-2 gap-6">

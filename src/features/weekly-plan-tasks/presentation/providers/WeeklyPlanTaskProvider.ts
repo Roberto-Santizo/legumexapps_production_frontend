@@ -1,4 +1,4 @@
-import { type WeeklyPlanTask, type WeeklyPlanTaskCreateForm, type WeeklyPlanTaskUpdateForm, type WeeklyPlanTaskRepository, type PaginatedWeeklyPlanTasks, type AssignOperationDateForm } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
+import { type WeeklyPlanTask, type WeeklyPlanTaskCreateForm, type WeeklyPlanTaskUpdateForm, type WeeklyPlanTaskRepository, type PaginatedWeeklyPlanTasks, type AssignOperationDateForm, type SplitWeeklyPlanTaskForm } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
 import { WeeklyPlanTaskDatasourceImpl, WeeklyPlanTaskRepositoryImpl, } from "@/features/weekly-plan-tasks/infrastructure/infrastructure";
 import api from "@/config/http/axios";
 
@@ -27,6 +27,10 @@ export class WeeklyPlanTaskProvider {
 
     assignOperationDateToTasks(payload: AssignOperationDateForm) {
         return this.repository.assignOperationDateToTasks(payload);
+    }
+
+    splitWeeklyPlanTask(payload: SplitWeeklyPlanTaskForm): Promise<string> {
+        return this.repository.splitWeeklyPlanTask(payload);
     }
 }
 

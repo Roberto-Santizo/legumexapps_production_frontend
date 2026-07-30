@@ -1,10 +1,14 @@
-import type { WeeklyPlanTaskDatasource, WeeklyPlanTask, WeeklyPlanTaskCreateForm, WeeklyPlanTaskUpdateForm, WeeklyPlanTaskRepository, PaginatedWeeklyPlanTasks, AssignOperationDateForm } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
+import type { WeeklyPlanTaskDatasource, WeeklyPlanTask, WeeklyPlanTaskCreateForm, WeeklyPlanTaskUpdateForm, WeeklyPlanTaskRepository, PaginatedWeeklyPlanTasks, AssignOperationDateForm, SplitWeeklyPlanTaskForm } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
 
 export class WeeklyPlanTaskRepositoryImpl implements WeeklyPlanTaskRepository {
     constructor(private datasource: WeeklyPlanTaskDatasource) { }
 
     assignOperationDateToTasks(payload: AssignOperationDateForm): Promise<string> {
         return this.datasource.assignOperationDateToTasks(payload);
+    }
+
+    splitWeeklyPlanTask(payload: SplitWeeklyPlanTaskForm): Promise<string> {
+        return this.datasource.splitWeeklyPlanTask(payload);
     }
 
     createWeeklyPlanTask(payload: WeeklyPlanTaskCreateForm): Promise<string> {

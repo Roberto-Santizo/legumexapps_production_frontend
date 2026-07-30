@@ -1,6 +1,6 @@
 import { ApiResponseSchema } from "@/features/shared/shared";
 import { isAxiosError, type AxiosInstance } from "axios";
-import { WeeklyPlanTaskSchema, PaginatedWeeklyPlanTasksSchema, type WeeklyPlanTaskDatasource, type WeeklyPlanTask, type WeeklyPlanTaskCreateForm, type WeeklyPlanTaskUpdateForm, type PaginatedWeeklyPlanTasks, type AssignOperationDateForm } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
+import { WeeklyPlanTaskSchema, PaginatedWeeklyPlanTasksSchema, type WeeklyPlanTaskDatasource, type WeeklyPlanTask, type WeeklyPlanTaskCreateForm, type WeeklyPlanTaskUpdateForm, type PaginatedWeeklyPlanTasks, type AssignOperationDateForm, type SplitWeeklyPlanTaskForm } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
 
 export class WeeklyPlanTaskDatasourceImpl implements WeeklyPlanTaskDatasource {
     constructor(private api: AxiosInstance, private url = '/weekly-plan-tasks') { }
@@ -8,6 +8,24 @@ export class WeeklyPlanTaskDatasourceImpl implements WeeklyPlanTaskDatasource {
     async assignOperationDateToTasks(payload: AssignOperationDateForm): Promise<string> {
         try {
             const url = `${this.url}/assignOperationDate`
+            const { data } = await this.api.post(url, payload);
+            const response = ApiResponseSchema.safeParse(data);
+
+            if (response.success) {
+                return response.data.message;
+            }
+
+            throw new Error("Información no válida");
+        } catch (error) {
+            if (isAxiosError(error)) throw new Error(error.response?.data.message);
+
+            throw new Error("Error no controlado");
+        }
+    }
+
+    async splitWeeklyPlanTask(payload: SplitWeeklyPlanTaskForm): Promise<string> {
+        try {
+            const url = `${this.url}/splitTask`
             const { data } = await this.api.post(url, payload);
             const response = ApiResponseSchema.safeParse(data);
 

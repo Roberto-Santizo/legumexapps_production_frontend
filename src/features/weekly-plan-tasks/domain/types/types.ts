@@ -31,3 +31,13 @@ export type AssignOperationDateForm = {
     tasksIds: string[];
     operation_date: string;
 }
+
+export type SplitWeeklyPlanTaskPortion = {
+    boxes: number;
+    operation_date: string;
+}
+
+export type SplitWeeklyPlanTaskForm = {
+    task_id: number;
+    portions: SplitWeeklyPlanTaskPortion[];
+}

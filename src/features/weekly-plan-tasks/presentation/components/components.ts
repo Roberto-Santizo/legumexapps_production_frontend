@@ -3,4 +3,5 @@ export * from './WeeklyPlanTaskUpdateFormComponent';
 export * from './ModalCreateWeeklyPlanTask';
 export * from './ModalUpdateWeeklyPlanTask';
 export * from './ModalAssignOperationDate';
+export * from './ModalSplitWeeklyPlanTask';
 export * from './DrawerWeeklyPlanTasks';

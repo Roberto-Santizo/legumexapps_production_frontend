@@ -1,5 +1,5 @@
 import { CustomFilledButton, Drawer, FadeInLeft } from "@/features/shared/shared";
-import { ModalAssignOperationDate, weeklyPlanTaskProvider } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
+import { ModalAssignOperationDate, ModalSplitWeeklyPlanTask, weeklyPlanTaskProvider, type WeeklyPlanTask } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
 import { useParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -15,6 +15,7 @@ export function DrawerWeeklyPlanTasks({ open, closeDrawer }: Props) {
     const { id } = useParams();
     const [selectedTasksIds, setSelectedTasksIds] = useState<string[]>([]);
     const [assignOperationDateModal, setAssignOperationDateModal] = useState(false);
+    const [taskToSplit, setTaskToSplit] = useState<WeeklyPlanTask | null>(null);
     const queryClient = useQueryClient();
 
     const { data, isLoading, refetch } = useQuery({
@@ -30,6 +31,8 @@ export function DrawerWeeklyPlanTasks({ open, closeDrawer }: Props) {
     }
 
     const onCloseModal = () => setAssignOperationDateModal(false);
+
+    const onCloseSplitModal = () => setTaskToSplit(null);
 
     const callback = () => {
         setSelectedTasksIds([]);
@@ -77,7 +80,12 @@ export function DrawerWeeklyPlanTasks({ open, closeDrawer }: Props) {
                         <AnimatePresence>
                             {data.data.map(task => (
                                 <FadeInLeft key={task.id}>
-                                    <WeeklyPlanTaskDrawerComponent task={task} toggleTaskSelection={toggleTaskSelection} selectedTasksIds={selectedTasksIds} />
+                                    <WeeklyPlanTaskDrawerComponent
+                                        task={task}
+                                        toggleTaskSelection={toggleTaskSelection}
+                                        selectedTasksIds={selectedTasksIds}
+                                        onSplitTask={setTaskToSplit}
+                                    />
                                 </FadeInLeft>
                             ))}
                         </AnimatePresence>
@@ -89,6 +97,13 @@ export function DrawerWeeklyPlanTasks({ open, closeDrawer }: Props) {
                 modal={assignOperationDateModal}
                 closeModal={() => onCloseModal()}
                 tasksIds={selectedTasksIds}
+                callback={() => callback()}
+            />
+
+            <ModalSplitWeeklyPlanTask
+                modal={!!taskToSplit}
+                closeModal={onCloseSplitModal}
+                task={taskToSplit}
                 callback={() => callback()}
             />
         </>

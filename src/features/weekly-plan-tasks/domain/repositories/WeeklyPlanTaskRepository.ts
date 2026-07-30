@@ -1,4 +1,4 @@
-import type { WeeklyPlanTask, WeeklyPlanTaskCreateForm, WeeklyPlanTaskUpdateForm, PaginatedWeeklyPlanTasks, AssignOperationDateForm } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
+import type { WeeklyPlanTask, WeeklyPlanTaskCreateForm, WeeklyPlanTaskUpdateForm, PaginatedWeeklyPlanTasks, AssignOperationDateForm, SplitWeeklyPlanTaskForm } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
 
 export abstract class WeeklyPlanTaskRepository {
     abstract createWeeklyPlanTask(payload: WeeklyPlanTaskCreateForm): Promise<string>;
@@ -8,4 +8,5 @@ export abstract class WeeklyPlanTaskRepository {
     abstract deleteWeeklyPlanTaskById(id: string): Promise<string>;
 
     abstract assignOperationDateToTasks(payload: AssignOperationDateForm): Promise<string>;
+    abstract splitWeeklyPlanTask(payload: SplitWeeklyPlanTaskForm): Promise<string>;
 }
