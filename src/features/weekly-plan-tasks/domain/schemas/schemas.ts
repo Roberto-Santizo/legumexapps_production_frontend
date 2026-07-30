@@ -19,7 +19,8 @@ export const WeeklyPlanTaskSchema = z.object({
     sku_name: z.string(),
     sku_code: z.string(),
     line_name: z.string(),
-    line_code: z.string()
+    line_code: z.string(),
+    status: z.string()
 });
 
 export const PaginatedWeeklyPlanTasksSchema = ApiPaginatedResponseSchema.extend({

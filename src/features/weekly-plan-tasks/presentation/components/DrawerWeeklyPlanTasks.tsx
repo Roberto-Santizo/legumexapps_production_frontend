@@ -34,54 +34,137 @@ export function DrawerWeeklyPlanTasks({ open, closeDrawer }: Props) {
                 title="Tareas del Plan Semanal"
                 width="w-full"
             >
-                <div className="space-y-10">
-                    {isLoading && (
-                        <div className="flex h-40 items-center justify-center">
-                            <div className="h-8 w-8 animate-spin rounded-full border-2 border-line border-t-ink" />
-                        </div>
-                    )}
-
+                <div className="flex h-full flex-col">
                     {selectedTasksIds.length > 0 && (
                         <FadeInLeft>
-                            <CustomFilledButton
-                                label="Asignar Fecha de Operación"
-                                type="button"
-                                onClick={() => setAssignOperationDateModal(true)}
-                                fullWitdh={true}
-                            />
+                            <div className="sticky top-0 z-10 mb-6 rounded-2xl border border-blue-100 bg-white/90 p-3 shadow-sm backdrop-blur">
+                                <CustomFilledButton
+                                    label={`Asignar Fecha de Operación (${selectedTasksIds.length})`}
+                                    type="button"
+                                    onClick={() => setAssignOperationDateModal(true)}
+                                    fullWitdh
+                                />
+                            </div>
                         </FadeInLeft>
                     )}
 
-                    {data && data.data.length === 0 && (
-                        <p className="text-sm text-ink-subtle">No hay tareas registradas para este plan semanal.</p>
+                    {isLoading && (
+                        <div className="flex h-60 items-center justify-center">
+                            <div className="h-8 w-8 animate-spin rounded-full border-2 border-neutral-300 border-t-neutral-900" />
+                        </div>
                     )}
 
-                    {data?.data.map((task) => (
-                        <div key={task.id} className="flex items-start gap-3 rounded-lg border border-line p-4">
-                            <input
-                                type="checkbox"
-                                className="mt-1 h-4 w-4 cursor-pointer"
-                                checked={selectedTasksIds.includes(String(task.id))}
-                                onChange={() => toggleTaskSelection(String(task.id))}
-                            />
-
-                            <div className="flex-1 space-y-2">
-                                <div className="flex items-center justify-between">
-                                    <span className="text-sm font-semibold text-ink">{task.sku_name}</span>
-                                    <span className="text-md text-ink-subtle">{task.operation_date_string}</span>
-                                </div>
-
-                                <p className="text-xs text-ink-subtle">Línea: {task.line_name}</p>
-                                <p className="text-xs text-ink-subtle">Destino: {task.destination}</p>
-
-                                <div className="flex gap-4 text-xs text-ink-subtle">
-                                    <span>Cajas: {task.produced_boxes ?? 0}/{task.boxes}</span>
-                                    <span>Pallets: {task.produced_pallets ?? 0}/{task.pallets}</span>
-                                    <span>Horas: {task.hours}</span>
-                                </div>
-                            </div>
+                    {data && data.data.length === 0 && (
+                        <div className="flex h-60 items-center justify-center rounded-2xl border border-dashed border-gray-200">
+                            <p className="text-sm text-gray-500">
+                                No hay tareas registradas.
+                            </p>
                         </div>
-                    ))}
+                    )}
+
+                    <div className="space-y-4">
+                        {data?.data.map((task) => {
+                            const selected = selectedTasksIds.includes(String(task.id));
+
+                            return (
+                                <label
+                                    key={task.id}
+                                    className={`group flex cursor-pointer gap-4 rounded-2xl border bg-white p-5 transition-all duration-200
+                                        ${selected
+                                            ? "border-blue-500 ring-2 ring-blue-100"
+                                            : "border-gray-200 hover:border-gray-300 hover:shadow-md"
+                                        }`}
+                                >
+                                    <input
+                                        type="checkbox"
+                                        checked={selected}
+                                        onChange={() => toggleTaskSelection(String(task.id))}
+                                        className="mt-1 h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                    />
+
+                                    <div className="flex-1">
+                                        <div className="flex items-start justify-between">
+                                            <div>
+                                                <h3 className="text-base font-semibold text-gray-900">
+                                                    {task.sku_name}
+                                                </h3>
+
+                                                <p className="mt-1 text-sm text-gray-500">
+                                                    {task.operation_date_string}
+                                                </p>
+                                            </div>
+
+                                            <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700">
+                                                {task.status}
+                                            </span>
+                                        </div>
+
+                                        <div className="mt-5 grid grid-cols-2 gap-6">
+                                            <div>
+                                                <p className="text-xs uppercase tracking-wide text-gray-400">
+                                                    Línea
+                                                </p>
+
+                                                <p className="mt-1 font-medium text-gray-800">
+                                                    {task.line_name}
+                                                </p>
+                                            </div>
+
+                                            <div>
+                                                <p className="text-xs uppercase tracking-wide text-gray-400">
+                                                    Destino
+                                                </p>
+
+                                                <p className="mt-1 font-medium text-gray-800">
+                                                    {task.destination}
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div className="mt-6 grid grid-cols-3 gap-3">
+                                            <div className="rounded-xl bg-gray-50 p-4">
+                                                <p className="text-xs text-gray-500">
+                                                    Cajas
+                                                </p>
+
+                                                <p className="mt-2 text-xl font-semibold text-gray-900">
+                                                    {task.produced_boxes ?? 0}
+
+                                                    <span className="ml-1 text-sm font-normal text-gray-400">
+                                                        / {task.boxes}
+                                                    </span>
+                                                </p>
+                                            </div>
+
+                                            <div className="rounded-xl bg-gray-50 p-4">
+                                                <p className="text-xs text-gray-500">
+                                                    Pallets
+                                                </p>
+
+                                                <p className="mt-2 text-xl font-semibold text-gray-900">
+                                                    {task.produced_pallets ?? 0}
+
+                                                    <span className="ml-1 text-sm font-normal text-gray-400">
+                                                        / {task.pallets}
+                                                    </span>
+                                                </p>
+                                            </div>
+
+                                            <div className="rounded-xl bg-gray-50 p-4">
+                                                <p className="text-xs text-gray-500">
+                                                    Horas
+                                                </p>
+
+                                                <p className="mt-2 text-xl font-semibold text-gray-900">
+                                                    {task.hours}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </label>
+                            );
+                        })}
+                    </div>
                 </div>
             </Drawer>
 
