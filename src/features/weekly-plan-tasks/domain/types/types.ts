@@ -13,6 +13,6 @@ export type WeeklyPlanTaskForm = {
 }
 
 export type AssignOperationDateForm = {
-    tasks_ids: string[];
+    tasksIds: string[];
     operation_date: string;
 }

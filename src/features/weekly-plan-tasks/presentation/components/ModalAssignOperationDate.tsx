@@ -1,14 +1,18 @@
-import { CustomFilledButton, CustomForm, DateFormField, Modal } from "@/features/shared/shared";
+import { CustomFilledButton, CustomForm, DateFormField, Modal, useNotification } from "@/features/shared/shared";
 import { useForm } from "react-hook-form";
-import type { AssignOperationDateForm } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
+import { weeklyPlanTaskProvider, type AssignOperationDateForm } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
+import { useMutation } from "@tanstack/react-query";
 
 type Props = {
     modal: boolean;
     closeModal: () => void;
     tasksIds: string[];
+    callback?: () => void;
 }
 
-export function ModalAssignOperationDate({ modal, closeModal, tasksIds }: Props) {
+export function ModalAssignOperationDate({ modal, closeModal, tasksIds, callback }: Props) {
+    const notification = useNotification();
+
     const {
         handleSubmit,
         register,
@@ -16,9 +20,20 @@ export function ModalAssignOperationDate({ modal, closeModal, tasksIds }: Props)
         formState: { errors }
     } = useForm<AssignOperationDateForm>();
 
+    const { mutate, isPending } = useMutation({
+        mutationFn: (payload: AssignOperationDateForm) => weeklyPlanTaskProvider.assignOperationDateToTasks(payload),
+        onSuccess: (message) => {
+            notification.success(message);
+            callback?.();
+        },
+        onError: (err) => {
+            notification.error(err.message);
+        }
+    });
+
     const onSubmit = (payload: AssignOperationDateForm) => {
-        payload.tasks_ids = tasksIds;
-        console.log(payload);
+        payload.tasksIds = tasksIds;
+        mutate(payload);
         reset();
         closeModal();
     }
@@ -34,7 +49,7 @@ export function ModalAssignOperationDate({ modal, closeModal, tasksIds }: Props)
                     errorMessage={errors.operation_date?.message}
                 />
 
-                <CustomFilledButton type="submit" label="Asignar" />
+                <CustomFilledButton type="submit" label="Asignar" disabled={isPending}/>
             </CustomForm>
         </Modal>
     )

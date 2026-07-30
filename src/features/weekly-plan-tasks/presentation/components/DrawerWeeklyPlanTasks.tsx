@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ModalAssignOperationDate, weeklyPlanTaskProvider } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
 import { CustomFilledButton, Drawer, FadeInLeft } from "@/features/shared/shared";
 
@@ -13,8 +13,9 @@ export function DrawerWeeklyPlanTasks({ open, closeDrawer }: Props) {
     const { id } = useParams();
     const [selectedTasksIds, setSelectedTasksIds] = useState<string[]>([]);
     const [assignOperationDateModal, setAssignOperationDateModal] = useState(false);
+    const queryClient = useQueryClient();
 
-    const { data, isLoading } = useQuery({
+    const { data, isLoading, refetch } = useQuery({
         queryKey: ['getWeeklyPlanTasksDrawer', id],
         queryFn: () => weeklyPlanTaskProvider.getWeeklyPlanTasks(id!, 'true', '', ''),
         enabled: open && !!id
@@ -26,6 +27,13 @@ export function DrawerWeeklyPlanTasks({ open, closeDrawer }: Props) {
         );
     }
 
+    const onCloseModal = () => setAssignOperationDateModal(false);
+
+    const callback = () => {
+        setSelectedTasksIds([]);
+        queryClient.invalidateQueries({ queryKey: ['getWeeklyPlanTasksForCalendarById', id] });
+        refetch();
+    }
     return (
         <>
             <Drawer
@@ -170,8 +178,9 @@ export function DrawerWeeklyPlanTasks({ open, closeDrawer }: Props) {
 
             <ModalAssignOperationDate
                 modal={assignOperationDateModal}
-                closeModal={() => setAssignOperationDateModal(false)}
+                closeModal={() => onCloseModal()}
                 tasksIds={selectedTasksIds}
+                callback={() => callback()}
             />
         </>
     )

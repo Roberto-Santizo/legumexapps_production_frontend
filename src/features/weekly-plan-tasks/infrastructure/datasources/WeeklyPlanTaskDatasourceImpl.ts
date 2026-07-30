@@ -1,9 +1,27 @@
 import { ApiResponseSchema } from "@/features/shared/shared";
 import { isAxiosError, type AxiosInstance } from "axios";
-import { WeeklyPlanTaskSchema, PaginatedWeeklyPlanTasksSchema, type WeeklyPlanTaskDatasource, type WeeklyPlanTask, type WeeklyPlanTaskForm, type PaginatedWeeklyPlanTasks } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
+import { WeeklyPlanTaskSchema, PaginatedWeeklyPlanTasksSchema, type WeeklyPlanTaskDatasource, type WeeklyPlanTask, type WeeklyPlanTaskForm, type PaginatedWeeklyPlanTasks, type AssignOperationDateForm } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
 
 export class WeeklyPlanTaskDatasourceImpl implements WeeklyPlanTaskDatasource {
     constructor(private api: AxiosInstance, private url = '/weekly-plan-tasks') { }
+
+    async assignOperationDateToTasks(payload: AssignOperationDateForm): Promise<string> {
+        try {
+            const url = `${this.url}/assignOperationDate`
+            const { data } = await this.api.post(url, payload);
+            const response = ApiResponseSchema.safeParse(data);
+
+            if (response.success) {
+                return response.data.message;
+            }
+
+            throw new Error("Información no válida");
+        } catch (error) {
+            if (isAxiosError(error)) throw new Error(error.response?.data.message);
+
+            throw new Error("Error no controlado");
+        }
+    }
 
     async createWeeklyPlanTask(payload: WeeklyPlanTaskForm): Promise<string> {
         try {
