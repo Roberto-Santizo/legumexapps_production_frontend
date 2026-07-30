@@ -35,3 +35,16 @@ export type UseUrlFiltersProps<T> = {
     schema: ZodSchema<T>;
     defaults: T;
 }
+
+type Column<T> = {
+    header: string;
+    key: keyof T;
+    width?: number;
+};
+
+export interface ExportExcelOptions<T> {
+    fileName: string;
+    sheetName: string;
+    columns: Column<T>[];
+    data: T[];
+}

@@ -1,4 +1,7 @@
+import { saveAs } from "file-saver";
 import { type Location, type NavigateFunction } from "react-router-dom";
+import ExcelJS from "exceljs";
+import type { ExportExcelOptions } from "@/features/shared/shared";
 
 export const getQueryParam = (location: Location<any>, queryParam: string) => {
     const queryParams = new URLSearchParams(location.search);
@@ -44,4 +47,21 @@ export function downloadBase64File(base64: string, filename: string) {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+}
+
+export async function exportToExcel<T>({ fileName, sheetName, columns, data }: ExportExcelOptions<T>) {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet(sheetName);
+
+    worksheet.columns = columns.map(column => ({
+        header: column.header,
+        key: column.key as string,
+        width: column.width ?? 20,
+    }));
+
+    worksheet.addRows(data);
+
+    const buffer = await workbook.xlsx.writeBuffer();
+
+    saveAs(new Blob([buffer]), `${fileName}.xlsx`);
 }

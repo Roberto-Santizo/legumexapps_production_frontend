@@ -25,7 +25,7 @@ export function ShowDraftWeeklyPlan() {
 
             <section className="flex flex-col gap-6 lg:flex-row">
                 <div className="flex-1">
-                    <BarChartCard title="Grafica de Horas Por Linea" data={hoursPerLine} />
+                    <BarChartCard title="Grafica de Horas Por Linea" data={hoursPerLine} excelColumns={[{ header: 'Línea', key: 'label' }, { header: 'Horas', key: 'value' }]} />
                 </div>
 
                 <DraftWeeklyPlanTasksSidebar />
