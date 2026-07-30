@@ -1,4 +1,4 @@
-import { BarChartCard, FadeInDown, FadeInLeft, FadeInUp, Loading, Title } from "@/features/shared/shared";
+import { BarChartCard, CustomFilledButton, FadeInDown, FadeInLeft, FadeInUp, Loading, Title } from "@/features/shared/shared";
 import { draftWeeklyPlanProvider } from "@/features/draft-weekly-plans/draft-weekly-plans";
 import { DraftWeeklyPlanTasksSidebar } from "@/features/draft-weekly-plan-tasks/draft-weekly-plan-tasks";
 import { useParams } from "react-router-dom";
@@ -30,11 +30,19 @@ export function ShowDraftWeeklyPlan() {
     if (isLoading) return <Loading />
     if (data && hoursPerLine && packingMaterialNecessity && rawMaterialNecessity) return (
         <div className="space-y-5">
-            <Title title="Plan Semanal Borrador" subtitle="Información del plan semanal borrador" />
+            <div className="flex justify-between items-center">
+                <Title title="Plan Semanal Borrador" subtitle="Información del plan semanal borrador" />
+
+                {!data.confirmation_date && (
+                    <CustomFilledButton
+                        label="Confirmar Plan"
+                        type="button"
+                    />
+                )}
+            </div>
 
             <section className="flex flex-col gap-6 lg:flex-row">
                 <div className="flex-1 flex flex-col gap-10">
-
                     <FadeInDown>
                         <BarChartCard title="Grafica de Horas Por Linea" data={hoursPerLine} excelColumns={[{ header: 'Línea', key: 'label' }, { header: 'Horas', key: 'value' }]} />
                     </FadeInDown>

@@ -2,7 +2,6 @@ import { LinesDatasourceImpl, LinesRepositoryImpl } from "@/features/lines/infra
 import api from "@/config/http/axios";
 import type { Line, LineForm, LinesRepository, PaginatedLines } from "@/features/lines/lines";
 
-
 export class LinesProvider {
     constructor(private repository: LinesRepository) { }
 
@@ -10,8 +9,8 @@ export class LinesProvider {
         return this.repository.createLine(payload);
     }
 
-    getLines(limit: string, page: string): Promise<PaginatedLines> {
-        return this.repository.getLines(limit, page);
+    getLines(limit: string, page: string, skuId = ''): Promise<PaginatedLines> {
+        return this.repository.getLines(limit, page, skuId);
     }
 
     getLineByCode(code: string): Promise<Line> {

@@ -11,7 +11,7 @@ type Props = {
     callback?: () => void;
 }
 
-export function ModalCreateDraftWeeklyPlanTask({ modal, closeModal, refetch, callback}: Props) {
+export function ModalCreateDraftWeeklyPlanTask({ modal, closeModal, refetch, callback }: Props) {
     const notification = useNotification();
     const { id } = useParams();
 
@@ -20,7 +20,8 @@ export function ModalCreateDraftWeeklyPlanTask({ modal, closeModal, refetch, cal
         register,
         control,
         reset,
-        formState: { errors }
+        formState: { errors },
+
     } = useForm<DraftWeeklyPlanTaskForm>();
 
     const { mutate, isPending } = useMutation({

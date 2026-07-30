@@ -22,9 +22,9 @@ export class LinesDatasourceImpl implements LinesDatasource {
         }
     }
 
-    async getLines(limit: string, page: string): Promise<PaginatedLines> {
+    async getLines(limit: string, page: string, skuId?: string): Promise<PaginatedLines> {
         try {
-            const url = `${this.url}?limit=${limit}&page=${page}`
+            const url = `${this.url}?limit=${limit}&page=${page}&skuId=${skuId}`
             const { data } = await this.api.get(url);
             const response = PaginatedLinesSchema.safeParse(data);
 
@@ -59,7 +59,7 @@ export class LinesDatasourceImpl implements LinesDatasource {
     }
 
     async updateLineByCode(code: string, payload: LineForm): Promise<string> {
-          try {
+        try {
             const url = `${this.url}/${code}`
             const { data } = await this.api.put(url, payload);
             const response = ApiResponseSchema.safeParse(data);

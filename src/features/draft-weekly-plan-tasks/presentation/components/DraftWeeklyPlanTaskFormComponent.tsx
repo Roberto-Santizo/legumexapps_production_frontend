@@ -2,7 +2,7 @@ import { DateFormField, SelectFormField, TextFormField } from "@/features/shared
 import { linesOptions, linesRepositoryProvider } from "@/features/lines/lines";
 import { skuOptions, skuProvider } from "@/features/skus/skus";
 import { useQuery } from "@tanstack/react-query";
-import type { Control, FieldErrors, UseFormRegister } from "react-hook-form";
+import { useWatch, type Control, type FieldErrors, type UseFormRegister } from "react-hook-form";
 import type { DraftWeeklyPlanTaskForm } from "@/features/draft-weekly-plan-tasks/draft-weekly-plan-tasks";
 
 type Props = {
@@ -12,18 +12,21 @@ type Props = {
 }
 
 export function DraftWeeklyPlanTaskFormComponent({ register, errors, control }: Props) {
+    const skuId = useWatch({ control, name: 'sku_id' });
+
     const { data: skusData } = useQuery({
         queryKey: ['getSkus'],
         queryFn: () => skuProvider.getSkus('', '')
     });
 
     const { data: linesData } = useQuery({
-        queryKey: ['getLines'],
-        queryFn: () => linesRepositoryProvider.getLines('', '')
+        queryKey: ['getLines', skuId],
+        queryFn: () => linesRepositoryProvider.getLines('', '', `${skuId}`),
+        enabled: !!skuId
     });
 
 
-    if (skusData && linesData) return (
+    if (skusData) return (
         <>
             <SelectFormField<DraftWeeklyPlanTaskForm>
                 name="sku_id"
@@ -39,7 +42,7 @@ export function DraftWeeklyPlanTaskFormComponent({ register, errors, control }: 
                 label="Línea"
                 control={control}
                 validation={{}}
-                options={linesOptions(linesData.data)}
+                options={linesOptions(linesData?.data ?? [])}
                 errorMessage={errors.line_id?.message}
             />
 
