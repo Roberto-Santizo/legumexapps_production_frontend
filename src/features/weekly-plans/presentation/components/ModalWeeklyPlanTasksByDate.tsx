@@ -1,33 +1,30 @@
 import { getQueryParam, handleDeleteQueryParam, Modal, queryParamExists } from "@/features/shared/shared";
-import type { CalendarEventItem } from "@/features/weekly-plans/weekly-plans";
+import { weeklyPlanTaskProvider } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
+import { useQuery } from "@tanstack/react-query";
 import { useLocation, useNavigate } from "react-router-dom";
+import { WeeklyPlanTaskByDateComponent } from "@/features/weekly-plans/weekly-plans";
 
-type Props = {
-    events: CalendarEventItem[];
-}
-
-export function ModalWeeklyPlanTasksByDate({ events }: Props) {
+export function ModalWeeklyPlanTasksByDate() {
     const location = useLocation();
     const navigate = useNavigate();
     const show = queryParamExists(location, 'date');
-    const date = getQueryParam(location, 'date');
+    const date = getQueryParam(location, 'date')!;
 
     const handleCloseModal = () => handleDeleteQueryParam(location, navigate, 'date');
 
-    const tasks = date ? events.filter((event) => event.date.slice(0, 10) === date) : [];
+    const { data, refetch } = useQuery({
+      queryKey: ['getWeeklyPlanTasksByDate', date],
+      queryFn: () => weeklyPlanTaskProvider.getWeeklyPlanTasks('', '', date, '', ''),
+      enabled: !!date
+    });
 
-    return (
+    if(data) return (
         <Modal modal={show} closeModal={handleCloseModal} title={`Tareas del ${date ?? ''}`}>
             <div className="space-y-3">
-                {tasks.length === 0 && (
-                    <p className="text-sm text-ink-subtle">No hay tareas para esta fecha.</p>
-                )}
+                {data.data.length === 0 && (<p className="text-center font-light">No existen tareas programadas</p>)}
 
-                {tasks.map((task) => (
-                    <div key={task.id} className="flex items-center gap-3 rounded-lg border border-line p-3">
-                        <span className="h-3 w-3 shrink-0 rounded-full" style={{ backgroundColor: task.color }} />
-                        <span className="text-sm text-ink">{task.title}</span>
-                    </div>
+                {data.data.map(task => (
+                    <WeeklyPlanTaskByDateComponent key={task.id} task={task} refetch={refetch} />
                 ))}
             </div>
         </Modal>

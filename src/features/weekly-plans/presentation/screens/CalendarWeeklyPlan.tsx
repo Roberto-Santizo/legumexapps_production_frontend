@@ -47,7 +47,7 @@ export function CalendarWeeklyPlan() {
         <Calendar onDateClick={onDateClick} events={data} />
       </section>
 
-      <ModalWeeklyPlanTasksByDate events={data} />
+      <ModalWeeklyPlanTasksByDate />
 
       <ModalCreateWeeklyPlanTask
         modal={showCreateModal}

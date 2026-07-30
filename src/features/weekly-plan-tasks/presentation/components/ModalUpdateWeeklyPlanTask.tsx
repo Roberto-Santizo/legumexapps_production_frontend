@@ -1,18 +1,23 @@
-import { CustomFilledButton, CustomForm, Loading, Title, useNotification } from "@/features/shared/shared";
+import { CustomFilledButton, CustomForm, Modal, useNotification } from "@/features/shared/shared";
 import { WeeklyPlanTaskUpdateFormComponent, weeklyPlanTaskProvider, type WeeklyPlanTaskUpdateForm } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useNavigate, useParams } from "react-router-dom";
 
-export function UpdateWeeklyPlanTask() {
-    const { id } = useParams();
+type Props = {
+    modal: boolean;
+    closeModal: () => void;
+    refetch: () => void;
+    taskId: string;
+}
+
+export function ModalUpdateWeeklyPlanTask({ modal, closeModal, refetch, taskId }: Props) {
     const notification = useNotification();
-    const navigate = useNavigate();
 
-    const { data, isLoading } = useQuery({
-        queryKey: ['getWeeklyPlanTaskById', id],
-        queryFn: () => weeklyPlanTaskProvider.getWeeklyPlanTaskById(id!)
+    const { data } = useQuery({
+        queryKey: ['getWeeklyPlanTaskById', taskId],
+        queryFn: () => weeklyPlanTaskProvider.getWeeklyPlanTaskById(taskId),
+        enabled: !!taskId
     });
 
     const {
@@ -23,12 +28,12 @@ export function UpdateWeeklyPlanTask() {
         setValues
     } = useForm<WeeklyPlanTaskUpdateForm>();
 
-
     const { mutate, isPending } = useMutation({
-        mutationFn: (payload: WeeklyPlanTaskUpdateForm) => weeklyPlanTaskProvider.updateWeeklyPlanTaskById(id!, payload),
+        mutationFn: (payload: WeeklyPlanTaskUpdateForm) => weeklyPlanTaskProvider.updateWeeklyPlanTaskById(taskId, payload),
         onSuccess: (message) => {
             notification.success(message);
-            navigate('/planes-semanales-tareas');
+            closeModal();
+            refetch();
         },
         onError: (err) => {
             notification.error(err.message);
@@ -42,17 +47,16 @@ export function UpdateWeeklyPlanTask() {
         }
     }, [data]);
 
-
     const onSubmit = (payload: WeeklyPlanTaskUpdateForm) => mutate(payload);
-    if (isLoading) return <Loading />
-    if (data) return (
-        <div className="space-y-5">
-            <Title title="Actualizar Tarea de Plan Semanal" subtitle="Actualiza la información de la tarea del plan semanal" />
 
-            <CustomForm onSubmit={handleSubmit(onSubmit)}>
-                <WeeklyPlanTaskUpdateFormComponent register={register} errors={errors} control={control} />
-                <CustomFilledButton type="submit" label="Guardar Cambios" disabled={isPending} />
-            </CustomForm>
-        </div>
+    return (
+        <Modal modal={modal} closeModal={closeModal} title="Editar Tarea de Plan Semanal">
+            {data && (
+                <CustomForm onSubmit={handleSubmit(onSubmit)}>
+                    <WeeklyPlanTaskUpdateFormComponent register={register} errors={errors} control={control} />
+                    <CustomFilledButton type="submit" label="Guardar Cambios" disabled={isPending} />
+                </CustomForm>
+            )}
+        </Modal>
     )
 }

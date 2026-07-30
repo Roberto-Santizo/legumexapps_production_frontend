@@ -19,7 +19,7 @@ export function DrawerWeeklyPlanTasks({ open, closeDrawer }: Props) {
 
     const { data, isLoading, refetch } = useQuery({
         queryKey: ['getWeeklyPlanTasksDrawer', id],
-        queryFn: () => weeklyPlanTaskProvider.getWeeklyPlanTasks(id!, 'true', '', ''),
+        queryFn: () => weeklyPlanTaskProvider.getWeeklyPlanTasks(id!, 'true', '','', ''),
         enabled: open && !!id
     });
 

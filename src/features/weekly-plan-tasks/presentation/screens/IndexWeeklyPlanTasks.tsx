@@ -13,7 +13,7 @@ export function IndexWeeklyPlanTasks() {
 
     const { data, isLoading, refetch } = useQuery({
         queryKey: ['getWeeklyPlanTasks', page + 1, rowsPerPage],
-        queryFn: () => weeklyPlanTaskProvider.getWeeklyPlanTasks('', '', `${rowsPerPage}`, `${page + 1}`)
+        queryFn: () => weeklyPlanTaskProvider.getWeeklyPlanTasks('', '', '', `${rowsPerPage}`, `${page + 1}`)
     });
 
     const { mutate } = useMutation({

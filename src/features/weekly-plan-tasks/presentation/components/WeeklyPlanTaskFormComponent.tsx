@@ -2,12 +2,12 @@ import { DateFormField, SelectFormField, TextFormField } from "@/features/shared
 import { peformancesOptions, performanceProvider } from "@/features/performances/performances";
 import { useQuery } from "@tanstack/react-query";
 import type { Control, FieldErrors, UseFormRegister } from "react-hook-form";
-import type { WeeklyPlanTaskForm } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
+import type { WeeklyPlanTaskCreateForm } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
 
 type Props = {
-    register: UseFormRegister<WeeklyPlanTaskForm>;
-    errors: FieldErrors<WeeklyPlanTaskForm>;
-    control: Control<WeeklyPlanTaskForm, any>;
+    register: UseFormRegister<WeeklyPlanTaskCreateForm>;
+    errors: FieldErrors<WeeklyPlanTaskCreateForm>;
+    control: Control<WeeklyPlanTaskCreateForm, any>;
 }
 
 export function WeeklyPlanTaskFormComponent({ register, errors, control }: Props) {
@@ -18,7 +18,7 @@ export function WeeklyPlanTaskFormComponent({ register, errors, control }: Props
 
     if (performancesData) return (
         <>
-            <SelectFormField<WeeklyPlanTaskForm>
+            <SelectFormField<WeeklyPlanTaskCreateForm>
                 name="line_sku_id"
                 label="SKU"
                 control={control}
@@ -27,7 +27,7 @@ export function WeeklyPlanTaskFormComponent({ register, errors, control }: Props
                 errorMessage={errors.line_sku_id?.message}
             />
 
-            <TextFormField<WeeklyPlanTaskForm>
+            <TextFormField<WeeklyPlanTaskCreateForm>
                 name="boxes"
                 label="Cajas"
                 placeholder="Cantidad de cajas"
@@ -37,7 +37,7 @@ export function WeeklyPlanTaskFormComponent({ register, errors, control }: Props
                 errorMessage={errors.boxes?.message}
             />
 
-            <TextFormField<WeeklyPlanTaskForm>
+            <TextFormField<WeeklyPlanTaskCreateForm>
                 name="destination"
                 label="Destino"
                 placeholder="Destino"
@@ -47,11 +47,11 @@ export function WeeklyPlanTaskFormComponent({ register, errors, control }: Props
                 errorMessage={errors.destination?.message}
             />
 
-            <DateFormField<WeeklyPlanTaskForm>
+            <DateFormField<WeeklyPlanTaskCreateForm>
                 name="operation_date"
                 label="Fecha de Operación"
                 register={register}
-                validation={{ required: 'El campo es requerido' }}
+                validation={{}}
                 errorMessage={errors.operation_date?.message}
             />
         </>

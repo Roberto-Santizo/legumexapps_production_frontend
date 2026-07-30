@@ -1,25 +1,25 @@
-import type { WeeklyPlanTaskDatasource, WeeklyPlanTask, WeeklyPlanTaskForm, WeeklyPlanTaskRepository, PaginatedWeeklyPlanTasks, AssignOperationDateForm } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
+import type { WeeklyPlanTaskDatasource, WeeklyPlanTask, WeeklyPlanTaskCreateForm, WeeklyPlanTaskUpdateForm, WeeklyPlanTaskRepository, PaginatedWeeklyPlanTasks, AssignOperationDateForm } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
 
 export class WeeklyPlanTaskRepositoryImpl implements WeeklyPlanTaskRepository {
     constructor(private datasource: WeeklyPlanTaskDatasource) { }
-    
+
     assignOperationDateToTasks(payload: AssignOperationDateForm): Promise<string> {
         return this.datasource.assignOperationDateToTasks(payload);
     }
 
-    createWeeklyPlanTask(payload: WeeklyPlanTaskForm): Promise<string> {
+    createWeeklyPlanTask(payload: WeeklyPlanTaskCreateForm): Promise<string> {
         return this.datasource.createWeeklyPlanTask(payload);
     }
 
-    getWeeklyPlanTasks(weeklyPlanId: string, flagOperationDate: string, limit: string, page: string): Promise<PaginatedWeeklyPlanTasks> {
-        return this.datasource.getWeeklyPlanTasks(weeklyPlanId, flagOperationDate, limit, page);
+    getWeeklyPlanTasks(weeklyPlanId: string, flagOperationDate: string, operationDate: string, limit: string, page: string): Promise<PaginatedWeeklyPlanTasks> {
+        return this.datasource.getWeeklyPlanTasks(weeklyPlanId, flagOperationDate, operationDate, limit, page);
     }
 
     getWeeklyPlanTaskById(id: string): Promise<WeeklyPlanTask> {
         return this.datasource.getWeeklyPlanTaskById(id)
     }
 
-    updateWeeklyPlanTaskById(id: string, payload: WeeklyPlanTaskForm): Promise<string> {
+    updateWeeklyPlanTaskById(id: string, payload: WeeklyPlanTaskUpdateForm): Promise<string> {
         return this.datasource.updateWeeklyPlanTaskById(id, payload)
     }
 

@@ -1,5 +1,5 @@
 import { CustomFilledButton, CustomForm, Title, useNotification } from "@/features/shared/shared";
-import { WeeklyPlanTaskFormComponent, weeklyPlanTaskProvider, type WeeklyPlanTaskForm } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
+import { WeeklyPlanTaskFormComponent, weeklyPlanTaskProvider, type WeeklyPlanTaskCreateForm } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
@@ -13,10 +13,10 @@ export function CreateWeeklyPlanTask() {
         register,
         control,
         formState: { errors }
-    } = useForm<WeeklyPlanTaskForm>();
+    } = useForm<WeeklyPlanTaskCreateForm>();
 
     const { mutate, isPending } = useMutation({
-        mutationFn: (payload: WeeklyPlanTaskForm) => weeklyPlanTaskProvider.createWeeklyPlanTask(payload),
+        mutationFn: (payload: WeeklyPlanTaskCreateForm) => weeklyPlanTaskProvider.createWeeklyPlanTask(payload),
         onSuccess: (message) => {
             notification.success(message);
             navigate('/planes-semanales-tareas');
@@ -26,7 +26,7 @@ export function CreateWeeklyPlanTask() {
         }
     });
 
-    const onSubmit = (payload: WeeklyPlanTaskForm) => mutate(payload);
+    const onSubmit = (payload: WeeklyPlanTaskCreateForm) => mutate(payload);
     return (
         <div className="space-y-5">
             <Title title="Crear Tarea de Plan Semanal" subtitle="Registra una nueva tarea de plan semanal" />

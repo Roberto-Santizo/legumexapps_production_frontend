@@ -1,6 +1,6 @@
 import { ApiResponseSchema } from "@/features/shared/shared";
 import { isAxiosError, type AxiosInstance } from "axios";
-import { WeeklyPlanTaskSchema, PaginatedWeeklyPlanTasksSchema, type WeeklyPlanTaskDatasource, type WeeklyPlanTask, type WeeklyPlanTaskForm, type PaginatedWeeklyPlanTasks, type AssignOperationDateForm } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
+import { WeeklyPlanTaskSchema, PaginatedWeeklyPlanTasksSchema, type WeeklyPlanTaskDatasource, type WeeklyPlanTask, type WeeklyPlanTaskCreateForm, type WeeklyPlanTaskUpdateForm, type PaginatedWeeklyPlanTasks, type AssignOperationDateForm } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
 
 export class WeeklyPlanTaskDatasourceImpl implements WeeklyPlanTaskDatasource {
     constructor(private api: AxiosInstance, private url = '/weekly-plan-tasks') { }
@@ -23,7 +23,7 @@ export class WeeklyPlanTaskDatasourceImpl implements WeeklyPlanTaskDatasource {
         }
     }
 
-    async createWeeklyPlanTask(payload: WeeklyPlanTaskForm): Promise<string> {
+    async createWeeklyPlanTask(payload: WeeklyPlanTaskCreateForm): Promise<string> {
         try {
             const { data } = await this.api.post(this.url, payload);
             const response = ApiResponseSchema.safeParse(data);
@@ -40,9 +40,9 @@ export class WeeklyPlanTaskDatasourceImpl implements WeeklyPlanTaskDatasource {
         }
     }
 
-    async getWeeklyPlanTasks(weeklyPlanId: string, flagOperationDate: string, limit: string, page: string): Promise<PaginatedWeeklyPlanTasks> {
+    async getWeeklyPlanTasks(weeklyPlanId: string, flagOperationDate: string, operationDate: string, limit: string, page: string): Promise<PaginatedWeeklyPlanTasks> {
         try {
-            const url = `${this.url}?weeklyPlanId=${weeklyPlanId}&limit=${limit}&page=${page}&noOperationDate=${flagOperationDate}`;
+            const url = `${this.url}?weeklyPlanId=${weeklyPlanId}&limit=${limit}&page=${page}&noOperationDate=${flagOperationDate}&operationDate=${operationDate}`;
             const { data } = await this.api.get(url);
             const response = PaginatedWeeklyPlanTasksSchema.safeParse(data);
 
@@ -76,7 +76,7 @@ export class WeeklyPlanTaskDatasourceImpl implements WeeklyPlanTaskDatasource {
         }
     }
 
-    async updateWeeklyPlanTaskById(id: string, payload: WeeklyPlanTaskForm): Promise<string> {
+    async updateWeeklyPlanTaskById(id: string, payload: WeeklyPlanTaskUpdateForm): Promise<string> {
         try {
             const url = `${this.url}/${id}`;
             const { data } = await this.api.put(url, payload);
