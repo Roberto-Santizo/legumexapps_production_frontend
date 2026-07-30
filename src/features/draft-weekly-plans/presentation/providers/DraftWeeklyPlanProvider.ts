@@ -28,6 +28,14 @@ export class DraftWeeklyPlanProvider {
     getHoursPerLineByDraftWeeklyPlanId(id: string){
         return this.repository.getHoursPerLineByDraftWeeklyPlanId(id);
     }
+
+    getPackingMaterialNecessityById(id: string){
+        return this.repository.getPackingMaterialNecessityById(id);
+    }
+
+    getRawNecessityById(id: string){
+        return this.repository.getRawNecessityById(id);
+    }
 }
 
 const datasource = new DraftWeeklyPlanDatasourceImpl(api);

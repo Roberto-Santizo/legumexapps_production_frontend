@@ -6,6 +6,42 @@ import { z } from "zod";
 export class DraftWeeklyPlanDatasourceImpl implements DraftWeeklyPlanDatasource {
     constructor(private api: AxiosInstance, private url = '/draft-weekly-plans') { }
 
+    async getPackingMaterialNecessityById(id: string): Promise<BarChartDatum[]> {
+        try {
+            const url = `${this.url}/${id}/packingMaterialNecessity`;
+            const { data } = await this.api.get(url);
+            const response = z.array(BarChartDatumSchema).safeParse(data['data']);
+
+            if (response.success) {
+                return response.data;
+            }
+
+            throw new Error("Información no válida");
+        } catch (error) {
+            if (isAxiosError(error)) throw new Error(error.response?.data.message);
+
+            throw new Error("Error no controlado");
+        }
+    }
+
+    async getRawNecessityById(id: string): Promise<BarChartDatum[]> {
+        try {
+            const url = `${this.url}/${id}/rawMaterialNecessity`;
+            const { data } = await this.api.get(url);
+            const response = z.array(BarChartDatumSchema).safeParse(data['data']);
+
+            if (response.success) {
+                return response.data;
+            }
+
+            throw new Error("Información no válida");
+        } catch (error) {
+            if (isAxiosError(error)) throw new Error(error.response?.data.message);
+
+            throw new Error("Error no controlado");
+        }
+    }
+
     async getHoursPerLineByDraftWeeklyPlanId(id: string): Promise<BarChartDatum[]> {
         try {
             const url = `${this.url}/${id}/hoursPerLine`;
