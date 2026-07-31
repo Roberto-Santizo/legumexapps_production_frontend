@@ -13,12 +13,12 @@ export function ModalWeeklyPlanTasksByDate() {
     const handleCloseModal = () => handleDeleteQueryParam(location, navigate, 'date');
 
     const { data, refetch } = useQuery({
-      queryKey: ['getWeeklyPlanTasksByDate', date],
-      queryFn: () => weeklyPlanTaskProvider.getWeeklyPlanTasks('', '', date, '', ''),
-      enabled: !!date
+        queryKey: ['getWeeklyPlanTasksByDate', date],
+        queryFn: () => weeklyPlanTaskProvider.getWeeklyPlanTasks('', '', date, '', ''),
+        enabled: !!date
     });
 
-    if(data) return (
+    if (data) return (
         <Modal modal={show} closeModal={handleCloseModal} title={`Tareas del ${date ?? ''}`}>
             <div className="space-y-3">
                 {data.data.length === 0 && (<p className="text-center font-light">No existen tareas programadas</p>)}

@@ -26,3 +26,13 @@ export const WeeklyPlanTaskSchema = z.object({
 export const PaginatedWeeklyPlanTasksSchema = ApiPaginatedResponseSchema.extend({
     data: z.array(WeeklyPlanTaskSchema)
 });
+
+export const WeeklyPlanTaskPackingMaterialItemSchema = z.object({
+    quantity: z.number(),
+    lote: z.string(),
+    destination: z.string(),
+    packing_material_id: z.number(),
+    packing_material_name: z.string(),
+    packing_material_code: z.string(),
+    lbs_per_item: z.number()
+});

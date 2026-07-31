@@ -1,8 +1,9 @@
-import { WeeklyPlanTaskSchema, PaginatedWeeklyPlanTasksSchema } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
+import { WeeklyPlanTaskSchema, PaginatedWeeklyPlanTasksSchema, WeeklyPlanTaskPackingMaterialItemSchema } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
 import type { z } from "zod";
 
 export type PaginatedWeeklyPlanTasks = z.infer<typeof PaginatedWeeklyPlanTasksSchema>;
 export type WeeklyPlanTask = z.infer<typeof WeeklyPlanTaskSchema>;
+export type WeeklyPlanTaskPackingMaterialItem = z.infer<typeof WeeklyPlanTaskPackingMaterialItemSchema>;
 
 export type WeeklyPlanTaskCreateForm = {
     boxes: number;

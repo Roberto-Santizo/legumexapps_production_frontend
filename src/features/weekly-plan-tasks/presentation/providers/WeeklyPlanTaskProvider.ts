@@ -32,6 +32,10 @@ export class WeeklyPlanTaskProvider {
     splitWeeklyPlanTask(payload: SplitWeeklyPlanTaskForm): Promise<string> {
         return this.repository.splitWeeklyPlanTask(payload);
     }
+
+    getPackingMaterialItemsByTaskId(id: string){
+        return this.repository.getPackingMaterialItemsByTaskId(id);
+    }
 }
 
 const datasource = new WeeklyPlanTaskDatasourceImpl(api);

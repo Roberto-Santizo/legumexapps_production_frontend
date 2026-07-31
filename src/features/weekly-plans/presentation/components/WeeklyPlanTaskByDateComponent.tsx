@@ -1,7 +1,8 @@
-import { ActionsMenu, useNotification } from "@/features/shared/shared";
+import { ActionsMenu, handleSetQueryParam, useNotification } from "@/features/shared/shared";
+import { BoxIcon, EditIcon, TrashIcon } from "lucide-react";
 import { ModalUpdateWeeklyPlanTask, weeklyPlanTaskProvider, type WeeklyPlanTask } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
-import { EditIcon, TrashIcon } from "lucide-react";
 import { useState } from "react";
 
 type Props = {
@@ -12,6 +13,8 @@ type Props = {
 export function WeeklyPlanTaskByDateComponent({ task, refetch }: Props) {
     const [modal, setModal] = useState(false);
     const notification = useNotification();
+    const navigate = useNavigate();
+    const location = useLocation();
 
     const { mutate } = useMutation({
         mutationFn: (id: string) => weeklyPlanTaskProvider.deleteWeeklyPlanTaskById(id),
@@ -26,6 +29,10 @@ export function WeeklyPlanTaskByDateComponent({ task, refetch }: Props) {
 
     const handleDeleteItem = () => {
         notification.question('¿Desea eliminar la tarea del plan semanal?', 'Eliminar', 'La tarea se eliminará del sistema', () => mutate(String(task.id)));
+    }
+
+    const handleOnPackingMaterialAction = () => {
+        handleSetQueryParam(location, navigate, 'taskId', `${task.id}`);
     }
 
     return (
@@ -72,12 +79,25 @@ export function WeeklyPlanTaskByDateComponent({ task, refetch }: Props) {
                 </div>
             </div>
 
-            <ActionsMenu
-                items={[
-                    { label: "Editar", icon: <EditIcon />, onClick: () => setModal(true) },
-                    { label: "Eliminar", icon: <TrashIcon />, onClick: handleDeleteItem, danger: true },
-                ]}
-            />
+            <div className="flex flex-col justify-center items-center">
+                <ActionsMenu
+                    items={[
+                        { label: "Editar", icon: <EditIcon />, onClick: () => setModal(true) },
+                        { label: "Eliminar", icon: <TrashIcon />, onClick: handleDeleteItem, danger: true },
+                    ]}
+                />
+
+
+
+                <button
+                    type="button"
+                    onClick={() => handleOnPackingMaterialAction()}
+                    title="Dividir Tarea"
+                    className="rounded-md p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                >
+                    <BoxIcon className="size-7" />
+                </button>
+            </div>
 
             <ModalUpdateWeeklyPlanTask
                 modal={modal}

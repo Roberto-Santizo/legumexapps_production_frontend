@@ -5,3 +5,5 @@ export * from './ModalUpdateWeeklyPlanTask';
 export * from './ModalAssignOperationDate';
 export * from './ModalSplitWeeklyPlanTask';
 export * from './DrawerWeeklyPlanTasks';
+export * from './ModalPackingMaterialItemsByTask';
+export * from './PackingMaterialItemByTaskComponent';
