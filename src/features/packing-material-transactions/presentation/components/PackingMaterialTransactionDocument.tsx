@@ -1,5 +1,6 @@
 import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 import type { PackingMaterialTransaction } from "@/features/packing-material-transactions/packing-material-transactions";
+import type { PackingMaterialTransactionItem } from "@/features/packing-material-transaction-items/packing-material-transaction-items";
 
 const INK = "#141414";
 const MUTED = "#6E6E6E";
@@ -144,6 +145,97 @@ const styles = StyleSheet.create({
         fontSize: 9.5
     },
 
+    items: {
+        marginTop: 26
+    },
+    itemsHeader: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "flex-end"
+    },
+    itemsCount: {
+        fontSize: 6.5,
+        letterSpacing: 1.2,
+        textTransform: "uppercase",
+        color: MUTED
+    },
+    table: {
+        marginTop: 8
+    },
+    tableHead: {
+        flexDirection: "row",
+        paddingBottom: 5,
+        borderBottomWidth: 0.75,
+        borderBottomColor: RULE
+    },
+    tableRow: {
+        flexDirection: "row",
+        paddingVertical: 6,
+        borderBottomWidth: 0.5,
+        borderBottomColor: SOFT_RULE
+    },
+    tableTotal: {
+        flexDirection: "row",
+        paddingTop: 6,
+        borderTopWidth: 0.75,
+        borderTopColor: RULE
+    },
+    headCell: {
+        fontSize: 6.5,
+        letterSpacing: 1.2,
+        textTransform: "uppercase",
+        color: MUTED
+    },
+    cell: {
+        fontSize: 8.5
+    },
+    colIndex: {
+        width: 22
+    },
+    colCode: {
+        width: 68,
+        fontFamily: "Helvetica-Bold"
+    },
+    colName: {
+        flex: 1,
+        paddingRight: 10
+    },
+    colLote: {
+        width: 80
+    },
+    colDestination: {
+        width: 96,
+        paddingRight: 10
+    },
+    colQuantity: {
+        width: 54,
+        textAlign: "right",
+        fontFamily: "Helvetica-Bold"
+    },
+    totalLabel: {
+        flex: 1,
+        fontFamily: "Helvetica-Bold",
+        fontSize: 7.5,
+        letterSpacing: 1.2,
+        textTransform: "uppercase",
+        textAlign: "right",
+        paddingRight: 10
+    },
+    totalValue: {
+        width: 54,
+        textAlign: "right",
+        fontFamily: "Helvetica-Bold",
+        fontSize: 9.5
+    },
+    empty: {
+        marginTop: 10,
+        paddingBottom: 10,
+        fontSize: 8.5,
+        color: MUTED,
+        borderBottomWidth: 0.75,
+        borderBottomColor: RULE
+    },
+
     observations: {
         marginTop: 30
     },
@@ -229,6 +321,11 @@ const bucketUrl = import.meta.env.VITE_AWS_BUCKET_URL;
 
 const signatureUrl = (path: string) => path ? `${bucketUrl}/${path}` : null;
 
+const quantityFormatter = new Intl.NumberFormat("es-GT", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2
+});
+
 const emissionDate = () => new Intl.DateTimeFormat("es-GT", {
     day: "2-digit",
     month: "2-digit",
@@ -258,11 +355,13 @@ function SignatureBlock({ role, name, signature }: SignatureProps) {
 
 type Props = {
     transaction: PackingMaterialTransaction;
+    items?: PackingMaterialTransactionItem[];
 }
 
-export function PackingMaterialTransactionDocument({ transaction }: Props) {
+export function PackingMaterialTransactionDocument({ transaction, items = [] }: Props) {
     const title = TRANSACTION_TITLES[transaction.type] ?? "Movimiento de bodega empaque";
     const date = emissionDate();
+    const totalQuantity = items.reduce((total, item) => total + item.quantity, 0);
 
     return (
         <Document
@@ -315,6 +414,46 @@ export function PackingMaterialTransactionDocument({ transaction }: Props) {
                         <Text style={styles.detailLabel}>Tarea del plan semanal</Text>
                         <Text style={styles.detailValue}>No. {transaction.weekly_plan_task_id}</Text>
                     </View>
+                </View>
+
+                <View style={styles.items}>
+                    <View style={styles.itemsHeader}>
+                        <Text style={styles.sectionLabel}>Materiales</Text>
+                        <Text style={styles.itemsCount}>
+                            {items.length === 1 ? "1 renglón" : `${items.length} renglones`}
+                        </Text>
+                    </View>
+
+                    {items.length === 0 ? (
+                        <Text style={styles.empty}>La transacción no tiene materiales registrados</Text>
+                    ) : (
+                        <View style={styles.table}>
+                            <View style={styles.tableHead} fixed>
+                                <Text style={[styles.headCell, styles.colIndex]}>No.</Text>
+                                <Text style={[styles.headCell, styles.colCode]}>Código</Text>
+                                <Text style={[styles.headCell, styles.colName]}>Material</Text>
+                                <Text style={[styles.headCell, styles.colLote]}>Lote</Text>
+                                <Text style={[styles.headCell, styles.colDestination]}>Destino</Text>
+                                <Text style={[styles.headCell, styles.colQuantity]}>Cantidad</Text>
+                            </View>
+
+                            {items.map((item, index) => (
+                                <View key={item.id} style={styles.tableRow} wrap={false}>
+                                    <Text style={[styles.cell, styles.colIndex]}>{index + 1}</Text>
+                                    <Text style={[styles.cell, styles.colCode]}>{item.packing_material_code || "—"}</Text>
+                                    <Text style={[styles.cell, styles.colName]}>{item.packing_material_name || "—"}</Text>
+                                    <Text style={[styles.cell, styles.colLote]}>{item.lote || "—"}</Text>
+                                    <Text style={[styles.cell, styles.colDestination]}>{item.destination || "—"}</Text>
+                                    <Text style={[styles.cell, styles.colQuantity]}>{quantityFormatter.format(item.quantity)}</Text>
+                                </View>
+                            ))}
+
+                            <View style={styles.tableTotal}>
+                                <Text style={styles.totalLabel}>Total</Text>
+                                <Text style={styles.totalValue}>{quantityFormatter.format(totalQuantity)}</Text>
+                            </View>
+                        </View>
+                    )}
                 </View>
 
                 <View style={styles.observations}>
