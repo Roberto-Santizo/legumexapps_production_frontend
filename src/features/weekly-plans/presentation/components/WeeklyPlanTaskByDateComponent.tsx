@@ -47,7 +47,7 @@ export function WeeklyPlanTaskByDateComponent({ task, refetch }: Props) {
                     </h3>
 
                     <span className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-700">
-                        {task.status}
+                        {task.status_message}
                     </span>
                 </div>
 
@@ -88,15 +88,17 @@ export function WeeklyPlanTaskByDateComponent({ task, refetch }: Props) {
                 />
 
 
+                {task.status == 1 && (
+                    <button
+                        type="button"
+                        onClick={() => handleOnPackingMaterialAction()}
+                        title="Dividir Tarea"
+                        className="rounded-md p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                    >
+                        <BoxIcon className="size-7" />
+                    </button>
+                )}
 
-                <button
-                    type="button"
-                    onClick={() => handleOnPackingMaterialAction()}
-                    title="Dividir Tarea"
-                    className="rounded-md p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-                >
-                    <BoxIcon className="size-7" />
-                </button>
             </div>
 
             <ModalUpdateWeeklyPlanTask

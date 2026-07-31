@@ -20,6 +20,7 @@ export function ModalPackingMaterialItemsByTask() {
     const queryClient = useQueryClient();
     const taskId = getQueryParam(location, 'taskId');
     const show = queryParamExists(location, 'taskId');
+    const date = getQueryParam(location, 'date')!;
 
     const { data } = useQuery({
         queryKey: ['getPackingMaterialItemsByTaskId', taskId],
@@ -67,6 +68,7 @@ export function ModalPackingMaterialItemsByTask() {
         onSuccess: (message) => {
             notification.success(message);
             queryClient.invalidateQueries({ queryKey: ['getPackingMaterialItemsByTaskId', taskId] });
+            queryClient.invalidateQueries({ queryKey: ['getWeeklyPlanTasksByDate', date] });
             closeModal();
         },
         onError: (err) => {
