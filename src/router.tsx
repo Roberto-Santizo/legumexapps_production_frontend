@@ -4,6 +4,7 @@ import { CreateClient, IndexClients, ShowClient, UpdateClient } from "@/features
 import { CreateDraftWeeklyPlan, IndexDraftWeeklyPlans, ShowDraftWeeklyPlan, UpdateDraftWeeklyPlan } from "@/features/draft-weekly-plans/draft-weekly-plans";
 import { CreateLine, IndexLines, ShowLine, UpdateLine } from "@/features/lines/lines";
 import { CreatePackingMaterial, IndexPackingMaterials, ShowPackingMaterial, UpdatePackingMaterial } from "@/features/packing-materials/packing-materials";
+import { IndexPackingMaterialTransactions, ShowPackingMaterialTransaction, UpdatePackingMaterialTransaction } from "@/features/packing-material-transactions/packing-material-transactions";
 import { CreatePerformance, IndexPerformances, ShowPerformance, UpdatePerformance } from "@/features/performances/performances";
 import { CreatePosition, IndexPositions, ShowPosition, UpdatePosition } from "@/features/positions/positions";
 import { CreateRawMaterial, IndexRawMaterials, ShowRawMaterial, UpdateRawMaterial } from "@/features/raw-materials/raw-materials";
@@ -99,6 +100,13 @@ export default function AppRouter() {
                     <Route path="/draft-planes-semanales/crear" element={<CreateDraftWeeklyPlan />} />
                     <Route path="/draft-planes-semanales/:id/editar" element={<UpdateDraftWeeklyPlan />} />
                     <Route path="/draft-planes-semanales/:id" element={<ShowDraftWeeklyPlan />} />
+                </Route>
+
+                <Route element={<ProtectedLayout />}>
+                    <Route path="/material-empaque-transacciones" element={<IndexPackingMaterialTransactions />} />
+                    {/* <Route path="/material-empaque-transacciones/crear" element={<CreatePackingMaterialTransaction />} /> */}
+                    <Route path="/material-empaque-transacciones/:id/editar" element={<UpdatePackingMaterialTransaction />} />
+                    <Route path="/material-empaque-transacciones/:id" element={<ShowPackingMaterialTransaction />} />
                 </Route>
             </Routes>
         </BrowserRouter>

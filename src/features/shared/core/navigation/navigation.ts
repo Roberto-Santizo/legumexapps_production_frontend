@@ -31,6 +31,7 @@ export const NAV_SECTIONS: NavSection[] = [
             { to: "/skus", text: "Sku's", icon: Database },
             { to: "/items-material-empaque", text: "Material De Empaque Items", icon: Box },
             { to: "/items-materia-prima", text: "Materia Prima Items", icon: Box },
+            { to: "/material-empaque-transacciones", text: "Transacciones Material Empaque", icon: Box },
         ],
     },
     {
