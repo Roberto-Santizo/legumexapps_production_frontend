@@ -1,4 +1,5 @@
 import { WeeklyPlanTaskSchema, PaginatedWeeklyPlanTasksSchema, WeeklyPlanTaskPackingMaterialItemSchema } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
+import type { PackingMaterialTransactionCreateForm } from "@/features/packing-material-transactions/packing-material-transactions";
 import type { z } from "zod";
 
 export type PaginatedWeeklyPlanTasks = z.infer<typeof PaginatedWeeklyPlanTasksSchema>;
@@ -42,3 +43,5 @@ export type SplitWeeklyPlanTaskForm = {
     task_id: number;
     portions: SplitWeeklyPlanTaskPortion[];
 }
+
+export type PackingMaterialItemsByTaskDeliveryForm = Omit<PackingMaterialTransactionCreateForm, 'responsable_signature' | 'user_signature' | 'weekly_plan_task_id'>;

@@ -1,12 +1,17 @@
-import type { WeeklyPlanTaskPackingMaterialItem } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
-import { Trash2Icon } from "lucide-react";
+import { TextFormField } from "@/features/shared/shared";
+import type { FieldErrors, UseFormRegister } from "react-hook-form";
+import type { PackingMaterialItemsByTaskDeliveryForm, WeeklyPlanTaskPackingMaterialItem } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
 
 type Props = {
     item: WeeklyPlanTaskPackingMaterialItem;
     index: number;
+    register: UseFormRegister<PackingMaterialItemsByTaskDeliveryForm>;
+    errors: FieldErrors<PackingMaterialItemsByTaskDeliveryForm>;
 }
 
-export function PackingMaterialItemByTaskComponent({ item, index }: Props) {
+export function PackingMaterialItemByTaskComponent({ item, index, register, errors }: Props) {
+    const itemErrors = errors.items?.[index];
+
     return (
         <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition-all duration-200 hover:border-gray-300 hover:shadow-md">
             <div className="flex items-start justify-between gap-3">
@@ -19,74 +24,46 @@ export function PackingMaterialItemByTaskComponent({ item, index }: Props) {
                         {item.packing_material_code} · {item.lbs_per_item} lbs por unidad
                     </p>
                 </div>
-
-                <button
-                    type="button"
-                    title="Quitar material"
-                    className="rounded-md p-2 text-red-500 hover:bg-red-50"
-                >
-                    <Trash2Icon className="size-4" />
-                </button>
             </div>
 
             <div className="mt-4 grid gap-4 sm:grid-cols-3">
-                <div className="flex flex-col gap-2">
-                    <label className="text-sm font-medium text-gray-700" htmlFor={`items.${index}.quantity`}>
-                        Cantidad
-                    </label>
+                <TextFormField<PackingMaterialItemsByTaskDeliveryForm>
+                    label="Cantidad"
+                    name={`items.${index}.quantity`}
+                    type="number"
+                    placeholder="0"
+                    register={register}
+                    validation={{
+                        required: 'El campo es requerido',
+                        min: { value: 1, message: 'Debe ser al menos 1' },
+                        valueAsNumber: true
+                    }}
+                    errorMessage={itemErrors?.quantity?.message}
+                    disabled={true}
+                />
 
-                    <input
-                        id={`items.${index}.quantity`}
-                        name={`items.${index}.quantity`}
-                        type="number"
-                        step="any"
-                        placeholder="0"
-                        autoComplete="off"
-                        defaultValue={item.quantity}
-                        className="text_form_field"
-                    />
+                <TextFormField<PackingMaterialItemsByTaskDeliveryForm>
+                    label="Lote"
+                    name={`items.${index}.lote`}
+                    type="text"
+                    placeholder="L-2026-07"
+                    register={register}
+                    validation={{ required: 'El campo es requerido' }}
+                    errorMessage={itemErrors?.lote?.message}
+                />
 
-                    <p className="text-red-400 text-xs"></p>
-                </div>
-
-                <div className="flex flex-col gap-2">
-                    <label className="text-sm font-medium text-gray-700" htmlFor={`items.${index}.lote`}>
-                        Lote
-                    </label>
-
-                    <input
-                        id={`items.${index}.lote`}
-                        name={`items.${index}.lote`}
-                        type="text"
-                        placeholder="L-2026-07"
-                        autoComplete="off"
-                        defaultValue={item.lote}
-                        className="text_form_field"
-                    />
-
-                    <p className="text-red-400 text-xs"></p>
-                </div>
-
-                <div className="flex flex-col gap-2">
-                    <label className="text-sm font-medium text-gray-700" htmlFor={`items.${index}.destination`}>
-                        Destino
-                    </label>
-
-                    <input
-                        id={`items.${index}.destination`}
-                        name={`items.${index}.destination`}
-                        type="text"
-                        placeholder="Línea de producción"
-                        autoComplete="off"
-                        defaultValue={item.destination}
-                        className="text_form_field"
-                    />
-
-                    <p className="text-red-400 text-xs"></p>
-                </div>
+                <TextFormField<PackingMaterialItemsByTaskDeliveryForm>
+                    label="Destino"
+                    name={`items.${index}.destination`}
+                    type="text"
+                    placeholder="Línea de producción"
+                    register={register}
+                    validation={{}}
+                    errorMessage={itemErrors?.destination?.message}
+                />
             </div>
 
-            <input type="hidden" name={`items.${index}.packing_material_id`} value={item.packing_material_id} readOnly />
+            <input type="hidden" {...register(`items.${index}.packing_material_id`, { valueAsNumber: true })} />
         </div>
     );
 }

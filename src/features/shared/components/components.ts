@@ -1,4 +1,5 @@
 export * from './TextFormField';
+export * from './TextAreaFormField';
 export * from './PasswordFormField';
 export * from './CustomFilledButton';
 export * from './CustomHeader';
