@@ -1,5 +1,5 @@
-import { type Position, type PositionForm, type PositionRepository, type PaginatedPositions } from "@/features/positions/positions";
 import { PositionDatasourceImpl, PositionRepositoryImpl } from "@/features/positions/infrastructure/infrastructure";
+import { type Position, type PositionForm, type PositionRepository, type PaginatedPositions } from "@/features/positions/positions";
 import api from "@/config/http/axios";
 
 export class PositionProvider {
@@ -9,8 +9,8 @@ export class PositionProvider {
         return this.repository.createPosition(payload);
     }
 
-    getPositions(limit: string, page: string): Promise<PaginatedPositions> {
-        return this.repository.getPositions(limit, page);
+    getPositions(limit: string, page: string, lineCode = ''): Promise<PaginatedPositions> {
+        return this.repository.getPositions(limit, page, lineCode);
     }
 
     getPositionById(id: string): Promise<Position> {

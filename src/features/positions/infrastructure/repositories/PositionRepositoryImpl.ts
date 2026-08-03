@@ -7,8 +7,8 @@ export class PositionRepositoryImpl implements PositionRepository {
         return this.datasource.createPosition(payload);
     }
 
-    getPositions(limit: string, page: string): Promise<PaginatedPositions> {
-        return this.datasource.getPositions(limit, page);
+    getPositions(limit: string, page: string, lineCode: string): Promise<PaginatedPositions> {
+        return this.datasource.getPositions(limit, page, lineCode);
     }
 
     getPositionById(id: string): Promise<Position> {
