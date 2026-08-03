@@ -93,7 +93,7 @@ export function WeeklyPlanTaskUpdateFormComponent({ register, errors, control }:
                 placeholder="Cantidad de libras pesadas"
                 register={register}
                 type="number"
-                validation={{ required: 'El campo es requerido', valueAsNumber: true }}
+                validation={{ }}
                 errorMessage={errors.weighed_pounds?.message}
             />
 

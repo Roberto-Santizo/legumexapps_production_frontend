@@ -22,9 +22,9 @@ export class PositionDatasourceImpl implements PositionDatasource {
         }
     }
 
-    async getPositions(limit: string, page: string): Promise<PaginatedPositions> {
+    async getPositions(limit: string, page: string, lineCode: string): Promise<PaginatedPositions> {
         try {
-            const url = `${this.url}?limit=${limit}&page=${page}`;
+            const url = `${this.url}?limit=${limit}&page=${page}&lineCode=${lineCode}`;
             const { data } = await this.api.get(url);
             const response = PaginatedPositionsSchema.safeParse(data);
 
