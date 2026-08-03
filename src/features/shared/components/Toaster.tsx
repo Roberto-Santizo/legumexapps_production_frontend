@@ -24,7 +24,7 @@ export function Toaster() {
     const toasts = useSyncExternalStore(toastStore.subscribe, toastStore.getSnapshot, toastStore.getSnapshot);
 
     return (
-        <div className="pointer-events-none fixed top-4 left-1/2 z-[100] flex w-full max-w-sm -translate-x-1/2 flex-col gap-2 px-4">
+        <div className="pointer-events-none fixed top-4 left-1/2 z-100 flex w-full max-w-sm -translate-x-1/2 flex-col gap-2 px-4">
             {toasts.map((toast) => (
                 <ToastCard key={toast.id} toast={toast} />
             ))}

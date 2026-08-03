@@ -19,7 +19,7 @@ export const NAV_SECTIONS: NavSection[] = [
         ],
     },
     {
-        label: "Operación",
+        label: "Personal",
         items: [
             { to: "/lineas", text: "Líneas", icon: NotebookIcon },
             { to: "/posiciones", text: "Posiciones", icon: UserCog },
