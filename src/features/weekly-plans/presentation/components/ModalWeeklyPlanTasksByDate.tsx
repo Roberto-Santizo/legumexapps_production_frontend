@@ -3,6 +3,7 @@ import { weeklyPlanTaskProvider } from "@/features/weekly-plan-tasks/weekly-plan
 import { useQuery } from "@tanstack/react-query";
 import { useLocation, useNavigate } from "react-router-dom";
 import { WeeklyPlanTaskByDateComponent } from "@/features/weekly-plans/weekly-plans";
+import { ModalCreateWeeklyPlanTaskObservation } from "@/features/weekly-plan-task-observations/weekly-plan-task-observations";
 
 export function ModalWeeklyPlanTasksByDate() {
     const location = useLocation();
@@ -19,14 +20,18 @@ export function ModalWeeklyPlanTasksByDate() {
     });
 
     if (data) return (
-        <Modal modal={show} closeModal={handleCloseModal} title={`Tareas del ${date ?? ''}`}>
-            <div className="space-y-3">
-                {data.data.length === 0 && (<p className="text-center font-light">No existen tareas programadas</p>)}
+        <>
+            <Modal modal={show} closeModal={handleCloseModal} title={`Tareas del ${date ?? ''}`}>
+                <div className="space-y-3">
+                    {data.data.length === 0 && (<p className="text-center font-light">No existen tareas programadas</p>)}
 
-                {data.data.map(task => (
-                    <WeeklyPlanTaskByDateComponent key={task.id} task={task} refetch={refetch} />
-                ))}
-            </div>
-        </Modal>
+                    {data.data.map(task => (
+                        <WeeklyPlanTaskByDateComponent key={task.id} task={task} refetch={refetch} />
+                    ))}
+                </div>
+            </Modal>
+
+            <ModalCreateWeeklyPlanTaskObservation />
+        </>
     )
 }

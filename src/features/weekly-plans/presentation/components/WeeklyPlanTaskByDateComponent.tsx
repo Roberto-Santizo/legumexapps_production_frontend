@@ -1,5 +1,5 @@
 import { ActionsMenu, handleSetQueryParam, useNotification } from "@/features/shared/shared";
-import { BoxIcon, EditIcon, TrashIcon } from "lucide-react";
+import { BoxIcon, EditIcon, EyeIcon, MessageSquareIcon, TrashIcon } from "lucide-react";
 import { ModalUpdateWeeklyPlanTask, weeklyPlanTaskProvider, type WeeklyPlanTask } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
@@ -33,6 +33,10 @@ export function WeeklyPlanTaskByDateComponent({ task, refetch }: Props) {
 
     const handleOnPackingMaterialAction = () => {
         handleSetQueryParam(location, navigate, 'taskId', `${task.id}`);
+    }
+
+    const handleOnObservationAction = () => {
+        handleSetQueryParam(location, navigate, 'taskObservation', `${task.id}`);
     }
 
     return (
@@ -82,7 +86,9 @@ export function WeeklyPlanTaskByDateComponent({ task, refetch }: Props) {
             <div className="flex flex-col justify-center items-center">
                 <ActionsMenu
                     items={[
+                        { label: "Ver Detalles", icon: <EyeIcon />, onClick: () => navigate(`/planes-semanales/tareas/${task.id}`) },
                         { label: "Editar", icon: <EditIcon />, onClick: () => setModal(true) },
+                        { label: "Observaciones", icon: <MessageSquareIcon />, onClick: handleOnObservationAction },
                         { label: "Eliminar", icon: <TrashIcon />, onClick: handleDeleteItem, danger: true },
                     ]}
                 />

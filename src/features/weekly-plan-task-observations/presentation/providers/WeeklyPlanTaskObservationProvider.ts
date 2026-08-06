@@ -9,8 +9,8 @@ export class WeeklyPlanTaskObservationProvider {
         return this.repository.createWeeklyPlanTaskObservation(payload);
     }
 
-    getWeeklyPlanTaskObservations(limit: string, page: string): Promise<PaginatedWeeklyPlanTaskObservations> {
-        return this.repository.getWeeklyPlanTaskObservations(limit, page);
+    getWeeklyPlanTaskObservations(limit: string, page: string, weeklyPlanTaskId: string): Promise<PaginatedWeeklyPlanTaskObservations> {
+        return this.repository.getWeeklyPlanTaskObservations(limit, page, weeklyPlanTaskId);
     }
 
     getWeeklyPlanTaskObservationById(id: string): Promise<WeeklyPlanTaskObservation> {

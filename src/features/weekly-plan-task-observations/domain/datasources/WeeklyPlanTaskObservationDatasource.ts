@@ -2,7 +2,7 @@ import type { WeeklyPlanTaskObservation, WeeklyPlanTaskObservationForm, Paginate
 
 export abstract class WeeklyPlanTaskObservationDatasource {
     abstract createWeeklyPlanTaskObservation(payload: WeeklyPlanTaskObservationForm): Promise<string>;
-    abstract getWeeklyPlanTaskObservations(limit: string, page: string): Promise<PaginatedWeeklyPlanTaskObservations>;
+    abstract getWeeklyPlanTaskObservations(limit: string, page: string, weeklyPlanTaskId: string): Promise<PaginatedWeeklyPlanTaskObservations>;
     abstract getWeeklyPlanTaskObservationById(id: string): Promise<WeeklyPlanTaskObservation>;
     abstract updateWeeklyPlanTaskObservationById(id: string, payload: WeeklyPlanTaskObservationForm): Promise<string>;
     abstract deleteWeeklyPlanTaskObservationById(id: string): Promise<string>;

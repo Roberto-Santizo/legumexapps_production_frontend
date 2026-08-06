@@ -4,15 +4,16 @@ import { CreateClient, IndexClients, ShowClient, UpdateClient } from "@/features
 import { CreateDraftWeeklyPlan, IndexDraftWeeklyPlans, ShowDraftWeeklyPlan, UpdateDraftWeeklyPlan } from "@/features/draft-weekly-plans/draft-weekly-plans";
 import { CreateLine, IndexLines, ShowLine, UpdateLine } from "@/features/lines/lines";
 import { CreatePackingMaterial, IndexPackingMaterials, ShowPackingMaterial, UpdatePackingMaterial } from "@/features/packing-materials/packing-materials";
-import { IndexPackingMaterialTransactions, ShowPackingMaterialTransaction, UpdatePackingMaterialTransaction } from "@/features/packing-material-transactions/packing-material-transactions";
 import { CreatePerformance, IndexPerformances, ShowPerformance, UpdatePerformance } from "@/features/performances/performances";
 import { CreatePosition, IndexPositions, ShowPosition, UpdatePosition } from "@/features/positions/positions";
 import { CreateRawMaterial, IndexRawMaterials, ShowRawMaterial, UpdateRawMaterial } from "@/features/raw-materials/raw-materials";
 import { CreateSku, IndexSkus, ShowSku, UpdateSku } from "@/features/skus/skus";
 import { CreateTimeout, IndexTimeouts, ShowTimeout, UpdateTimeout } from "@/features/timeouts/timeouts";
 import { Dashboard } from "@/features/dashboard/Dashboard";
+import { IndexPackingMaterialTransactions, ShowPackingMaterialTransaction, UpdatePackingMaterialTransaction } from "@/features/packing-material-transactions/packing-material-transactions";
 import { Login } from "@/features/auth/auth";
 import { NotFound, ProtectedLayout, PublicLayout } from "@/features/shared/shared";
+import { ShowWeeklyPlanTask } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
 
 export default function AppRouter() {
     return (
@@ -93,6 +94,8 @@ export default function AppRouter() {
                     <Route path="/planes-semanales/crear" element={<CreateWeeklyPlan />} />
                     <Route path="/planes-semanales/:id/editar" element={<UpdateWeeklyPlan />} />
                     <Route path="/planes-semanales/:id" element={<ShowWeeklyPlan />} />
+                    
+                    <Route path="/planes-semanales/tareas/:id" element={<ShowWeeklyPlanTask />} />
                 </Route>
 
                 <Route element={<ProtectedLayout />}>
