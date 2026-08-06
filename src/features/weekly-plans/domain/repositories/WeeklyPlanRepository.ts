@@ -1,4 +1,4 @@
-import type { WeeklyPlan, WeeklyPlanForm, PaginatedWeeklyPlans, CalendarEventItem } from "@/features/weekly-plans/weekly-plans";
+import type { WeeklyPlan, WeeklyPlanForm, PaginatedWeeklyPlans, CalendarEventItem, WeeklyPlanSummaryByDate } from "@/features/weekly-plans/weekly-plans";
 
 export abstract class WeeklyPlanRepository {
     abstract createWeeklyPlan(payload: WeeklyPlanForm): Promise<string>;
@@ -8,4 +8,5 @@ export abstract class WeeklyPlanRepository {
     abstract deleteWeeklyPlanById(id: string): Promise<string>;
 
     abstract getWeeklyPlanTasksForCalendarById(id: string): Promise<CalendarEventItem[]>;
+    abstract getWeeklyPlanSummaryByDate(id: string, date: string): Promise<WeeklyPlanSummaryByDate[]>;
 }

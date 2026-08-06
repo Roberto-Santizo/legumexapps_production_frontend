@@ -32,6 +32,28 @@ export const setQueryParams = <T extends Record<string, unknown>>(filters: T) =>
     return params;
 }
 
+export const formatDateValue = (date: Date): string => {
+    const month = `${date.getMonth() + 1}`.padStart(2, '0');
+    const day = `${date.getDate()}`.padStart(2, '0');
+
+    return `${date.getFullYear()}-${month}-${day}`;
+}
+
+export const getCurrentDate = (): string => formatDateValue(new Date());
+
+export const parseDateValue = (value: string): Date => {
+    const [year, month, day] = value.split('-').map(Number);
+    return new Date(year, month - 1, day);
+}
+
+export const getIsoWeekDates = (week: number, year: number): string[] => {
+    const january4th = new Date(year, 0, 4);
+    const weekDayOffset = (january4th.getDay() + 6) % 7;
+    const monday = new Date(year, 0, 4 - weekDayOffset + (week - 1) * 7);
+
+    return Array.from({ length: 7 }, (_, index) => formatDateValue(new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + index)));
+}
+
 export function downloadBase64File(base64: string, filename: string) {
     const byteCharacters = atob(base64);
     const byteNumbers = new Array(byteCharacters.length);

@@ -3,7 +3,7 @@ import { WeeklyPlanDatasourceImpl, WeeklyPlanRepositoryImpl, } from "@/features/
 import api from "@/config/http/axios";
 
 export class WeeklyPlanProvider {
-    constructor(private repository: WeeklyPlanRepository) {}
+    constructor(private repository: WeeklyPlanRepository) { }
 
     createWeeklyPlan(payload: WeeklyPlanForm): Promise<string> {
         return this.repository.createWeeklyPlan(payload);
@@ -25,8 +25,12 @@ export class WeeklyPlanProvider {
         return this.repository.deleteWeeklyPlanById(id);
     }
 
-    getWeeklyPlanTasksForCalendarById(id: string){
+    getWeeklyPlanTasksForCalendarById(id: string) {
         return this.repository.getWeeklyPlanTasksForCalendarById(id);
+    }
+
+    getWeeklyPlanSummaryByDate(id: string, date: string) {
+        return this.repository.getWeeklyPlanSummaryByDate(id, date);
     }
 }
 
