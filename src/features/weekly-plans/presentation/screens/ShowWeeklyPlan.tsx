@@ -35,7 +35,7 @@ export function ShowWeeklyPlan() {
     const dayTotal = summary?.reduce((total, line) => total + line.total_tasks, 0) ?? 0;
 
     const handleClickOnItem = (code: string) => {
-        navigate(`/planes-semanales/tareas/${code}/${selectedDate}`)
+        navigate(`/planes-semanales/tareas/${code}/${activeDate}`)
     }
 
     if (isLoading) return <Loading />

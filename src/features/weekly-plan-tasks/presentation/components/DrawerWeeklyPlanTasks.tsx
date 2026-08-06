@@ -1,5 +1,5 @@
 import { CustomFilledButton, Drawer, FadeInLeft } from "@/features/shared/shared";
-import { ModalAssignOperationDate, ModalSplitWeeklyPlanTask, weeklyPlanTaskProvider, type WeeklyPlanTask } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
+import { defaultWeeklyPlanTaskFilters, ModalAssignOperationDate, ModalSplitWeeklyPlanTask, weeklyPlanTaskProvider, type WeeklyPlanTask } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
 import { useParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -20,7 +20,7 @@ export function DrawerWeeklyPlanTasks({ open, closeDrawer }: Props) {
 
     const { data, isLoading, refetch } = useQuery({
         queryKey: ['getWeeklyPlanTasksDrawer', id],
-        queryFn: () => weeklyPlanTaskProvider.getWeeklyPlanTasks(id!, 'true', '', '', ''),
+        queryFn: () => weeklyPlanTaskProvider.getWeeklyPlanTasks('', '', { ...defaultWeeklyPlanTaskFilters, weeklyPlanId: id!, noOperationDate: 'true' }),
         enabled: open && !!id
     });
 

@@ -1,6 +1,6 @@
-import { ApiResponseSchema } from "@/features/shared/shared";
+import { ApiResponseSchema, setQueryParams } from "@/features/shared/shared";
 import { isAxiosError, type AxiosInstance } from "axios";
-import { WeeklyPlanTaskSchema, PaginatedWeeklyPlanTasksSchema, type WeeklyPlanTaskDatasource, type WeeklyPlanTask, type WeeklyPlanTaskCreateForm, type WeeklyPlanTaskUpdateForm, type PaginatedWeeklyPlanTasks, type AssignOperationDateForm, type SplitWeeklyPlanTaskForm, type WeeklyPlanTaskPackingMaterialItem, WeeklyPlanTaskPackingMaterialItemSchema } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
+import { WeeklyPlanTaskSchema, PaginatedWeeklyPlanTasksSchema, type WeeklyPlanTaskDatasource, type WeeklyPlanTask, type WeeklyPlanTaskCreateForm, type WeeklyPlanTaskUpdateForm, type PaginatedWeeklyPlanTasks, type AssignOperationDateForm, type SplitWeeklyPlanTaskForm, type WeeklyPlanTaskPackingMaterialItem, WeeklyPlanTaskPackingMaterialItemSchema, type WeeklyPlanTaskFilters } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
 import { z } from "zod";
 
 export class WeeklyPlanTaskDatasourceImpl implements WeeklyPlanTaskDatasource {
@@ -77,9 +77,10 @@ export class WeeklyPlanTaskDatasourceImpl implements WeeklyPlanTaskDatasource {
         }
     }
 
-    async getWeeklyPlanTasks(weeklyPlanId: string, flagOperationDate: string, operationDate: string, limit: string, page: string): Promise<PaginatedWeeklyPlanTasks> {
+    async getWeeklyPlanTasks(limit: string, page: string, filters?: WeeklyPlanTaskFilters): Promise<PaginatedWeeklyPlanTasks> {
         try {
-            const url = `${this.url}?weeklyPlanId=${weeklyPlanId}&limit=${limit}&page=${page}&noOperationDate=${flagOperationDate}&operationDate=${operationDate}`;
+            const params = setQueryParams({ limit, page, ...filters });
+            const url = `${this.url}?${params.toString()}`;
             const { data } = await this.api.get(url);
             const response = PaginatedWeeklyPlanTasksSchema.safeParse(data);
 
@@ -87,7 +88,7 @@ export class WeeklyPlanTaskDatasourceImpl implements WeeklyPlanTaskDatasource {
                 return response.data;
             }
 
-            throw new Error("Error no controlado");
+            throw new Error("Información no válida");
         } catch (error) {
             if (isAxiosError(error)) throw new Error(error.response?.data.message);
 

@@ -7,3 +7,5 @@ export * from './ModalSplitWeeklyPlanTask';
 export * from './DrawerWeeklyPlanTasks';
 export * from './ModalPackingMaterialItemsByTask';
 export * from './PackingMaterialItemByTaskComponent';
+export * from './WeeklyPlanTaskRowComponent';
+export * from './WeeklyPlanTaskAssignPersonel';

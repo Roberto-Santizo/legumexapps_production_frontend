@@ -18,6 +18,7 @@ export const WeeklyPlanTaskSchema = z.object({
     line_sku_id: z.number(),
     sku_name: z.string(),
     sku_code: z.string(),
+    sku_client: z.string(),
     line_name: z.string(),
     line_code: z.string(),
     status_message: z.string(),

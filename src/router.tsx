@@ -13,7 +13,7 @@ import { Dashboard } from "@/features/dashboard/Dashboard";
 import { IndexPackingMaterialTransactions, ShowPackingMaterialTransaction, UpdatePackingMaterialTransaction } from "@/features/packing-material-transactions/packing-material-transactions";
 import { Login } from "@/features/auth/auth";
 import { NotFound, ProtectedLayout, PublicLayout } from "@/features/shared/shared";
-import { ShowWeeklyPlanTask, WeeklyPlanTasksDetailsByLineDate } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
+import { ShowWeeklyPlanTask, WeeklyPlanTaskAssignPersonel, WeeklyPlanTasksDetailsByLineDate } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
 
 export default function AppRouter() {
     return (
@@ -97,6 +97,7 @@ export default function AppRouter() {
                     
                     <Route path="/planes-semanales/tareas/:id" element={<ShowWeeklyPlanTask />} />
                     <Route path="/planes-semanales/tareas/:lineCode/:date" element={<WeeklyPlanTasksDetailsByLineDate />} />
+                    <Route path="/planes-semanales/tareas/asignar-personal/:id" element={<WeeklyPlanTaskAssignPersonel />} />
                 </Route>
 
                 <Route element={<ProtectedLayout />}>
