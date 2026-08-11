@@ -1,4 +1,4 @@
-import { CustomFilledButton, CustomNavTable, Loading, Pagination, Table, Tbody, Td, Th, Thead, Title, Tr, useNotification, usePagination } from "@/features/shared/shared";
+import { ActionsMenu, CustomFilledButton, Loading, Pagination, StatusTag, Table, Tbody, Td, Th, Thead, Title, Tr, useNotification, usePagination } from "@/features/shared/shared";
 import { EditIcon, EyeIcon, FilterIcon, PlusIcon, TrashIcon } from "lucide-react";
 import { PerformanceFiltersComponent, performanceProvider, usePerformancesFilters } from "@/features/performances/performances";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -74,11 +74,17 @@ export function IndexPerformances() {
                                 <Td>{item.lbs_performance}</Td>
                                 <Td>{item.accepted_percentage}</Td>
                                 <Td>{item.payment_method === 0 ? 'Horas Linea' : 'Horas Rendimiento'}</Td>
-                                <Td>{item.status ? 'Inactivo' : 'Activo'}</Td>
+                                <Td>
+                                    <StatusTag flag={item.status}/>
+                                </Td>
                                 <Td className="flex gap-3">
-                                    <CustomNavTable icon={<EyeIcon />} onClick={() => navigate(`/rendimientos/${item.id}`)} />
-                                    <CustomNavTable icon={<EditIcon />} onClick={() => navigate(`/rendimientos/${item.id}/editar`)} />
-                                    <CustomNavTable icon={<TrashIcon />} onClick={() => handleDeleteItem(`${item.id}`)} />
+                                    <ActionsMenu
+                                        items={[
+                                            { label: "Ver Detalles", icon: <EyeIcon />, onClick: () => navigate(`/rendimientos/${item.id}`) },
+                                            { label: "Editar", icon: <EditIcon />, onClick: () => navigate(`/rendimientos/${item.id}/editar`) },
+                                            { label: "Eliminar", icon: <TrashIcon />, onClick: () => handleDeleteItem(`${item.id}`), danger: true },
+                                        ]}
+                                    />
                                 </Td>
                             </Tr>
 
@@ -86,7 +92,6 @@ export function IndexPerformances() {
                     </Tbody>
                 </Table>
             </section>
-
 
             <Pagination
                 count={data.total!}

@@ -28,3 +28,4 @@ export * from './CustomNavTable';
 export * from './ActionsMenu';
 export * from './CustomForm';
 export * from './Toaster';
+export * from './StatusTag';

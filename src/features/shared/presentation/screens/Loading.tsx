@@ -24,7 +24,7 @@ export function Loading({ label = "Cargando", fullScreen = false }: Props) {
                 </div>
 
                 <div className="flex flex-col items-center gap-3">
-                    <span className="relative block h-[3px] w-32 overflow-hidden rounded-full bg-line" aria-hidden="true">
+                    <span className="relative block h-0.75 w-32 overflow-hidden rounded-full bg-line" aria-hidden="true">
                         <span className="loading-sweep" />
                     </span>
 
