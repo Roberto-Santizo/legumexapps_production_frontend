@@ -1,4 +1,4 @@
-import { CustomFilledButton, CustomNavTable, ErrorComponent, LoadingData, Pagination, Table, Tbody, Td, Th, Thead, Title, Tr, usePagination } from "@/features/shared/shared";
+import { ActionsMenu, CustomFilledButton, ErrorComponent, LoadingData, Pagination, Table, Tbody, Td, Th, Thead, Title, Tr, usePagination } from "@/features/shared/shared";
 import { EditIcon, EyeIcon, PlusIcon } from "lucide-react";
 import { linesRepositoryProvider } from "@/features/lines/lines";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -44,8 +44,12 @@ export function IndexLines() {
                                 <Td>{line.name}</Td>
                                 <Td>{line.code}</Td>
                                 <Td className="flex gap-3">
-                                    <CustomNavTable icon={<EyeIcon />} onClick={() => navigate(`/lineas/${line.code}`)} />
-                                    <CustomNavTable icon={<EditIcon />} onClick={() => navigate(`/lineas/${line.code}/editar`)} />
+                                    <ActionsMenu
+                                        items={[
+                                            { label: "Ver Detalles", icon: <EyeIcon />, onClick: () => navigate(`/lineas/${line.code}`) },
+                                            { label: "Editar", icon: <EditIcon />, onClick: () => navigate(`/lineas/${line.code}/editar`) },
+                                        ]}
+                                    />
                                 </Td>
                             </Tr>
 

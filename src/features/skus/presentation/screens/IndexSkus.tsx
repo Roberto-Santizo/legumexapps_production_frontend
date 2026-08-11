@@ -1,4 +1,4 @@
-import { CustomFilledButton, CustomNavTable, Loading, Pagination, Table, Tbody, Td, Th, Thead, Title, Tr, usePagination } from "@/features/shared/shared";
+import { ActionsMenu, CustomFilledButton, Loading, Pagination, Table, Tbody, Td, Th, Thead, Title, Tr, usePagination } from "@/features/shared/shared";
 import { EditIcon, EyeIcon, PlusIcon } from "lucide-react";
 import { skuProvider } from "@/features/skus/skus";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -48,8 +48,12 @@ export function IndexSkus() {
                                 <Td>{item.boxes_per_pallet}</Td>
                                 <Td>{item.client}</Td>
                                 <Td className="flex gap-3">
-                                    <CustomNavTable icon={<EyeIcon />} onClick={() => navigate(`/skus/${item.code}`)} />
-                                    <CustomNavTable icon={<EditIcon />} onClick={() => navigate(`/skus/${item.code}/editar`)} />
+                                    <ActionsMenu
+                                        items={[
+                                            { label: "Ver Detalles", icon: <EyeIcon />, onClick: () => navigate(`/skus/${item.code}`) },
+                                            { label: "Editar", icon: <EditIcon />, onClick: () => navigate(`/skus/${item.code}/editar`) },
+                                        ]}
+                                    />
                                 </Td>
                             </Tr>
 

@@ -1,33 +1,20 @@
-import { CustomFilledButton, CustomNavTable, Loading, Pagination, Table, Tbody, Td, Th, Thead, Title, Tr, useNotification, usePagination } from "@/features/shared/shared";
-import { EditIcon, EyeIcon, PlusIcon, TrashIcon } from "lucide-react";
+import { ActionsMenu, CustomFilledButton, Loading, Pagination, Table, Tbody, Td, Th, Thead, Title, Tr, usePagination } from "@/features/shared/shared";
+import { EditIcon, EyeIcon, PlusIcon } from "lucide-react";
 import { rawMaterialProvider } from "@/features/raw-materials/raw-materials";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 export function IndexRawMaterials() {
     const navigate = useNavigate();
-    const notification = useNotification();
 
     const [searchParams, setSearchParams] = useSearchParams();
     const { page, rowsPerPage } = usePagination(searchParams);
 
-    const { data, isLoading, refetch } = useQuery({
+    const { data, isLoading } = useQuery({
         queryKey: ['getRawMaterialItems', page + 1, rowsPerPage],
         queryFn: () => rawMaterialProvider.getRawMaterialItems(`${rowsPerPage}`, `${page + 1}`)
     });
 
-    const { mutate } = useMutation({
-        mutationFn: (code: string) => rawMaterialProvider.deleteRawMaterialItemByCode(code),
-        onSuccess: (message) => {
-            notification.success(message);
-            refetch();
-        },
-        onError: (err) => {
-            notification.error(err.message);
-        }
-    });
-
-    const handleDeleteItem = (code: string) => notification.question('¿Desea eliminar el item?', 'Eliminar', 'El item se eliminará de las recetas relacionadas', () => mutate(code));
     if (isLoading) return <Loading />
     if (data) return (
         <div className="space-y-5">
@@ -51,13 +38,16 @@ export function IndexRawMaterials() {
 
                     <Tbody>
                         {data.data.map(item => (
-                            <Tr>
+                            <Tr key={item.id}>
                                 <Td>{item.product_name}</Td>
                                 <Td>{item.code}</Td>
                                 <Td className="flex gap-3">
-                                    <CustomNavTable icon={<EyeIcon />} onClick={() => navigate(`/items-materia-prima/${item.code}`)} />
-                                    <CustomNavTable icon={<EditIcon />} onClick={() => navigate(`/items-materia-prima/${item.code}/editar`)} />
-                                    <CustomNavTable icon={<TrashIcon />} onClick={() => handleDeleteItem(`${item.code}`)} />
+                                    <ActionsMenu
+                                        items={[
+                                            { label: "Ver Detalles", icon: <EyeIcon />, onClick: () => navigate(`/items-materia-prima/${item.code}`) },
+                                            { label: "Editar", icon: <EditIcon />, onClick: () => navigate(`/items-materia-prima/${item.code}/editar`) },
+                                        ]}
+                                    />
                                 </Td>
                             </Tr>
 
