@@ -1,1 +1,2 @@
-export  * from './LineDependenciesByLine';
+export * from './LineDependenciesByLine';
+export * from './ModalCreateDependency';
