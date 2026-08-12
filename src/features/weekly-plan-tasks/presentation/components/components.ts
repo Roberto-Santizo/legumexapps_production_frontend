@@ -10,3 +10,5 @@ export * from './PackingMaterialItemByTaskComponent';
 export * from './WeeklyPlanTaskRowComponent';
 export * from './WeeklyPlanTaskAssignPersonel';
 export * from './StatusMessageComponent';
+export * from './WeeklyPlanTaskHeader';
+export * from './ProductionMeter';

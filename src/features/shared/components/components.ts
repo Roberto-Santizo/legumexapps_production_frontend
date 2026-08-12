@@ -30,3 +30,4 @@ export * from './CustomForm';
 export * from './Toaster';
 export * from './StatusTag';
 export * from './InformationField';
+export * from './TimelineStep';
