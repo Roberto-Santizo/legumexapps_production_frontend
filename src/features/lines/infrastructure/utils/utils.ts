@@ -4,7 +4,7 @@ import type { Line } from "@/features/lines/lines";
 export const linesOptions = (skus: Line[]): Option[] => {
     const options: Option[] = skus.map((line) => {
         return {
-            value: `${line.id}`,
+            value: line.id,
             label: line.name
         }
     })

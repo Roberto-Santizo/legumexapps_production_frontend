@@ -20,7 +20,7 @@ export function UpdatePerformance() {
         register,
         control,
         formState: { errors },
-        setValues
+        setValues,
     } = useForm<PerformanceForm>();
 
 

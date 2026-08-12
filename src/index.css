@@ -80,3 +80,25 @@
 .input-filter {
     @apply w-80 rounded-xl border border-line bg-canvas py-2 pl-10 pr-4 text-sm transition-all placeholder:text-ink-subtle focus:border-ink focus:bg-surface focus:outline-none focus:ring-2 focus:ring-ink/10;
 }
+
+@keyframes loading-sweep {
+    0% {
+        transform: translateX(-110%);
+    }
+
+    100% {
+        transform: translateX(320%);
+    }
+}
+
+.loading-sweep {
+    @apply absolute inset-y-0 left-0 block w-1/4 rounded-full bg-ink;
+    animation: loading-sweep 1.5s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .loading-sweep {
+        @apply w-full bg-ink/25;
+        animation: none;
+    }
+}

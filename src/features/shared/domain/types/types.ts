@@ -31,10 +31,12 @@ export type ToastItem = {
 };
 
 
-export type UseUrlFiltersProps<T> = {
+export type UseFiltersProps<T> = {
     schema: ZodSchema<T>;
     defaults: T;
 }
+
+export type UseUrlFiltersProps<T> = UseFiltersProps<T>;
 
 type Column<T> = {
     header: string;

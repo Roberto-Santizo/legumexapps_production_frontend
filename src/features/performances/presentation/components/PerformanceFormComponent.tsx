@@ -22,7 +22,7 @@ export function PerformanceFormComponent({ register, errors, control }: Props) {
         queryFn: () => linesRepositoryProvider.getLines('', '')
     });
 
-    if(linesData && skusData) return (
+    if (linesData && skusData) return (
         <>
             <SelectFormField<PerformanceForm>
                 name="sku_id"

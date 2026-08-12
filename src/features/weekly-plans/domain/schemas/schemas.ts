@@ -14,8 +14,14 @@ export const CalendarEventItemSchema = z.object({
     color: z.string()
 });
 
+export const WeeklyPlanSummaryByDateSchema = z.object({
+    line_id: z.number(),
+    line_code: z.string(),
+    line_name: z.string(),
+    total_tasks: z.number()
+});
+
 export const PaginatedWeeklyPlansSchema = ApiPaginatedResponseSchema.extend({
     data: z.array(WeeklyPlanSchema)
 });
-
 

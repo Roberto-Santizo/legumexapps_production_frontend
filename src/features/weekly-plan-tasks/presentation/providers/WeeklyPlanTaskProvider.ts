@@ -1,4 +1,4 @@
-import { type WeeklyPlanTask, type WeeklyPlanTaskCreateForm, type WeeklyPlanTaskUpdateForm, type WeeklyPlanTaskRepository, type PaginatedWeeklyPlanTasks, type AssignOperationDateForm, type SplitWeeklyPlanTaskForm } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
+import { type WeeklyPlanTask, type WeeklyPlanTaskCreateForm, type WeeklyPlanTaskUpdateForm, type WeeklyPlanTaskRepository, type PaginatedWeeklyPlanTasks, type AssignOperationDateForm, type SplitWeeklyPlanTaskForm, type WeeklyPlanTaskFilters } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
 import { WeeklyPlanTaskDatasourceImpl, WeeklyPlanTaskRepositoryImpl, } from "@/features/weekly-plan-tasks/infrastructure/infrastructure";
 import api from "@/config/http/axios";
 
@@ -9,8 +9,8 @@ export class WeeklyPlanTaskProvider {
         return this.repository.createWeeklyPlanTask(payload);
     }
 
-    getWeeklyPlanTasks(weeklyPlanId: string, flagOperationDate: string, operationDate: string, limit: string, page: string): Promise<PaginatedWeeklyPlanTasks> {
-        return this.repository.getWeeklyPlanTasks(weeklyPlanId, flagOperationDate, operationDate, limit, page);
+    getWeeklyPlanTasks(limit: string, page: string, filters?: WeeklyPlanTaskFilters): Promise<PaginatedWeeklyPlanTasks> {
+        return this.repository.getWeeklyPlanTasks(limit, page, filters);
     }
 
     getWeeklyPlanTaskById(id: string): Promise<WeeklyPlanTask> {

@@ -1,9 +1,10 @@
 import { ActionsMenu, handleSetQueryParam, useNotification } from "@/features/shared/shared";
-import { BoxIcon, EditIcon, TrashIcon } from "lucide-react";
+import { BoxIcon, EditIcon, EyeIcon, MessageSquareIcon, TrashIcon } from "lucide-react";
 import { ModalUpdateWeeklyPlanTask, weeklyPlanTaskProvider, type WeeklyPlanTask } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
+import { StatusMessageComponent } from "@/features/weekly-plan-tasks/presentation/components/StatusMessageComponent";
 
 type Props = {
     task: WeeklyPlanTask;
@@ -35,6 +36,10 @@ export function WeeklyPlanTaskByDateComponent({ task, refetch }: Props) {
         handleSetQueryParam(location, navigate, 'taskId', `${task.id}`);
     }
 
+    const handleOnObservationAction = () => {
+        handleSetQueryParam(location, navigate, 'taskObservation', `${task.id}`);
+    }
+
     return (
         <div
             key={task.id}
@@ -46,9 +51,7 @@ export function WeeklyPlanTaskByDateComponent({ task, refetch }: Props) {
                         {task.sku_name}
                     </h3>
 
-                    <span className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-700">
-                        {task.status_message}
-                    </span>
+                    <StatusMessageComponent message={task.status_message} status={task.status}/>
                 </div>
 
                 <p className="mt-1 text-xs text-gray-500">
@@ -82,7 +85,9 @@ export function WeeklyPlanTaskByDateComponent({ task, refetch }: Props) {
             <div className="flex flex-col justify-center items-center">
                 <ActionsMenu
                     items={[
+                        { label: "Ver Detalles", icon: <EyeIcon />, onClick: () => navigate(`/planes-semanales/tareas/${task.id}`) },
                         { label: "Editar", icon: <EditIcon />, onClick: () => setModal(true) },
+                        { label: "Observaciones", icon: <MessageSquareIcon />, onClick: handleOnObservationAction },
                         { label: "Eliminar", icon: <TrashIcon />, onClick: handleDeleteItem, danger: true },
                     ]}
                 />

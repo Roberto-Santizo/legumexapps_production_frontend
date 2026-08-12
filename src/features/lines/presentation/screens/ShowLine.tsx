@@ -59,7 +59,7 @@ export function ShowLine() {
 
                         {positions.data.length > 0 && (
                             <p className="text-xs text-ink-muted">
-                                {activeCount} {activeCount === 1 ? 'activo' : 'activos'} · {inactiveCount} {inactiveCount === 1 ? 'inactivo' : 'inactivos'}
+                                {activeCount} {activeCount === 1 ? 'activos' : 'activo'} · {inactiveCount} {inactiveCount === 0 ? 'inactivos' : 'inactivo'}
                             </p>
                         )}
                     </div>
@@ -72,7 +72,7 @@ export function ShowLine() {
                                 {positions.data.map(position => (
                                     <li key={position.id} className="relative flex items-center gap-4 px-5 py-4">
                                         <span
-                                            className={`z-10 size-2.5 shrink-0 rounded-full ring-4 ring-surface ${position.status ? 'bg-line-strong' : 'bg-[#4d6b2f]'}`}
+                                            className={`z-10 size-2.5 shrink-0 rounded-full ring-4 ring-surface ${position.status ? 'bg-[#4d6b2f] ' : 'bg-line-strong'}`}
                                             aria-hidden="true"
                                         />
 
@@ -81,7 +81,7 @@ export function ShowLine() {
                                         <span className="flex-1 text-sm text-ink">{position.activity}</span>
 
                                         <span className={`text-xs font-medium ${position.status ? 'text-ink-subtle' : 'text-[#4d6b2f]'}`}>
-                                            {position.status ? 'Inactivo' : 'Activo'}
+                                            {position.status ? 'Activo' : 'Inactivo'}
                                         </span>
                                     </li>
                                 ))}

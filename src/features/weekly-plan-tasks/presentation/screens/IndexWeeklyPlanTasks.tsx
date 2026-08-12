@@ -1,6 +1,6 @@
 import { CustomFilledButton, CustomNavTable, Loading, Pagination, Table, Tbody, Td, Th, Thead, Title, Tr, useNotification, usePagination } from "@/features/shared/shared";
 import { EditIcon, EyeIcon, PlusIcon, TrashIcon } from "lucide-react";
-import { weeklyPlanTaskProvider } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
+import { useWeeklyPlanTaskFilters, weeklyPlanTaskProvider } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
@@ -10,10 +10,11 @@ export function IndexWeeklyPlanTasks() {
 
     const [searchParams, setSearchParams] = useSearchParams();
     const { page, rowsPerPage } = usePagination(searchParams);
+    const { filters } = useWeeklyPlanTaskFilters();
 
     const { data, isLoading, refetch } = useQuery({
-        queryKey: ['getWeeklyPlanTasks', page + 1, rowsPerPage],
-        queryFn: () => weeklyPlanTaskProvider.getWeeklyPlanTasks('', '', '', `${rowsPerPage}`, `${page + 1}`)
+        queryKey: ['getWeeklyPlanTasks', page + 1, rowsPerPage, filters],
+        queryFn: () => weeklyPlanTaskProvider.getWeeklyPlanTasks(`${rowsPerPage}`, `${page + 1}`, filters)
     });
 
     const { mutate } = useMutation({

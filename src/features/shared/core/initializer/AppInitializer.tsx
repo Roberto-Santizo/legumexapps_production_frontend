@@ -31,7 +31,7 @@ export const AppInitializer = ({ children }: { children: React.ReactNode }) => {
     });
 
     if (loading) {
-        return <Loading />;
+        return <Loading fullScreen />;
     }
 
     return <>{children}</>;

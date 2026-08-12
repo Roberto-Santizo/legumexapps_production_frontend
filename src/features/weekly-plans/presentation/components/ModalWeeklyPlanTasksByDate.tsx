@@ -1,8 +1,9 @@
 import { getQueryParam, handleDeleteQueryParam, Modal, queryParamExists } from "@/features/shared/shared";
-import { weeklyPlanTaskProvider } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
+import { defaultWeeklyPlanTaskFilters, weeklyPlanTaskProvider } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation, useNavigate } from "react-router-dom";
 import { WeeklyPlanTaskByDateComponent } from "@/features/weekly-plans/weekly-plans";
+import { ModalCreateWeeklyPlanTaskObservation } from "@/features/weekly-plan-task-observations/weekly-plan-task-observations";
 
 export function ModalWeeklyPlanTasksByDate() {
     const location = useLocation();
@@ -14,19 +15,23 @@ export function ModalWeeklyPlanTasksByDate() {
 
     const { data, refetch } = useQuery({
         queryKey: ['getWeeklyPlanTasksByDate', date],
-        queryFn: () => weeklyPlanTaskProvider.getWeeklyPlanTasks('', '', date, '', ''),
+        queryFn: () => weeklyPlanTaskProvider.getWeeklyPlanTasks('', '', { ...defaultWeeklyPlanTaskFilters, operationDate: date }),
         enabled: !!date
     });
 
     if (data) return (
-        <Modal modal={show} closeModal={handleCloseModal} title={`Tareas del ${date ?? ''}`}>
-            <div className="space-y-3">
-                {data.data.length === 0 && (<p className="text-center font-light">No existen tareas programadas</p>)}
+        <>
+            <Modal modal={show} closeModal={handleCloseModal} title={`Tareas del ${date ?? ''}`}>
+                <div className="space-y-3">
+                    {data.data.length === 0 && (<p className="text-center font-light">No existen tareas programadas</p>)}
 
-                {data.data.map(task => (
-                    <WeeklyPlanTaskByDateComponent key={task.id} task={task} refetch={refetch} />
-                ))}
-            </div>
-        </Modal>
+                    {data.data.map(task => (
+                        <WeeklyPlanTaskByDateComponent key={task.id} task={task} refetch={refetch} />
+                    ))}
+                </div>
+            </Modal>
+
+            <ModalCreateWeeklyPlanTaskObservation />
+        </>
     )
 }
