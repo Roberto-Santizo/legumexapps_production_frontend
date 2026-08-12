@@ -4,6 +4,7 @@ import { ModalUpdateWeeklyPlanTask, weeklyPlanTaskProvider, type WeeklyPlanTask 
 import { useLocation, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
+import { StatusMessageComponent } from "@/features/weekly-plan-tasks/presentation/components/StatusMessageComponent";
 
 type Props = {
     task: WeeklyPlanTask;
@@ -50,9 +51,7 @@ export function WeeklyPlanTaskByDateComponent({ task, refetch }: Props) {
                         {task.sku_name}
                     </h3>
 
-                    <span className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-700">
-                        {task.status_message}
-                    </span>
+                    <StatusMessageComponent message={task.status_message} status={task.status}/>
                 </div>
 
                 <p className="mt-1 text-xs text-gray-500">

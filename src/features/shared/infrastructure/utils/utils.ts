@@ -87,3 +87,5 @@ export async function exportToExcel<T>({ fileName, sheetName, columns, data }: E
 
     saveAs(new Blob([buffer]), `${fileName}.xlsx`);
 }
+
+export const formatNumber = (value: number | null) => (value ?? 0).toLocaleString('es-GT');

@@ -51,7 +51,7 @@ export function IndexWeeklyPlans() {
 
                     <Tbody>
                         {data.data.map(item => (
-                            <Tr>
+                            <Tr key={item.id}>
                                 <Td>{item.week}</Td>
                                 <Td>{item.year}</Td>
                                 <Td>
