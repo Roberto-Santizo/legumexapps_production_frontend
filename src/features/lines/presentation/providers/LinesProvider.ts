@@ -25,6 +25,9 @@ export class LinesProvider {
         return this.repository.deleteLineByCode(code);
     }
 
+    uploadFile(file: File): Promise<string> {
+        return this.repository.uploadFile(file);
+    }
 }
 
 const datasource = new LinesDatasourceImpl(api);

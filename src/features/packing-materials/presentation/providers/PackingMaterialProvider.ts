@@ -24,6 +24,10 @@ export class PackingMaterialProvider {
     deletePackingMaterialItemByCode(code: string): Promise<string> {
         return this.repository.deletePackingMaterialItemByCode(code);
     }
+
+    uploadFile(file: File): Promise<string> {
+        return this.repository.uploadFile(file);
+    }
 }
 
 const datasource = new PackingMaterialDatasourceImpl(api);

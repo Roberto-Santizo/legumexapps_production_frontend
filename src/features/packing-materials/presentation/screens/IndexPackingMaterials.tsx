@@ -1,11 +1,20 @@
-import { ActionsMenu, CustomFilledButton, Loading, Pagination, Table, Tbody, Td, Th, Thead, Title, Tr, usePagination } from "@/features/shared/shared";
-import { EditIcon, EyeIcon, PlusIcon } from "lucide-react";
+import { BulkUploadModal, type BulkUploadColumn, ActionsMenu, CustomFilledButton, Loading, Pagination, Table, Tbody, Td, Th, Thead, Title, Tr, usePagination } from "@/features/shared/shared";
+import { EditIcon, EyeIcon, PlusIcon, UploadIcon } from "lucide-react";
 import { packingMaterialProvider } from "@/features/packing-materials/packing-materials";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useState } from "react";
+
+const bulkUploadColumns: BulkUploadColumn[] = [
+    { header: "Código", description: "Código único del material" },
+    { header: "Nombre", description: "Nombre del material" },
+    { header: "Descripción", description: "Descripción del material" },
+];
 
 export function IndexPackingMaterials() {
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
+    const [bulkUpload, setBulkUpload] = useState(false);
 
     const [searchParams, setSearchParams] = useSearchParams();
     const { page, rowsPerPage } = usePagination(searchParams);
@@ -20,13 +29,31 @@ export function IndexPackingMaterials() {
         <div className="space-y-5">
             <div className="flex justify-between items-center">
                 <Title title="Materiales de Empaque" subtitle="Listado de materiales de empaque registrados" />
-                <CustomFilledButton
-                    label="Crear Item"
-                    type="button"
-                    icon={<PlusIcon />}
-                    onClick={() => navigate('/items-material-empaque/crear')}
-                />
+                <div className="flex gap-3">
+                    <CustomFilledButton
+                        label="Carga Masiva"
+                        type="button"
+                        icon={<UploadIcon />}
+                        onClick={() => setBulkUpload(true)}
+                    />
+                    <CustomFilledButton
+                        label="Crear Item"
+                        type="button"
+                        icon={<PlusIcon />}
+                        onClick={() => navigate('/items-material-empaque/crear')}
+                    />
+                </div>
             </div>
+
+            <BulkUploadModal
+                modal={bulkUpload}
+                closeModal={() => setBulkUpload(false)}
+                title="Carga masiva de materiales de empaque"
+                templateName="materiales_empaque"
+                columns={bulkUploadColumns}
+                upload={(file) => packingMaterialProvider.uploadFile(file)}
+                onSuccess={() => queryClient.invalidateQueries({ queryKey: ['getPackingMaterialItems'] })}
+            />
 
             <section>
                 <Table>

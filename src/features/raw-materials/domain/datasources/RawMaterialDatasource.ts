@@ -6,4 +6,5 @@ export abstract class RawMaterialDatasource {
     abstract getRawMaterialItemByCode(code: string): Promise<RawMaterialItem>;
     abstract updateRawMaterialItemByCode(code: string, payload: RawMaterialItemForm): Promise<string>;
     abstract deleteRawMaterialItemByCode(code: string): Promise<string>;
+    abstract uploadFile(file: File): Promise<string>;
 }

@@ -22,4 +22,8 @@ export class SkuRepositoryImpl implements SkuRepository {
     deleteSkuByCode(code: string): Promise<string> {
         return this.datasource.deleteSkuByCode(code)
     }
+
+    uploadFile(file: File): Promise<string> {
+        return this.datasource.uploadFile(file);
+    }
 }

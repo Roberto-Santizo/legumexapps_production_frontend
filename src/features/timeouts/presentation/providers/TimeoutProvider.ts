@@ -24,6 +24,10 @@ export class TimeoutProvider {
     deleteTimeoutById(id: string): Promise<string> {
         return this.repository.deleteTimeoutById(id);
     }
+
+    uploadFile(file: File): Promise<string> {
+        return this.repository.uploadFile(file);
+    }
 }
 
 const datasource = new TimeoutDatasourceImpl(api);

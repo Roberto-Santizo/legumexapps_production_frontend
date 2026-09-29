@@ -1,11 +1,19 @@
-import { ActionsMenu, CustomFilledButton, Loading, Pagination, Table, Tbody, Td, Th, Thead, Title, Tr, usePagination } from "@/features/shared/shared";
-import { EditIcon, EyeIcon, PlusIcon } from "lucide-react";
+import { BulkUploadModal, type BulkUploadColumn, ActionsMenu, CustomFilledButton, Loading, Pagination, Table, Tbody, Td, Th, Thead, Title, Tr, usePagination } from "@/features/shared/shared";
+import { EditIcon, EyeIcon, PlusIcon, UploadIcon } from "lucide-react";
 import { rawMaterialProvider } from "@/features/raw-materials/raw-materials";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useState } from "react";
+
+const bulkUploadColumns: BulkUploadColumn[] = [
+    { header: "Código", description: "Código único de la materia prima" },
+    { header: "Nombre Producto", description: "Nombre del producto" },
+];
 
 export function IndexRawMaterials() {
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
+    const [bulkUpload, setBulkUpload] = useState(false);
 
     const [searchParams, setSearchParams] = useSearchParams();
     const { page, rowsPerPage } = usePagination(searchParams);
@@ -20,13 +28,31 @@ export function IndexRawMaterials() {
         <div className="space-y-5">
             <div className="flex justify-between items-center">
                 <Title title="Materias Primas" subtitle="Listado de materias primas registradas" />
-                <CustomFilledButton
-                    label="Crear Item"
-                    type="button"
-                    icon={<PlusIcon />}
-                    onClick={() => navigate('/items-materia-prima/crear')}
-                />
+                <div className="flex gap-3">
+                    <CustomFilledButton
+                        label="Carga Masiva"
+                        type="button"
+                        icon={<UploadIcon />}
+                        onClick={() => setBulkUpload(true)}
+                    />
+                    <CustomFilledButton
+                        label="Crear Item"
+                        type="button"
+                        icon={<PlusIcon />}
+                        onClick={() => navigate('/items-materia-prima/crear')}
+                    />
+                </div>
             </div>
+
+            <BulkUploadModal
+                modal={bulkUpload}
+                closeModal={() => setBulkUpload(false)}
+                title="Carga masiva de materias primas"
+                templateName="materias_primas"
+                columns={bulkUploadColumns}
+                upload={(file) => rawMaterialProvider.uploadFile(file)}
+                onSuccess={() => queryClient.invalidateQueries({ queryKey: ['getRawMaterialItems'] })}
+            />
 
             <section>
                 <Table>

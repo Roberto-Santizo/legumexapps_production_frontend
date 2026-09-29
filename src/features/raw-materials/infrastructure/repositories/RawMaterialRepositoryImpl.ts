@@ -22,4 +22,8 @@ export class RawMaterialRepositoryImpl implements RawMaterialRepository {
     deleteRawMaterialItemByCode(code: string): Promise<string> {
         return this.datasource.deleteRawMaterialItemByCode(code)
     }
+
+    uploadFile(file: File): Promise<string> {
+        return this.datasource.uploadFile(file);
+    }
 }

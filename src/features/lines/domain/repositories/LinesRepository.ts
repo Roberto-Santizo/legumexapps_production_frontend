@@ -6,4 +6,5 @@ export abstract class LinesRepository {
     abstract getLineByCode(code: string): Promise<Line>;
     abstract updateLineByCode(code: string, payload: LineForm): Promise<string>;
     abstract deleteLineByCode(code: string): Promise<string>;
+    abstract uploadFile(file: File): Promise<string>;
 }

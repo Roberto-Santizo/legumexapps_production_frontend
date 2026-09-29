@@ -6,4 +6,5 @@ export abstract class ClientRepository {
     abstract getClientById(id: string): Promise<Client>;
     abstract updateClientById(id: string, payload: ClientForm): Promise<string>;
     abstract deleteClientById(id: string): Promise<string>;
+    abstract uploadFile(file: File): Promise<string>;
 }

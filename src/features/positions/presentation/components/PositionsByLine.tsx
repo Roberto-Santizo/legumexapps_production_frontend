@@ -4,13 +4,13 @@ import { WorkflowIcon } from "lucide-react";
 import type { Line } from "@/features/lines/lines";
 
 type Props = {
-    id: Line['id']
+    code: Line['code']
 }
 
-export function PositionsByLine({ id }: Props) {
+export function PositionsByLine({ code }: Props) {
     const { data: positions } = useQuery({
-        queryKey: ['getPositionsByLineCode', id],
-        queryFn: () => positionProvider.getPositions('', '', `${id}`),
+        queryKey: ['getPositionsByLineCode', code],
+        queryFn: () => positionProvider.getPositions('', '', code),
     });
 
     if (positions) return (

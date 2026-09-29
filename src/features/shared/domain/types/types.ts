@@ -50,3 +50,12 @@ export interface ExportExcelOptions<T> {
     columns: Column<T>[];
     data: T[];
 }
+export type BulkUploadColumn = {
+    header: string;
+    description: string;
+    optional?: boolean;
+}
+
+export type BulkUploadForm = {
+    file: File | null;
+}

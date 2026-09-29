@@ -22,4 +22,8 @@ export class PackingMaterialRepositoryImpl implements PackingMaterialRepository 
     deletePackingMaterialItemByCode(code: string): Promise<string> {
         return this.datasource.deletePackingMaterialItemByCode(code)
     }
+
+    uploadFile(file: File): Promise<string> {
+        return this.datasource.uploadFile(file);
+    }
 }

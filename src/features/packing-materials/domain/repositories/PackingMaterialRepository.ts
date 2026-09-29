@@ -6,4 +6,5 @@ export abstract class PackingMaterialRepository {
     abstract getPackingMaterialItemByCode(code: string): Promise<PackingMaterialItem>;
     abstract updatePackingMaterialItemByCode(code: string, payload: PackingMaterialItemForm): Promise<string>;
     abstract deletePackingMaterialItemByCode(code: string): Promise<string>;
+    abstract uploadFile(file: File): Promise<string>;
 }

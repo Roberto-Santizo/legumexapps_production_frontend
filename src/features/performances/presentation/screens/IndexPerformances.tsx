@@ -1,12 +1,22 @@
-import { ActionsMenu, CustomFilledButton, Loading, Pagination, StatusTag, Table, Tbody, Td, Th, Thead, Title, Tr, useNotification, usePagination } from "@/features/shared/shared";
-import { EditIcon, EyeIcon, FilterIcon, PlusIcon, TrashIcon } from "lucide-react";
+import { BulkUploadModal, type BulkUploadColumn, ActionsMenu, CustomFilledButton, Loading, Pagination, StatusTag, Table, Tbody, Td, Th, Thead, Title, Tr, useNotification, usePagination } from "@/features/shared/shared";
+import { EditIcon, EyeIcon, FilterIcon, PlusIcon, TrashIcon, UploadIcon } from "lucide-react";
 import { PerformanceFiltersComponent, performanceProvider, usePerformancesFilters } from "@/features/performances/performances";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useState } from "react";
 
+const bulkUploadColumns: BulkUploadColumn[] = [
+    { header: "SKU", description: "Código de un SKU existente" },
+    { header: "Línea", description: "Código de una línea existente" },
+    { header: "Rendimiento Lbs", description: "Numérico" },
+    { header: "Porcentaje Aceptado", description: "Numérico" },
+    { header: "Método Pago", description: "1, 0, SI o NO" },
+];
+
 export function IndexPerformances() {
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
+    const [bulkUpload, setBulkUpload] = useState(false);
     const notification = useNotification();
     const [showFilters, setShowFilters] = useState(false);
 
@@ -38,6 +48,12 @@ export function IndexPerformances() {
                 <Title title="Rendimientos" subtitle="Listado de rendimientos registrados" />
                 <div className="flex gap-3">
                     <CustomFilledButton
+                        label="Carga Masiva"
+                        type="button"
+                        icon={<UploadIcon />}
+                        onClick={() => setBulkUpload(true)}
+                    />
+                    <CustomFilledButton
                         label="Crear Rendimiento"
                         type="button"
                         icon={<PlusIcon />}
@@ -53,6 +69,17 @@ export function IndexPerformances() {
             </div>
 
             <PerformanceFiltersComponent close={() => setShowFilters(false)} showFilters={showFilters} />
+
+            <BulkUploadModal
+                modal={bulkUpload}
+                closeModal={() => setBulkUpload(false)}
+                title="Carga masiva de rendimientos"
+                templateName="rendimientos_linea_sku"
+                columns={bulkUploadColumns}
+                upload={(file) => performanceProvider.uploadFile(file)}
+                onSuccess={() => queryClient.invalidateQueries({ queryKey: ['getPerformances'] })}
+                note="Las líneas y los SKUs deben estar registrados antes. El par SKU–Línea no puede repetirse."
+            />
 
             <section>
                 <Table>

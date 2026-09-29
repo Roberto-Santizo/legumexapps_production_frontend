@@ -42,7 +42,7 @@ export function ShowLine() {
                     </div>
                 </section>
 
-                <PositionsByLine id={data.id} />
+                <PositionsByLine code={data.code} />
                 <LineDependenciesByLine id={data.id} />
             </div>
         )

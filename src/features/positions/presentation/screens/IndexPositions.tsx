@@ -1,11 +1,20 @@
-import { ActionsMenu, CustomFilledButton, Loading, Pagination, StatusTag, Table, Tbody, Td, Th, Thead, Title, Tr, usePagination } from "@/features/shared/shared";
-import { EditIcon, EyeIcon, PlusIcon } from "lucide-react";
+import { BulkUploadModal, type BulkUploadColumn, ActionsMenu, CustomFilledButton, Loading, Pagination, StatusTag, Table, Tbody, Td, Th, Thead, Title, Tr, usePagination } from "@/features/shared/shared";
+import { EditIcon, EyeIcon, PlusIcon, UploadIcon } from "lucide-react";
 import { positionProvider } from "@/features/positions/positions";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useState } from "react";
+
+const bulkUploadColumns: BulkUploadColumn[] = [
+    { header: "Código", description: "Código único del puesto" },
+    { header: "Actividad", description: "Actividad del puesto" },
+    { header: "Línea", description: "Código de una línea existente" },
+];
 
 export function IndexPositions() {
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
+    const [bulkUpload, setBulkUpload] = useState(false);
 
     const [searchParams, setSearchParams] = useSearchParams();
     const { page, rowsPerPage } = usePagination(searchParams);
@@ -20,13 +29,32 @@ export function IndexPositions() {
         <div className="space-y-5">
             <div className="flex justify-between items-center">
                 <Title title="Puestos" subtitle="Listado de puestos registrados" />
-                <CustomFilledButton
-                    label="Crear Puesto"
-                    type="button"
-                    icon={<PlusIcon />}
-                    onClick={() => navigate('/posiciones/crear')}
-                />
+                <div className="flex gap-3">
+                    <CustomFilledButton
+                        label="Carga Masiva"
+                        type="button"
+                        icon={<UploadIcon />}
+                        onClick={() => setBulkUpload(true)}
+                    />
+                    <CustomFilledButton
+                        label="Crear Puesto"
+                        type="button"
+                        icon={<PlusIcon />}
+                        onClick={() => navigate('/posiciones/crear')}
+                    />
+                </div>
             </div>
+
+            <BulkUploadModal
+                modal={bulkUpload}
+                closeModal={() => setBulkUpload(false)}
+                title="Carga masiva de puestos"
+                templateName="posiciones"
+                columns={bulkUploadColumns}
+                upload={(file) => positionProvider.uploadFile(file)}
+                onSuccess={() => queryClient.invalidateQueries({ queryKey: ['getPositions'] })}
+                note="Las líneas deben estar registradas antes de cargar los puestos."
+            />
 
             <section>
                 <Table>

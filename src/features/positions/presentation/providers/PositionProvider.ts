@@ -24,6 +24,10 @@ export class PositionProvider {
     deletePositionById(id: string): Promise<string> {
         return this.repository.deletePositionById(id);
     }
+
+    uploadFile(file: File): Promise<string> {
+        return this.repository.uploadFile(file);
+    }
 }
 
 const datasource = new PositionDatasourceImpl(api);

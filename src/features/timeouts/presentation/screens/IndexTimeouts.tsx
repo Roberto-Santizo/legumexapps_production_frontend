@@ -1,11 +1,18 @@
-import { ActionsMenu, CustomFilledButton, Loading, Pagination, Table, Tbody, Td, Th, Thead, Title, Tr, usePagination } from "@/features/shared/shared";
-import { EditIcon, EyeIcon, PlusIcon } from "lucide-react";
+import { BulkUploadModal, type BulkUploadColumn, ActionsMenu, CustomFilledButton, Loading, Pagination, Table, Tbody, Td, Th, Thead, Title, Tr, usePagination } from "@/features/shared/shared";
+import { EditIcon, EyeIcon, PlusIcon, UploadIcon } from "lucide-react";
 import { timeoutProvider } from "@/features/timeouts/timeouts";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useState } from "react";
+
+const bulkUploadColumns: BulkUploadColumn[] = [
+    { header: "Nombre", description: "Nombre único, sin distinguir mayúsculas" },
+];
 
 export function IndexTimeouts() {
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
+    const [bulkUpload, setBulkUpload] = useState(false);
 
     const [searchParams, setSearchParams] = useSearchParams();
     const { page, rowsPerPage } = usePagination(searchParams);
@@ -20,13 +27,31 @@ export function IndexTimeouts() {
         <div className="space-y-5">
             <div className="flex justify-between items-center">
                 <Title title="Tiempos Muertos" subtitle="Listado de tiempos muertos registrados" />
-                <CustomFilledButton
-                    label="Crear Tiempo Muerto"
-                    type="button"
-                    icon={<PlusIcon />}
-                    onClick={() => navigate('/tiempos-muertos/crear')}
-                />
+                <div className="flex gap-3">
+                    <CustomFilledButton
+                        label="Carga Masiva"
+                        type="button"
+                        icon={<UploadIcon />}
+                        onClick={() => setBulkUpload(true)}
+                    />
+                    <CustomFilledButton
+                        label="Crear Tiempo Muerto"
+                        type="button"
+                        icon={<PlusIcon />}
+                        onClick={() => navigate('/tiempos-muertos/crear')}
+                    />
+                </div>
             </div>
+
+            <BulkUploadModal
+                modal={bulkUpload}
+                closeModal={() => setBulkUpload(false)}
+                title="Carga masiva de tiempos muertos"
+                templateName="tiempos_muertos"
+                columns={bulkUploadColumns}
+                upload={(file) => timeoutProvider.uploadFile(file)}
+                onSuccess={() => queryClient.invalidateQueries({ queryKey: ['getTimeouts'] })}
+            />
 
             <section>
                 <Table>

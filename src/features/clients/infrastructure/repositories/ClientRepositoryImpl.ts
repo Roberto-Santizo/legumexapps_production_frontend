@@ -22,4 +22,8 @@ export class ClientRepositoryImpl implements ClientRepository {
     deleteClientById(id: string): Promise<string> {
         return this.datasource.deleteClientById(id)
     }
+
+    uploadFile(file: File): Promise<string> {
+        return this.datasource.uploadFile(file);
+    }
 }
