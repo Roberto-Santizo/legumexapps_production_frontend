@@ -24,6 +24,10 @@ export class RawMaterialProvider {
     deleteRawMaterialItemByCode(code: string): Promise<string> {
         return this.repository.deleteRawMaterialItemByCode(code);
     }
+
+    uploadFile(file: File): Promise<string> {
+        return this.repository.uploadFile(file);
+    }
 }
 
 const datasource = new RawMaterialDatasourceImpl(api);

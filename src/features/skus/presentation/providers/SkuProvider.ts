@@ -24,6 +24,10 @@ export class SkuProvider {
     deleteSkuByCode(code: string): Promise<string> {
         return this.repository.deleteSkuByCode(code);
     }
+
+    uploadFile(file: File): Promise<string> {
+        return this.repository.uploadFile(file);
+    }
 }
 
 const datasource = new SkuDatasourceImpl(api);

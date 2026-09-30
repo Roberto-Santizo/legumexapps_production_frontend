@@ -22,4 +22,8 @@ export class TimeoutRepositoryImpl implements TimeoutRepository {
     deleteTimeoutById(id: string): Promise<string> {
         return this.datasource.deleteTimeoutById(id)
     }
+
+    uploadFile(file: File): Promise<string> {
+        return this.datasource.uploadFile(file);
+    }
 }

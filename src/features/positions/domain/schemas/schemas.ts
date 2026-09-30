@@ -7,7 +7,7 @@ export const PositionSchema = z.object({
     activity: z.string(),
     line_id: z.number(),
     line: z.string(),
-    status: z.number()
+    status: z.boolean()
 });
 
 export const PaginatedPositionsSchema = ApiPaginatedResponseSchema.extend({

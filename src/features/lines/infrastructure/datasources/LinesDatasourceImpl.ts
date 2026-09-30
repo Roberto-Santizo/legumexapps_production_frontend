@@ -80,4 +80,25 @@ export class LinesDatasourceImpl implements LinesDatasource {
         throw new Error('Method not implemented.');
     }
 
+    async uploadFile(file: File): Promise<string> {
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const { data } = await this.api.post(`${this.url}/uploadFile`, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            const response = ApiResponseSchema.safeParse(data);
+
+            if (response.success) {
+                return response.data.message;
+            }
+
+            throw new Error("Información no válida");
+        } catch (error) {
+            if (isAxiosError(error)) throw new Error(error.response?.data.message);
+
+            throw new Error("Error no controlado");
+        }
+    }
 }

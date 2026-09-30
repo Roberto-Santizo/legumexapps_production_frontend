@@ -6,4 +6,5 @@ export abstract class PerformanceDatasource {
     abstract getPerformanceById(id: string): Promise<Performance>;
     abstract updatePerformanceById(id: string, payload: PerformanceForm): Promise<string>;
     abstract deletePerformanceById(id: string): Promise<string>;
+    abstract uploadFile(file: File): Promise<string>;
 }

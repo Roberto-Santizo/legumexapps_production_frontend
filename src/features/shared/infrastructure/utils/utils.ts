@@ -89,3 +89,21 @@ export async function exportToExcel<T>({ fileName, sheetName, columns, data }: E
 }
 
 export const formatNumber = (value: number | null) => (value ?? 0).toLocaleString('es-GT');
+
+export async function downloadExcelTemplate(fileName: string, headers: string[]) {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Datos');
+
+    worksheet.columns = headers.map(header => ({
+        header,
+        key: header,
+        width: Math.max(header.length + 6, 18),
+        style: { numFmt: '@' },
+    }));
+
+    worksheet.getRow(1).font = { bold: true };
+
+    const buffer = await workbook.xlsx.writeBuffer();
+
+    saveAs(new Blob([buffer]), `${fileName}.xlsx`);
+}

@@ -22,4 +22,8 @@ export class PositionRepositoryImpl implements PositionRepository {
     deletePositionById(id: string): Promise<string> {
         return this.datasource.deletePositionById(id)
     }
+
+    uploadFile(file: File): Promise<string> {
+        return this.datasource.uploadFile(file);
+    }
 }

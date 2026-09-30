@@ -6,4 +6,5 @@ export abstract class SkuRepository {
     abstract getSkuByCode(code: string): Promise<Sku>;
     abstract updateSkuByCode(code: string, payload: SkuForm): Promise<string>;
     abstract deleteSkuByCode(code: string): Promise<string>;
+    abstract uploadFile(file: File): Promise<string>;
 }

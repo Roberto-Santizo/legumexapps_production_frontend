@@ -1,11 +1,20 @@
-import { ActionsMenu, CustomFilledButton, ErrorComponent, LoadingData, Pagination, Table, Tbody, Td, Th, Thead, Title, Tr, usePagination } from "@/features/shared/shared";
-import { EditIcon, EyeIcon, PlusIcon } from "lucide-react";
+import { BulkUploadModal, type BulkUploadColumn, ActionsMenu, CustomFilledButton, ErrorComponent, LoadingData, Pagination, Table, Tbody, Td, Th, Thead, Title, Tr, usePagination } from "@/features/shared/shared";
+import { EditIcon, EyeIcon, PlusIcon, UploadIcon } from "lucide-react";
 import { linesRepositoryProvider } from "@/features/lines/lines";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+
+const bulkUploadColumns: BulkUploadColumn[] = [
+    { header: "Nombre", description: "Nombre de la línea" },
+    { header: "Código", description: "Código único de la línea" },
+    { header: "Turno", description: "Número entero" },
+];
 
 export function IndexLines() {
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
+    const [bulkUpload, setBulkUpload] = useState(false);
     const [searchParams, setSearchParams] = useSearchParams();
     const { page, rowsPerPage } = usePagination(searchParams);
 
@@ -22,13 +31,31 @@ export function IndexLines() {
             <div className="flex justify-between items-center">
 
                 <Title title="Líneas" subtitle="Listado de líneas registradas" />
-                <CustomFilledButton
-                    label="Crear Línea"
-                    type="button"
-                    icon={<PlusIcon />}
-                    onClick={() => navigate('/lineas/crear')}
-                />
+                <div className="flex gap-3">
+                    <CustomFilledButton
+                        label="Carga Masiva"
+                        type="button"
+                        icon={<UploadIcon />}
+                        onClick={() => setBulkUpload(true)}
+                    />
+                    <CustomFilledButton
+                        label="Crear Línea"
+                        type="button"
+                        icon={<PlusIcon />}
+                        onClick={() => navigate('/lineas/crear')}
+                    />
+                </div>
             </div>
+
+            <BulkUploadModal
+                modal={bulkUpload}
+                closeModal={() => setBulkUpload(false)}
+                title="Carga masiva de líneas"
+                templateName="lineas"
+                columns={bulkUploadColumns}
+                upload={(file) => linesRepositoryProvider.uploadFile(file)}
+                onSuccess={() => queryClient.invalidateQueries({ queryKey: ['getLines'] })}
+            />
 
             <section>
                 <Table>

@@ -44,7 +44,7 @@ Data flow: **Screen → provider singleton → Repository → Datasource → axi
 
 `src/features/packing-materials` is the canonical reference implementation of the full CRUD slice. Read it before writing a new feature. The `/scaffold-feature` skill (`.claude/skills/scaffold-feature/SKILL.md`) generates a slice following it.
 
-Current features: `auth`, `clients`, `dashboard`, `draft-weekly-plans`, `draft-weekly-plan-tasks`, `lines`, `packing-materials`, `packing-material-transactions`, `packing-material-transaction-items`, `performances`, `positions`, `raw-materials`, `shared`, `skus`, `sku-packing-materials`, `skus-raw-materials`, `timeouts`, `users`, `weekly-plans`, `weekly-plan-tasks`, `weekly-plan-task-observations`. Not every feature is a full CRUD slice — some (e.g. `packing-material-transaction-items`, `weekly-plan-task-observations`) exist only as sub-resources consumed from another feature's screens through modals/drawers/panels.
+Current features: `auth`, `clients`, `dashboard`, `draft-weekly-plans`, `draft-weekly-plan-tasks`, `line-dependencies`, `lines`, `packing-materials`, `packing-material-transactions`, `packing-material-transaction-items`, `performances`, `positions`, `raw-materials`, `shared`, `skus`, `sku-packing-materials`, `skus-raw-materials`, `timeouts`, `users`, `weekly-plans`, `weekly-plan-tasks`, `weekly-plan-task-observations`. Not every feature is a full CRUD slice — some (e.g. `packing-material-transaction-items`, `weekly-plan-task-observations`, `line-dependencies`) exist only as sub-resources consumed from another feature's screens through modals/drawers/panels.
 
 ### Barrel files
 
@@ -58,7 +58,7 @@ Note this creates circular imports inside a feature (schemas import types from t
 
 ```
 components/       design system + form fields (flat, one file per component)
-hooks/            usePagination, usePermissions, useNotification, useUrlFilters, useFilters
+hooks/            usePagination, usePermissions (file usePermission.ts), useNotification, useUrlFilters, useFilters
 animations/       framer-motion wrappers: FadeIn(Up|Down|Left|Right), BlurIn, ScaleIn(Bounce), RotateIn, SlideInUp, StaggerContainer/StaggerItem
 core/             initializer/AppInitializer, navigation/NAV_SECTIONS, notifications/
 domain/           schemas, types, interfaces, errors (DomainError)
@@ -67,7 +67,7 @@ presentation/     screens/ (Loading, LoadingData, Spinner, NotFound), layouts/ (
 references/       @react-pdf/renderer documents (e.g. PackingMaterialTransactionDocument)
 ```
 
-- Components: `Table`/`Thead`/`Tbody`/`Tr`/`Th`/`Td`, `CustomForm`, `CustomFilledButton`, `CustomNavTable`, `CustomNavLink`, `CustomHeader`, `CustomSideBar`, `Title`, `Pagination`, `Modal`, `Drawer`, `ActionsMenu`, `Toaster`, `ErrorComponent`, `SpinnerComponent`, and cards `BarChartCard` / `DonutSummaryCard` / `InfoCard` / `DateCard`.
+- Components: `Table`/`Thead`/`Tbody`/`Tr`/`Th`/`Td`, `CustomForm`, `CustomFilledButton`, `CustomNavTable`, `CustomNavLink`, `CustomHeader`, `CustomSideBar`, `Title`, `Pagination`, `Modal`, `Drawer`, `ActionsMenu`, `Toaster`, `ErrorComponent`, `SpinnerComponent`, `StatusTag` (Activo/Inactivo pill from a flag), `InformationField` (label/value pair, optional `mono`), `TimelineStep` (label + date or "Sin registrar"), and cards `BarChartCard` / `DonutSummaryCard` / `InfoCard` / `DateCard`.
 - Form fields: `TextFormField`, `TextAreaFormField`, `SelectFormField`, `DateFormField`, `FileFormField`, `PasswordFormField` — all generic over the form type, taking `register` / `validation` / `errorMessage`.
 - Schemas: `ApiResponseSchema` / `ApiPaginatedResponseSchema` (every feature's paginated schema extends one), plus `FileResponseSchema` and chart datum schemas.
 - `useUrlFilters` is exported from `hooks/useUrlFilters` but **not** from the `hooks` barrel — import it by path. Feature-specific filter hooks wrap it under `<feature>/infrastructure/filters/` (see `usePerformanceFilters`).
@@ -89,7 +89,7 @@ All routes are declared centrally in `src/router.tsx` — scaffolding a feature 
 
 Path → feature: `/lineas` lines · `/posiciones` positions · `/skus` skus · `/items-material-empaque` packing-materials · `/items-materia-prima` raw-materials · `/tiempos-muertos` timeouts · `/clientes` clients · `/rendimientos` performances · `/planes-semanales` weekly-plans · `/draft-planes-semanales` draft-weekly-plans · `/material-empaque-transacciones` packing-material-transactions (no create route) · `/dashboard` · `/login`.
 
-Non-CRUD routes exist too: `/planes-semanales/calendario/:id`, `/planes-semanales/tareas/:id`, `/planes-semanales/tareas/:lineCode/:date`.
+Non-CRUD routes exist too: `/planes-semanales/calendario/:id`, `/planes-semanales/tareas/:id`, `/planes-semanales/tareas/:lineCode/:date`, `/planes-semanales/tareas/asignar-personal/:id`.
 
 ### Screen conventions
 
@@ -106,3 +106,7 @@ Non-CRUD routes exist too: `/planes-semanales/calendario/:id`, `/planes-semanale
 ## Language
 
 UI copy, notification messages, validation messages, and commit messages are in Spanish. Code identifiers are English.
+
+## Comments
+
+**NUNCA** agregar comentarios en el código (ni `//`, ni `/* */`, ni JSDoc, ni `{/* */}` en JSX), en ningún archivo nuevo o modificado.

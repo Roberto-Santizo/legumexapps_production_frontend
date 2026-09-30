@@ -6,4 +6,5 @@ export abstract class TimeoutDatasource {
     abstract getTimeoutById(id: string): Promise<Timeout>;
     abstract updateTimeoutById(id: string, payload: TimeoutForm): Promise<string>;
     abstract deleteTimeoutById(id: string): Promise<string>;
+    abstract uploadFile(file: File): Promise<string>;
 }

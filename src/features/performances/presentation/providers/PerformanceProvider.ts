@@ -24,6 +24,10 @@ export class PerformanceProvider {
     deletePerformanceById(id: string): Promise<string> {
         return this.repository.deletePerformanceById(id);
     }
+
+    uploadFile(file: File): Promise<string> {
+        return this.repository.uploadFile(file);
+    }
 }
 
 const datasource = new PerformanceDatasourceImpl(api);

@@ -22,4 +22,8 @@ export class PerformanceRepositoryImpl implements PerformanceRepository {
     deletePerformanceById(id: string): Promise<string> {
         return this.datasource.deletePerformanceById(id)
     }
+
+    uploadFile(file: File): Promise<string> {
+        return this.datasource.uploadFile(file);
+    }
 }

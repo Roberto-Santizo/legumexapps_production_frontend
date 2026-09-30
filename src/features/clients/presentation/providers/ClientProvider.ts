@@ -24,6 +24,10 @@ export class ClientProvider {
     deleteClientById(id: string): Promise<string> {
         return this.repository.deleteClientById(id);
     }
+
+    uploadFile(file: File): Promise<string> {
+        return this.repository.uploadFile(file);
+    }
 }
 
 const datasource = new ClientDatasourceImpl(api);

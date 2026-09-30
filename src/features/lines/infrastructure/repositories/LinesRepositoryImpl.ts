@@ -23,4 +23,7 @@ export class LinesRepositoryImpl implements LinesRepository {
         return this.datasource.deleteLineByCode(code);
     }
 
+    uploadFile(file: File): Promise<string> {
+        return this.datasource.uploadFile(file);
+    }
 }

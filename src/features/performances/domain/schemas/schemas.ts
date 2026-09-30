@@ -9,8 +9,8 @@ export const PerformanceSchema = z.object({
     line_id: z.number(),
     lbs_performance: z.number(),
     accepted_percentage: z.number(),
-    payment_method: z.number(),
-    status: z.number()
+    payment_method: z.boolean(),
+    status: z.boolean()
 });
 
 export const PaginatedPerformancesSchema = ApiPaginatedResponseSchema.extend({

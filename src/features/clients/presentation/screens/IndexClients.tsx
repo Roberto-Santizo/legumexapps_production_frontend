@@ -1,11 +1,18 @@
-import { ActionsMenu, CustomFilledButton, Loading, Pagination, Table, Tbody, Td, Th, Thead, Title, Tr, usePagination } from "@/features/shared/shared";
-import { EditIcon, EyeIcon, PlusIcon } from "lucide-react";
+import { BulkUploadModal, type BulkUploadColumn, ActionsMenu, CustomFilledButton, Loading, Pagination, Table, Tbody, Td, Th, Thead, Title, Tr, usePagination } from "@/features/shared/shared";
+import { EditIcon, EyeIcon, PlusIcon, UploadIcon } from "lucide-react";
 import { clientProvider } from "@/features/clients/clients";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useState } from "react";
+
+const bulkUploadColumns: BulkUploadColumn[] = [
+    { header: "Nombre", description: "Nombre único, sin distinguir mayúsculas" },
+];
 
 export function IndexClients() {
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
+    const [bulkUpload, setBulkUpload] = useState(false);
 
     const [searchParams, setSearchParams] = useSearchParams();
     const { page, rowsPerPage } = usePagination(searchParams);
@@ -20,13 +27,31 @@ export function IndexClients() {
         <div className="space-y-5">
             <div className="flex justify-between items-center">
                 <Title title="Clientes" subtitle="Listado de clientes registrados" />
-                <CustomFilledButton
-                    label="Crear Cliente"
-                    type="button"
-                    icon={<PlusIcon />}
-                    onClick={() => navigate('/clientes/crear')}
-                />
+                <div className="flex gap-3">
+                    <CustomFilledButton
+                        label="Carga Masiva"
+                        type="button"
+                        icon={<UploadIcon />}
+                        onClick={() => setBulkUpload(true)}
+                    />
+                    <CustomFilledButton
+                        label="Crear Cliente"
+                        type="button"
+                        icon={<PlusIcon />}
+                        onClick={() => navigate('/clientes/crear')}
+                    />
+                </div>
             </div>
+
+            <BulkUploadModal
+                modal={bulkUpload}
+                closeModal={() => setBulkUpload(false)}
+                title="Carga masiva de clientes"
+                templateName="clientes"
+                columns={bulkUploadColumns}
+                upload={(file) => clientProvider.uploadFile(file)}
+                onSuccess={() => queryClient.invalidateQueries({ queryKey: ['getClients'] })}
+            />
 
             <section>
                 <Table>

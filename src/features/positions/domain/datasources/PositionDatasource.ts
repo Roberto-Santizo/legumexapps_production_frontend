@@ -6,4 +6,5 @@ export abstract class PositionDatasource {
     abstract getPositionById(id: string): Promise<Position>;
     abstract updatePositionById(id: string, payload: PositionForm): Promise<string>;
     abstract deletePositionById(id: string): Promise<string>;
+    abstract uploadFile(file: File): Promise<string>;
 }
