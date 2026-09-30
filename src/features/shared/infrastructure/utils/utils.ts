@@ -107,3 +107,31 @@ export async function downloadExcelTemplate(fileName: string, headers: string[])
 
     saveAs(new Blob([buffer]), `${fileName}.xlsx`);
 }
+
+export const getCanvasPoint = (canvas: HTMLCanvasElement, event: { clientX: number; clientY: number }) => {
+    const rect = canvas.getBoundingClientRect();
+    return { x: event.clientX - rect.left, y: event.clientY - rect.top };
+}
+
+export const resizeSignatureCanvas = (canvas: HTMLCanvasElement, strokeColor: string, lineWidth: number) => {
+    const ratio = Math.max(window.devicePixelRatio || 1, 1);
+    const { width, height } = canvas.getBoundingClientRect();
+    canvas.width = width * ratio;
+    canvas.height = height * ratio;
+    const context = canvas.getContext('2d');
+    if (!context) return null;
+    context.scale(ratio, ratio);
+    context.lineCap = 'round';
+    context.lineJoin = 'round';
+    context.lineWidth = lineWidth;
+    context.strokeStyle = strokeColor;
+    context.fillStyle = strokeColor;
+    return context;
+}
+
+export const canvasToPngFile = (canvas: HTMLCanvasElement, fileName: string): Promise<File | null> =>
+    new Promise((resolve) => {
+        canvas.toBlob((blob) => {
+            resolve(blob ? new File([blob], fileName, { type: 'image/png' }) : null);
+        }, 'image/png');
+    });

@@ -1,10 +1,9 @@
-import { CustomFilledButton, Drawer, FadeInLeft } from "@/features/shared/shared";
-import { defaultWeeklyPlanTaskFilters, ModalAssignOperationDate, ModalSplitWeeklyPlanTask, weeklyPlanTaskProvider, type WeeklyPlanTask } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
+import { Drawer } from "@/features/shared/shared";
+import { DrawerTasksEmptyState, DrawerTasksFilters, DrawerTasksLoadingState, groupTasksByLine, ModalAssignOperationDate, ModalSplitWeeklyPlanTask, sumSelectedTaskHours, useDrawerTaskFilters, useTaskSelection, weeklyPlanTaskProvider, WeeklyPlanTaskLineGroup, WeeklyPlanTasksSelectionBar, type WeeklyPlanTask } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
+import { linesRepositoryProvider } from "@/features/lines/lines";
 import { useParams } from "react-router-dom";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { WeeklyPlanTaskDrawerComponent } from "@/features/weekly-plans/weekly-plans";
-import { AnimatePresence } from "framer-motion";
 
 type Props = {
     open: boolean;
@@ -13,98 +12,97 @@ type Props = {
 
 export function DrawerWeeklyPlanTasks({ open, closeDrawer }: Props) {
     const { id } = useParams();
-    const [selectedTasksIds, setSelectedTasksIds] = useState<string[]>([]);
+    const queryClient = useQueryClient();
     const [assignOperationDateModal, setAssignOperationDateModal] = useState(false);
     const [taskToSplit, setTaskToSplit] = useState<WeeklyPlanTask | null>(null);
-    const queryClient = useQueryClient();
+    const { selectedTasksIds, toggleTaskSelection, setGroupSelection, clearSelection } = useTaskSelection();
+    const { filters, skuSearch, setSkuSearch, hasFilters, handleLineChange, handleClearFilters } = useDrawerTaskFilters(clearSelection);
 
-    const { data, isLoading, refetch } = useQuery({
-        queryKey: ['getWeeklyPlanTasksDrawer', id],
-        queryFn: () => weeklyPlanTaskProvider.getWeeklyPlanTasks('', '', { ...defaultWeeklyPlanTaskFilters, weeklyPlanId: id!, noOperationDate: 'true' }),
-        enabled: open && !!id
+    const { data: lines } = useQuery({
+        queryKey: ['getLinesDrawerWeeklyPlanTasks'],
+        queryFn: () => linesRepositoryProvider.getLines('', ''),
+        enabled: open
     });
 
-    const toggleTaskSelection = (taskId: string) => {
-        setSelectedTasksIds((prev) =>
-            prev.includes(taskId) ? prev.filter((id) => id !== taskId) : [...prev, taskId]
-        );
-    }
+    const { data, isLoading, isFetching, refetch } = useQuery({
+        queryKey: ['getWeeklyPlanTasksDrawer', id, filters],
+        queryFn: () => weeklyPlanTaskProvider.getWeeklyPlanTasks('', '', { ...filters, weeklyPlanId: id!, noOperationDate: 'true' }),
+        enabled: open && !!id,
+        placeholderData: keepPreviousData
+    });
 
-    const onCloseModal = () => setAssignOperationDateModal(false);
-
-    const onCloseSplitModal = () => setTaskToSplit(null);
+    const tasks = data?.data ?? [];
+    const groups = groupTasksByLine(tasks);
+    const selectedHours = sumSelectedTaskHours(tasks, selectedTasksIds);
 
     const callback = () => {
-        setSelectedTasksIds([]);
+        clearSelection();
         queryClient.invalidateQueries({ queryKey: ['getWeeklyPlanTasksForCalendarById', id] });
         refetch();
     }
 
-    if (data) return (
+    return (
         <>
             <Drawer
                 drawer={open}
                 closeDrawer={closeDrawer}
-                title="Tareas del Plan Semanal"
-                width="w-full"
+                title="Tareas sin programar"
+                width="sm:max-w-2xl"
             >
-                <div className="flex h-full flex-col w-2xl">
-                    {selectedTasksIds.length > 0 && (
-                        <FadeInLeft>
-                            <div className="sticky top-0 z-10 mb-6 rounded-2xl border border-blue-100 bg-white/90 p-3 shadow-sm backdrop-blur">
-                                <CustomFilledButton
-                                    label={`Asignar Fecha de Operación (${selectedTasksIds.length})`}
-                                    type="button"
-                                    onClick={() => setAssignOperationDateModal(true)}
-                                    fullWitdh
-                                />
-                            </div>
-                        </FadeInLeft>
-                    )}
+                <div className="flex min-h-full flex-col">
+                    <DrawerTasksFilters
+                        lines={lines?.data ?? []}
+                        lineId={filters.lineId}
+                        skuSearch={skuSearch}
+                        hasFilters={hasFilters}
+                        searching={isFetching && !isLoading}
+                        onLineChange={handleLineChange}
+                        onSkuSearchChange={setSkuSearch}
+                        onClear={handleClearFilters}
+                    />
 
-                    {isLoading && (
-                        <div className="flex h-60 items-center justify-center">
-                            <div className="h-8 w-8 animate-spin rounded-full border-2 border-neutral-300 border-t-neutral-900" />
-                        </div>
-                    )}
+                    {isLoading && <DrawerTasksLoadingState />}
 
-                    {data.data.length === 0 && (
-                        <div className="flex h-60 items-center justify-center rounded-2xl border border-dashed border-gray-200">
-                            <p className="text-sm text-gray-500">
-                                No hay tareas registradas.
-                            </p>
-                        </div>
-                    )}
+                    {data && tasks.length === 0 && <DrawerTasksEmptyState filtered={hasFilters} onClear={handleClearFilters} />}
 
-                    <div className="space-y-4">
-                        <AnimatePresence>
-                            {data.data.map(task => (
-                                <FadeInLeft key={task.id}>
-                                    <WeeklyPlanTaskDrawerComponent
-                                        task={task}
-                                        toggleTaskSelection={toggleTaskSelection}
+                    {tasks.length > 0 && (
+                        <>
+                            <div className="flex-1 space-y-8">
+                                {groups.map((group) => (
+                                    <WeeklyPlanTaskLineGroup
+                                        key={group.line}
+                                        group={group}
                                         selectedTasksIds={selectedTasksIds}
+                                        toggleTaskSelection={toggleTaskSelection}
+                                        setGroupSelection={setGroupSelection}
                                         onSplitTask={setTaskToSplit}
                                     />
-                                </FadeInLeft>
-                            ))}
-                        </AnimatePresence>
-                    </div>
+                                ))}
+                            </div>
+
+                            <WeeklyPlanTasksSelectionBar
+                                selectedCount={selectedTasksIds.length}
+                                selectedHours={selectedHours}
+                                onClear={clearSelection}
+                                onAssignDate={() => setAssignOperationDateModal(true)}
+                            />
+                        </>
+                    )}
                 </div>
             </Drawer>
 
             <ModalAssignOperationDate
                 modal={assignOperationDateModal}
-                closeModal={() => onCloseModal()}
+                closeModal={() => setAssignOperationDateModal(false)}
                 tasksIds={selectedTasksIds}
-                callback={() => callback()}
+                callback={callback}
             />
 
             <ModalSplitWeeklyPlanTask
                 modal={!!taskToSplit}
-                closeModal={onCloseSplitModal}
+                closeModal={() => setTaskToSplit(null)}
                 task={taskToSplit}
-                callback={() => callback()}
+                callback={callback}
             />
         </>
     )
