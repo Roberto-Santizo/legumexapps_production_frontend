@@ -1,4 +1,4 @@
-import type { DraftWeeklyPlanTaskDatasource, DraftWeeklyPlanTask, DraftWeeklyPlanTaskForm, DraftWeeklyPlanTaskRepository, PaginatedDraftWeeklyPlanTasks } from "@/features/draft-weekly-plan-tasks/draft-weekly-plan-tasks";
+import type { DraftWeeklyPlanTaskDatasource, DraftWeeklyPlanTask, DraftWeeklyPlanTaskForm, DraftWeeklyPlanTaskFilters, DraftWeeklyPlanTaskRepository, PaginatedDraftWeeklyPlanTasks } from "@/features/draft-weekly-plan-tasks/draft-weekly-plan-tasks";
 
 export class DraftWeeklyPlanTaskRepositoryImpl implements DraftWeeklyPlanTaskRepository {
     constructor(private datasource: DraftWeeklyPlanTaskDatasource) { }
@@ -7,8 +7,8 @@ export class DraftWeeklyPlanTaskRepositoryImpl implements DraftWeeklyPlanTaskRep
         return this.datasource.createDraftWeeklyPlanTask(payload);
     }
 
-    getDraftWeeklyPlanTasks(draftWeeklyPlanId: string, limit: string, page: string): Promise<PaginatedDraftWeeklyPlanTasks> {
-        return this.datasource.getDraftWeeklyPlanTasks(draftWeeklyPlanId, limit, page);
+    getDraftWeeklyPlanTasks(draftWeeklyPlanId: string, limit: string, page: string, filters?: DraftWeeklyPlanTaskFilters): Promise<PaginatedDraftWeeklyPlanTasks> {
+        return this.datasource.getDraftWeeklyPlanTasks(draftWeeklyPlanId, limit, page, filters);
     }
 
     getDraftWeeklyPlanTaskById(id: string): Promise<DraftWeeklyPlanTask> {
