@@ -19,7 +19,7 @@ export function WeeklyPlanDaySelectorComponent({ dates, selectedDate, onSelectDa
             aria-label="Días de la semana"
             className="overflow-hidden rounded-2xl border border-line bg-surface"
         >
-            <div className="flex w-full min-w-[560px] divide-x divide-line overflow-x-auto">
+            <div className="flex w-full min-w-140 divide-x divide-line overflow-x-auto">
                 {dates.map((date, index) => {
                     const day = parseDateValue(date);
                     const isSelected = date === selectedDate;

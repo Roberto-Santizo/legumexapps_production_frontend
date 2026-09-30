@@ -103,6 +103,13 @@ Non-CRUD routes exist too: `/planes-semanales/calendario/:id`, `/planes-semanale
 - **`/frontend-design`** — invocarla **siempre** que se pida generar vistas/pantallas/componentes nuevos de UI, o cambios de estilos/diseño visual. Cargarla *antes* de escribir el JSX o las clases de Tailwind, no después.
 - **`/scaffold-feature`** — para crear un nuevo slice CRUD bajo `src/features`.
 
+## Modularity
+
+Todo código escrito debe ser lo más modular posible: ningún `.tsx` debe quedar sobrecargado.
+
+- Si una parte de un componente/screen se puede extraer a su propio componente, extraerla y pasarle la información por props (en `presentation/components/` de la feature, con su `export *` en el barrel).
+- Funciones y lógica que no sea JSX (cálculos, transformaciones, formateos, mapeos) van como utils/helpers en `infrastructure/` de la feature correspondiente (p. ej. `infrastructure/utils/` o `infrastructure/helpers/`), no inline en el `.tsx`.
+
 ## Language
 
 UI copy, notification messages, validation messages, and commit messages are in Spanish. Code identifiers are English.
