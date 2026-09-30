@@ -1,4 +1,4 @@
-import type { Client, ClientDatasource, ClientForm, ClientRepository, PaginatedClients } from "@/features/clients/clients";
+import type { Client, ClientDatasource, ClientForm, ClientRepository, PaginatedClients, ClientFilters } from "@/features/clients/clients";
 
 export class ClientRepositoryImpl implements ClientRepository {
     constructor(private datasource: ClientDatasource) { }
@@ -7,8 +7,8 @@ export class ClientRepositoryImpl implements ClientRepository {
         return this.datasource.createClient(payload);
     }
 
-    getClients(limit: string, page: string): Promise<PaginatedClients> {
-        return this.datasource.getClients(limit, page);
+    getClients(limit: string, page: string, filters?: ClientFilters): Promise<PaginatedClients> {
+        return this.datasource.getClients(limit, page, filters);
     }
 
     getClientById(id: string): Promise<Client> {

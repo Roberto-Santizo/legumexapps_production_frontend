@@ -41,8 +41,13 @@ export function ModalCreateDraftWeeklyPlanTask({ modal, closeModal, callback }: 
         mutate(payload);
     }
 
+    const onCloseModal = () => {
+        reset();
+        closeModal();
+    }
+
     return (
-        <Modal modal={modal} closeModal={closeModal} title="Crear Tarea de Plan Semanal Draft">
+        <Modal modal={modal} closeModal={onCloseModal} title="Crear Tarea de Plan Semanal Draft">
             <CustomForm onSubmit={handleSubmit(onSubmit)}>
                 <DraftWeeklyPlanTaskFormComponent register={register} errors={errors} control={control} />
                 <CustomFilledButton type="submit" label="Crear" disabled={isPending} />

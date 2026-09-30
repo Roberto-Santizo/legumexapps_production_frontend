@@ -1,6 +1,6 @@
-import { ApiResponseSchema } from "@/features/shared/shared";
+import { ApiResponseSchema, setQueryParams } from "@/features/shared/shared";
 import { isAxiosError, type AxiosInstance } from "axios";
-import { ClientSchema, PaginatedClientsSchema, type Client, type ClientDatasource, type ClientForm, type PaginatedClients } from "@/features/clients/clients";
+import { ClientSchema, PaginatedClientsSchema, type Client, type ClientDatasource, type ClientForm, type PaginatedClients, type ClientFilters } from "@/features/clients/clients";
 
 export class ClientDatasourceImpl implements ClientDatasource {
     constructor(private api: AxiosInstance, private url = '/clients') { }
@@ -22,9 +22,10 @@ export class ClientDatasourceImpl implements ClientDatasource {
         }
     }
 
-    async getClients(limit: string, page: string): Promise<PaginatedClients> {
+    async getClients(limit: string, page: string, filters?: ClientFilters): Promise<PaginatedClients> {
         try {
-            const url = `${this.url}?limit=${limit}&page=${page}`;
+            const params = setQueryParams({ limit, page, ...filters });
+            const url = `${this.url}?${params.toString()}`;
             const { data } = await this.api.get(url);
             const response = PaginatedClientsSchema.safeParse(data);
 

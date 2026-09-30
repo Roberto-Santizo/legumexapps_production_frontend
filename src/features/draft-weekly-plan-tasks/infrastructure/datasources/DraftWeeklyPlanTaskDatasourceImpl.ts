@@ -1,6 +1,6 @@
-import { ApiResponseSchema } from "@/features/shared/shared";
+import { ApiResponseSchema, setQueryParams } from "@/features/shared/shared";
 import { isAxiosError, type AxiosInstance } from "axios";
-import { DraftWeeklyPlanTaskSchema, PaginatedDraftWeeklyPlanTasksSchema, type DraftWeeklyPlanTaskDatasource, type DraftWeeklyPlanTask, type DraftWeeklyPlanTaskForm, type PaginatedDraftWeeklyPlanTasks } from "@/features/draft-weekly-plan-tasks/draft-weekly-plan-tasks";
+import { DraftWeeklyPlanTaskSchema, PaginatedDraftWeeklyPlanTasksSchema, type DraftWeeklyPlanTaskDatasource, type DraftWeeklyPlanTask, type DraftWeeklyPlanTaskForm, type DraftWeeklyPlanTaskFilters, type PaginatedDraftWeeklyPlanTasks } from "@/features/draft-weekly-plan-tasks/draft-weekly-plan-tasks";
 
 export class DraftWeeklyPlanTaskDatasourceImpl implements DraftWeeklyPlanTaskDatasource {
     constructor(private api: AxiosInstance, private url = '/draft-weekly-plan-tasks') { }
@@ -22,9 +22,10 @@ export class DraftWeeklyPlanTaskDatasourceImpl implements DraftWeeklyPlanTaskDat
         }
     }
 
-    async getDraftWeeklyPlanTasks(draftWeeklyPlanId: string, limit: string, page: string): Promise<PaginatedDraftWeeklyPlanTasks> {
+    async getDraftWeeklyPlanTasks(draftWeeklyPlanId: string, limit: string, page: string, filters?: DraftWeeklyPlanTaskFilters): Promise<PaginatedDraftWeeklyPlanTasks> {
         try {
-            const url = `${this.url}?draftWeeklyPlanId=${draftWeeklyPlanId}&limit=${limit}&page=${page}`;
+            const params = setQueryParams({ draftWeeklyPlanId, limit, page, ...filters });
+            const url = `${this.url}?${params.toString()}`;
             const { data } = await this.api.get(url);
             const response = PaginatedDraftWeeklyPlanTasksSchema.safeParse(data);
 

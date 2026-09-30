@@ -1,18 +1,21 @@
-import { ActionsMenu, CustomFilledButton, Loading, Pagination, Table, Tbody, Td, Th, Thead, Title, Tr, usePagination } from "@/features/shared/shared";
+import { FiltersButton, FiltersDrawer, ActionsMenu, CustomFilledButton, Loading, Pagination, Table, Tbody, Td, Th, Thead, Title, Tr, usePagination } from "@/features/shared/shared";
 import { EditIcon, EyeIcon, PlusIcon } from "lucide-react";
-import { packingMaterialTransactionProvider } from "@/features/packing-material-transactions/packing-material-transactions";
+import { packingMaterialTransactionProvider, usePackingMaterialTransactionFilters, packingMaterialTransactionFilterFields } from "@/features/packing-material-transactions/packing-material-transactions";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useState } from "react";
 
 export function IndexPackingMaterialTransactions() {
     const navigate = useNavigate();
 
     const [searchParams, setSearchParams] = useSearchParams();
     const { page, rowsPerPage } = usePagination(searchParams);
+    const [showFilters, setShowFilters] = useState(false);
+    const { filters, setFilters, clearFilters } = usePackingMaterialTransactionFilters();
 
     const { data, isLoading } = useQuery({
-        queryKey: ['getPackingMaterialTransactions', page + 1, rowsPerPage],
-        queryFn: () => packingMaterialTransactionProvider.getPackingMaterialTransactions(`${rowsPerPage}`, `${page + 1}`)
+        queryKey: ['getPackingMaterialTransactions', page + 1, rowsPerPage, filters],
+        queryFn: () => packingMaterialTransactionProvider.getPackingMaterialTransactions(`${rowsPerPage}`, `${page + 1}`, filters)
     });
 
     if (isLoading) return <Loading />
@@ -20,12 +23,24 @@ export function IndexPackingMaterialTransactions() {
         <div className="space-y-5">
             <div className="flex justify-between items-center">
                 <Title title="Transacciones de Material de Empaque" subtitle="Listado de transacciones de material de empaque registradas" />
-                <CustomFilledButton
-                    label="Crear Transacción"
-                    type="button"
-                    icon={<PlusIcon />}
-                />
+                <div className="flex gap-3">
+                    <FiltersButton filters={filters} onClick={() => setShowFilters(true)} />
+                    <CustomFilledButton
+                        label="Crear Transacción"
+                        type="button"
+                        icon={<PlusIcon />}
+                    />
+                </div>
             </div>
+
+            <FiltersDrawer
+                open={showFilters}
+                close={() => setShowFilters(false)}
+                fields={packingMaterialTransactionFilterFields}
+                filters={filters}
+                setFilters={setFilters}
+                clearFilters={clearFilters}
+            />
 
             <section>
                 <Table>

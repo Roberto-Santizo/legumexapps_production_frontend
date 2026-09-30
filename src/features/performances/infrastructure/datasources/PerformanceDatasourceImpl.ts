@@ -1,9 +1,27 @@
-import { ApiResponseSchema } from "@/features/shared/shared";
+import { ApiResponseSchema, setQueryParams } from "@/features/shared/shared";
 import { isAxiosError, type AxiosInstance } from "axios";
 import { PerformanceSchema, PaginatedPerformancesSchema, type PerformanceDatasource, type Performance, type PerformanceForm, type PaginatedPerformances, type PerformanceFilters } from "@/features/performances/performances";
 
 export class PerformanceDatasourceImpl implements PerformanceDatasource {
     constructor(private api: AxiosInstance, private url = '/performances') { }
+
+    async toggleStatus(id: string): Promise<string> {
+         try {
+            const url = `${this.url}/${id}/toggle-status`
+            const { data } = await this.api.patch(url);
+            const response = ApiResponseSchema.safeParse(data);
+
+            if (response.success) {
+                return response.data.message;
+            }
+
+            throw new Error("Información no válida");
+        } catch (error) {
+            if (isAxiosError(error)) throw new Error(error.response?.data.message);
+
+            throw new Error("Error no controlado");
+        }
+    }
 
     async createPerformance(payload: PerformanceForm): Promise<string> {
         try {
@@ -24,11 +42,7 @@ export class PerformanceDatasourceImpl implements PerformanceDatasource {
 
     async getPerformances(limit: string, page: string, filters?: PerformanceFilters): Promise<PaginatedPerformances> {
         try {
-            const params = new URLSearchParams({ limit, page });
-
-            Object.entries(filters ?? {}).forEach(([key, value]) => {
-                if (value) params.append(key, value);
-            });
+            const params = setQueryParams({ limit, page, ...filters });
 
             const url = `${this.url}?${params.toString()}`;
             const { data } = await this.api.get(url);

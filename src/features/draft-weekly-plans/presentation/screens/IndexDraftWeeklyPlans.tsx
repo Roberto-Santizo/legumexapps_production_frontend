@@ -1,8 +1,9 @@
-import { ActionsMenu, CustomFilledButton, Loading, Pagination, Table, Tbody, Td, Th, Thead, Title, Tr, useNotification, usePagination } from "@/features/shared/shared";
+import { FiltersButton, FiltersDrawer, ActionsMenu, CustomFilledButton, Loading, Pagination, Table, Tbody, Td, Th, Thead, Title, Tr, useNotification, usePagination } from "@/features/shared/shared";
 import { EditIcon, EyeIcon, PlusIcon, TrashIcon } from "lucide-react";
-import { draftWeeklyPlanProvider } from "@/features/draft-weekly-plans/draft-weekly-plans";
+import { draftWeeklyPlanProvider, useDraftWeeklyPlanFilters, draftWeeklyPlanFilterFields } from "@/features/draft-weekly-plans/draft-weekly-plans";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useState } from "react";
 
 export function IndexDraftWeeklyPlans() {
     const navigate = useNavigate();
@@ -10,10 +11,12 @@ export function IndexDraftWeeklyPlans() {
 
     const [searchParams, setSearchParams] = useSearchParams();
     const { page, rowsPerPage } = usePagination(searchParams);
+    const [showFilters, setShowFilters] = useState(false);
+    const { filters, setFilters, clearFilters } = useDraftWeeklyPlanFilters();
 
     const { data, isLoading, refetch } = useQuery({
-        queryKey: ['getDraftWeeklyPlans', page + 1, rowsPerPage],
-        queryFn: () => draftWeeklyPlanProvider.getDraftWeeklyPlans(`${rowsPerPage}`, `${page + 1}`)
+        queryKey: ['getDraftWeeklyPlans', page + 1, rowsPerPage, filters],
+        queryFn: () => draftWeeklyPlanProvider.getDraftWeeklyPlans(`${rowsPerPage}`, `${page + 1}`, filters)
     });
 
     const { mutate } = useMutation({
@@ -33,13 +36,25 @@ export function IndexDraftWeeklyPlans() {
         <div className="space-y-5">
             <div className="flex justify-between items-center">
                 <Title title="Planes Semanales Borrador" subtitle="Listado de planes semanales borrador registrados" />
-                <CustomFilledButton
-                    label="Crear Plan"
-                    type="button"
-                    icon={<PlusIcon />}
-                    onClick={() => navigate('/draft-planes-semanales/crear')}
-                />
+                <div className="flex gap-3">
+                    <FiltersButton filters={filters} onClick={() => setShowFilters(true)} />
+                    <CustomFilledButton
+                        label="Crear Plan"
+                        type="button"
+                        icon={<PlusIcon />}
+                        onClick={() => navigate('/draft-planes-semanales/crear')}
+                    />
+                </div>
             </div>
+
+            <FiltersDrawer
+                open={showFilters}
+                close={() => setShowFilters(false)}
+                fields={draftWeeklyPlanFilterFields}
+                filters={filters}
+                setFilters={setFilters}
+                clearFilters={clearFilters}
+            />
 
             <section>
                 <Table>

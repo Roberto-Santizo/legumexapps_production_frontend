@@ -1,6 +1,6 @@
-import { ApiResponseSchema } from "@/features/shared/shared";
+import { ApiResponseSchema, setQueryParams } from "@/features/shared/shared";
 import { isAxiosError, type AxiosInstance } from "axios";
-import { PackingMaterialItemSchema, PaginatedPackingMaterialItemsSchema, type PackingMaterialDatasource, type PackingMaterialItem, type PackingMaterialItemForm, type PaginatedPackingMaterialItems } from "@/features/packing-materials/packing-materials";
+import { PackingMaterialItemSchema, PaginatedPackingMaterialItemsSchema, type PackingMaterialDatasource, type PackingMaterialItem, type PackingMaterialItemForm, type PaginatedPackingMaterialItems, type PackingMaterialFilters } from "@/features/packing-materials/packing-materials";
 
 export class PackingMaterialDatasourceImpl implements PackingMaterialDatasource {
     constructor(private api: AxiosInstance, private url = '/packing-materials') { }
@@ -22,9 +22,10 @@ export class PackingMaterialDatasourceImpl implements PackingMaterialDatasource 
         }
     }
 
-    async getPackingMaterialItems(limit: string, page: string): Promise<PaginatedPackingMaterialItems> {
+    async getPackingMaterialItems(limit: string, page: string, filters?: PackingMaterialFilters): Promise<PaginatedPackingMaterialItems> {
         try {
-            const url = `${this.url}?limit=${limit}&page=${page}`;
+            const params = setQueryParams({ limit, page, ...filters });
+            const url = `${this.url}?${params.toString()}`;
             const { data } = await this.api.get(url);
             const response = PaginatedPackingMaterialItemsSchema.safeParse(data);
 

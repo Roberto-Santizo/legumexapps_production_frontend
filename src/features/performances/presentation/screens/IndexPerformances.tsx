@@ -1,6 +1,6 @@
-import { BulkUploadModal, type BulkUploadColumn, ActionsMenu, CustomFilledButton, Loading, Pagination, StatusTag, Table, Tbody, Td, Th, Thead, Title, Tr, useNotification, usePagination } from "@/features/shared/shared";
-import { EditIcon, EyeIcon, FilterIcon, PlusIcon, TrashIcon, UploadIcon } from "lucide-react";
-import { PerformanceFiltersComponent, performanceProvider, usePerformancesFilters } from "@/features/performances/performances";
+import { FiltersButton, FiltersDrawer, BulkUploadModal, type BulkUploadColumn, ActionsMenu, CustomFilledButton, Loading, Pagination, StatusTag, Table, Tbody, Td, Th, Thead, Title, Tr, useNotification, usePagination } from "@/features/shared/shared";
+import { EditIcon, EyeIcon, PlusIcon, TrashIcon, UploadIcon } from "lucide-react";
+import { performanceFilterFields, performanceProvider, usePerformancesFilters } from "@/features/performances/performances";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useState } from "react";
@@ -17,11 +17,11 @@ export function IndexPerformances() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const [bulkUpload, setBulkUpload] = useState(false);
-    const notification = useNotification();
     const [showFilters, setShowFilters] = useState(false);
+    const notification = useNotification();
 
     const [searchParams, setSearchParams] = useSearchParams();
-    const { filters } = usePerformancesFilters();
+    const { filters, setFilters, clearFilters } = usePerformancesFilters();
     const { page, rowsPerPage } = usePagination(searchParams);
 
     const { data, isLoading, refetch } = useQuery({
@@ -40,6 +40,17 @@ export function IndexPerformances() {
         }
     });
 
+    const { mutate: toggleStatus } = useMutation({
+        mutationFn: (id: string) => performanceProvider.toggleStatus(id),
+        onSuccess: (message) => {
+            notification.success(message);
+            refetch();
+        },
+        onError: (err) => {
+            notification.error(err.message);
+        }
+    });
+
     const handleDeleteItem = (id: string) => notification.question('¿Desea eliminar el rendimiento?', 'Eliminar', 'El rendimiento se eliminará del sistema', () => mutate(id));
     if (isLoading) return <Loading />
     if (data) return (
@@ -47,6 +58,7 @@ export function IndexPerformances() {
             <div className="flex justify-between items-center">
                 <Title title="Rendimientos" subtitle="Listado de rendimientos registrados" />
                 <div className="flex gap-3">
+                    <FiltersButton filters={filters} onClick={() => setShowFilters(true)} />
                     <CustomFilledButton
                         label="Carga Masiva"
                         type="button"
@@ -59,16 +71,17 @@ export function IndexPerformances() {
                         icon={<PlusIcon />}
                         onClick={() => navigate('/rendimientos/crear')}
                     />
-                    <CustomFilledButton
-                        label="Filtros"
-                        type="button"
-                        icon={<FilterIcon />}
-                        onClick={() => setShowFilters(true)}
-                    />
                 </div>
             </div>
 
-            <PerformanceFiltersComponent close={() => setShowFilters(false)} showFilters={showFilters} />
+            <FiltersDrawer
+                open={showFilters}
+                close={() => setShowFilters(false)}
+                fields={performanceFilterFields}
+                filters={filters}
+                setFilters={setFilters}
+                clearFilters={clearFilters}
+            />
 
             <BulkUploadModal
                 modal={bulkUpload}
@@ -100,9 +113,9 @@ export function IndexPerformances() {
                                 <Td>{item.line}</Td>
                                 <Td>{item.lbs_performance}</Td>
                                 <Td>{item.accepted_percentage}</Td>
-                                <Td>{item.payment_method === 0 ? 'Horas Linea' : 'Horas Rendimiento'}</Td>
+                                <Td>{item.payment_method ? 'Horas Linea' : 'Horas Rendimiento'}</Td>
                                 <Td>
-                                    <StatusTag flag={item.status}/>
+                                    <StatusTag onClick={() => toggleStatus(`${item.id}`)} flag={item.status} />
                                 </Td>
                                 <Td className="flex gap-3">
                                     <ActionsMenu

@@ -9,7 +9,7 @@ export const PerformanceSchema = z.object({
     line_id: z.number(),
     lbs_performance: z.number(),
     accepted_percentage: z.number(),
-    payment_method: z.boolean(),
+    payment_method: z.number(),
     status: z.boolean()
 });
 

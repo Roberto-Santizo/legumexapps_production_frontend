@@ -1,4 +1,4 @@
-import type { PackingMaterialDatasource, PackingMaterialItem, PackingMaterialItemForm, PackingMaterialRepository, PaginatedPackingMaterialItems } from "@/features/packing-materials/packing-materials";
+import type { PackingMaterialDatasource, PackingMaterialItem, PackingMaterialItemForm, PackingMaterialRepository, PaginatedPackingMaterialItems, PackingMaterialFilters } from "@/features/packing-materials/packing-materials";
 
 export class PackingMaterialRepositoryImpl implements PackingMaterialRepository {
     constructor(private datasource: PackingMaterialDatasource) { }
@@ -7,8 +7,8 @@ export class PackingMaterialRepositoryImpl implements PackingMaterialRepository 
         return this.datasource.createPackingMaterialItem(payload);
     }
 
-    getPackingMaterialItems(limit: string, page: string): Promise<PaginatedPackingMaterialItems> {
-        return this.datasource.getPackingMaterialItems(limit, page);
+    getPackingMaterialItems(limit: string, page: string, filters?: PackingMaterialFilters): Promise<PaginatedPackingMaterialItems> {
+        return this.datasource.getPackingMaterialItems(limit, page, filters);
     }
 
     getPackingMaterialItemByCode(code: string): Promise<PackingMaterialItem> {

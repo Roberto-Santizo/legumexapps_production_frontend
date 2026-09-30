@@ -1,4 +1,4 @@
-import type { RawMaterialDatasource, RawMaterialItem, RawMaterialItemForm, RawMaterialRepository, PaginatedRawMaterialItems } from "@/features/raw-materials/raw-materials";
+import type { RawMaterialDatasource, RawMaterialItem, RawMaterialItemForm, RawMaterialRepository, PaginatedRawMaterialItems, RawMaterialFilters } from "@/features/raw-materials/raw-materials";
 
 export class RawMaterialRepositoryImpl implements RawMaterialRepository {
     constructor(private datasource: RawMaterialDatasource) { }
@@ -7,8 +7,8 @@ export class RawMaterialRepositoryImpl implements RawMaterialRepository {
         return this.datasource.createRawMaterialItem(payload);
     }
 
-    getRawMaterialItems(limit: string, page: string): Promise<PaginatedRawMaterialItems> {
-        return this.datasource.getRawMaterialItems(limit, page);
+    getRawMaterialItems(limit: string, page: string, filters?: RawMaterialFilters): Promise<PaginatedRawMaterialItems> {
+        return this.datasource.getRawMaterialItems(limit, page, filters);
     }
 
     getRawMaterialItemByCode(code: string): Promise<RawMaterialItem> {

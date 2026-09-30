@@ -1,6 +1,6 @@
-import { BulkUploadModal, type BulkUploadColumn, ActionsMenu, CustomFilledButton, Loading, Pagination, Table, Tbody, Td, Th, Thead, Title, Tr, usePagination } from "@/features/shared/shared";
+import { FiltersButton, FiltersDrawer, BulkUploadModal, type BulkUploadColumn, ActionsMenu, CustomFilledButton, Loading, Pagination, Table, Tbody, Td, Th, Thead, Title, Tr, usePagination } from "@/features/shared/shared";
 import { EditIcon, EyeIcon, PlusIcon, UploadIcon } from "lucide-react";
-import { packingMaterialProvider } from "@/features/packing-materials/packing-materials";
+import { packingMaterialProvider, usePackingMaterialFilters, packingMaterialFilterFields } from "@/features/packing-materials/packing-materials";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useState } from "react";
@@ -18,10 +18,12 @@ export function IndexPackingMaterials() {
 
     const [searchParams, setSearchParams] = useSearchParams();
     const { page, rowsPerPage } = usePagination(searchParams);
+    const [showFilters, setShowFilters] = useState(false);
+    const { filters, setFilters, clearFilters } = usePackingMaterialFilters();
 
     const { data, isLoading } = useQuery({
-        queryKey: ['getPackingMaterialItems', page + 1, rowsPerPage],
-        queryFn: () => packingMaterialProvider.getPackingMaterialItems(`${rowsPerPage}`, `${page + 1}`)
+        queryKey: ['getPackingMaterialItems', page + 1, rowsPerPage, filters],
+        queryFn: () => packingMaterialProvider.getPackingMaterialItems(`${rowsPerPage}`, `${page + 1}`, filters)
     });
 
     if (isLoading) return <Loading />
@@ -30,6 +32,7 @@ export function IndexPackingMaterials() {
             <div className="flex justify-between items-center">
                 <Title title="Materiales de Empaque" subtitle="Listado de materiales de empaque registrados" />
                 <div className="flex gap-3">
+                    <FiltersButton filters={filters} onClick={() => setShowFilters(true)} />
                     <CustomFilledButton
                         label="Carga Masiva"
                         type="button"
@@ -44,6 +47,15 @@ export function IndexPackingMaterials() {
                     />
                 </div>
             </div>
+
+            <FiltersDrawer
+                open={showFilters}
+                close={() => setShowFilters(false)}
+                fields={packingMaterialFilterFields}
+                filters={filters}
+                setFilters={setFilters}
+                clearFilters={clearFilters}
+            />
 
             <BulkUploadModal
                 modal={bulkUpload}

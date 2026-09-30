@@ -1,10 +1,16 @@
-import { ActionsMenu, CustomFilledButton, FadeInUp, useNotification } from "@/features/shared/shared";
+import { CustomFilledButton, useNotification } from "@/features/shared/shared";
 import { AnimatePresence } from "framer-motion";
-import { ClipboardList, EditIcon, PlusIcon, TrashIcon } from "lucide-react";
-import { draftWeeklyPlanTaskProvider, ModalCreateDraftWeeklyPlanTask, ModalUpdateDraftWeeklyPlanTask } from "@/features/draft-weekly-plan-tasks/draft-weekly-plan-tasks";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { ClipboardList, MapPinIcon, PackageIcon, PlusIcon, WorkflowIcon, XIcon } from "lucide-react";
+import { DraftWeeklyPlanTaskComponent, defaultDraftWeeklyPlanTaskFilters, draftWeeklyPlanTaskProvider, ModalCreateDraftWeeklyPlanTask, ModalUpdateDraftWeeklyPlanTask, useDraftWeeklyPlanTaskFilters, type DraftWeeklyPlanTaskFilters } from "@/features/draft-weekly-plan-tasks/draft-weekly-plan-tasks";
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
+
+const filterFields: { name: keyof DraftWeeklyPlanTaskFilters; label: string; placeholder: string; icon: ReactNode }[] = [
+    { name: 'line', label: 'Línea', placeholder: 'Buscar línea', icon: <WorkflowIcon className="size-4" /> },
+    { name: 'sku', label: 'SKU', placeholder: 'Buscar SKU', icon: <PackageIcon className="size-4" /> },
+    { name: 'destination', label: 'Destino', placeholder: 'Buscar destino', icon: <MapPinIcon className="size-4" /> },
+];
 
 export function DraftWeeklyPlanTasksSidebar() {
     const { id } = useParams();
@@ -12,10 +18,30 @@ export function DraftWeeklyPlanTasksSidebar() {
     const [taskId, setTaskId] = useState('');
     const [createModal, setCreateModal] = useState(false);
     const queryClient = useQueryClient();
+    const { filters, setFilters, clearFilters } = useDraftWeeklyPlanTaskFilters();
+    const [search, setSearch] = useState<DraftWeeklyPlanTaskFilters>(defaultDraftWeeklyPlanTaskFilters);
 
-    const { data, isLoading, refetch } = useQuery({
-        queryKey: ['getDraftWeeklyPlanTasksSidebar', id],
-        queryFn: () => draftWeeklyPlanTaskProvider.getDraftWeeklyPlanTasks(id!, '', '')
+    useEffect(() => {
+        const timeout = setTimeout(() => setFilters({
+            line: search.line.trim(),
+            sku: search.sku.trim(),
+            destination: search.destination.trim()
+        }), 400);
+
+        return () => clearTimeout(timeout);
+    }, [search, setFilters]);
+
+    const hasFilters = Object.values(search).some(value => value !== '');
+
+    const handleClearFilters = () => {
+        setSearch(defaultDraftWeeklyPlanTaskFilters);
+        clearFilters();
+    }
+
+    const { data, isLoading, isFetching, refetch } = useQuery({
+        queryKey: ['getDraftWeeklyPlanTasksSidebar', id, filters],
+        queryFn: () => draftWeeklyPlanTaskProvider.getDraftWeeklyPlanTasks(id!, '', '', filters),
+        placeholderData: keepPreviousData
     });
 
     const refetchPlanData = () => {
@@ -53,6 +79,38 @@ export function DraftWeeklyPlanTasksSidebar() {
                 />
             </div>
 
+            <div className="space-y-2 border-b border-line pb-3">
+                {filterFields.map(field => (
+                    <label key={field.name} className="relative block">
+                        <span className="sr-only">{field.label}</span>
+                        <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-ink-subtle">{field.icon}</span>
+                        <input
+                            type="search"
+                            value={search[field.name]}
+                            onChange={e => setSearch(prev => ({ ...prev, [field.name]: e.target.value }))}
+                            placeholder={field.placeholder}
+                            className="w-full rounded-lg border border-line bg-canvas py-1.5 pl-9 pr-3 text-sm text-ink transition placeholder:text-ink-subtle focus:border-ink focus:bg-surface focus:outline-none focus:ring-2 focus:ring-ink/10"
+                        />
+                    </label>
+                ))}
+
+                <div className="flex h-5 items-center justify-between text-xs text-ink-subtle">
+                    <span className="tabular-nums">
+                        {isFetching ? 'Buscando…' : data ? `${data.data.length} ${data.data.length === 1 ? 'tarea' : 'tareas'}` : ''}
+                    </span>
+                    {hasFilters && (
+                        <button
+                            type="button"
+                            onClick={handleClearFilters}
+                            className="inline-flex items-center gap-1 rounded text-ink-muted transition hover:text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-ink/20 cursor-pointer"
+                        >
+                            <XIcon className="size-3.5" />
+                            Limpiar filtros
+                        </button>
+                    )}
+                </div>
+            </div>
+
             <div className="space-y-3 overflow-y-auto">
                 {isLoading && (
                     <div className="flex h-40 items-center justify-center">
@@ -63,36 +121,13 @@ export function DraftWeeklyPlanTasksSidebar() {
                 {data && data.data.length === 0 && (
                     <div className="flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-line bg-surface py-10 text-center">
                         <ClipboardList className="size-6 text-ink-subtle" />
-                        <p className="text-sm text-ink-muted">No hay tareas registradas para este plan semanal</p>
+                        <p className="text-sm text-ink-muted">{hasFilters ? 'Ninguna tarea coincide con los filtros' : 'No hay tareas registradas para este plan semanal'}</p>
                     </div>
                 )}
 
                 <AnimatePresence>
                     {data?.data.map(task => (
-                        <FadeInUp key={task.id}>
-                            <div className="space-y-2 rounded-lg border border-line p-4">
-                                <div className="flex items-center justify-between">
-                                    <span className="text-sm font-semibold text-ink">{task.sku_name}</span>
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-xs text-ink-subtle">{task.operation_date_string}</span>
-                                        <ActionsMenu
-                                            items={[
-                                                { label: "Editar", icon: <EditIcon />, onClick: () => setTaskId(`${task.id}`), danger: false },
-                                                { label: "Eliminar", icon: <TrashIcon />, onClick: () => handleDeleteTask(`${task.id}`), danger: true },
-                                            ]}
-                                        />
-                                    </div>
-                                </div>
-
-                                <p className="text-xs text-ink-subtle">Línea: {task.line_name ?? '-'}</p>
-                                <p className="text-xs text-ink-subtle">Destino: {task.destination}</p>
-
-                                <div className="flex gap-4 text-xs text-ink-subtle">
-                                    <span>Cajas: {task.boxes}</span>
-                                    <span>Horas: {task.hours}</span>
-                                </div>
-                            </div>
-                        </FadeInUp>
+                        <DraftWeeklyPlanTaskComponent key={task.id} task={task} deleteTask={handleDeleteTask} setTaskId={setTaskId}/>
                     ))}
                 </AnimatePresence>
             </div>

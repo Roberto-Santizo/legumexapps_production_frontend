@@ -2,6 +2,9 @@ import type { PerformanceDatasource, Performance, PerformanceForm, PerformanceRe
 
 export class PerformanceRepositoryImpl implements PerformanceRepository {
     constructor(private datasource: PerformanceDatasource) { }
+    toggleStatus(id: string): Promise<string> {
+        return this.datasource.toggleStatus(id);
+    }
 
     createPerformance(payload: PerformanceForm): Promise<string> {
         return this.datasource.createPerformance(payload);

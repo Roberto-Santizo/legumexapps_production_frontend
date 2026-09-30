@@ -1,4 +1,4 @@
-import { type PackingMaterialItem, type PackingMaterialItemForm, type PackingMaterialRepository, type PaginatedPackingMaterialItems } from "@/features/packing-materials/packing-materials";
+import { type PackingMaterialItem, type PackingMaterialItemForm, type PackingMaterialRepository, type PaginatedPackingMaterialItems, type PackingMaterialFilters } from "@/features/packing-materials/packing-materials";
 import { PackingMaterialDatasourceImpl, PackingMaterialRepositoryImpl, } from "@/features/packing-materials/infrastructure/infrastructure";
 import api from "@/config/http/axios";
 
@@ -9,8 +9,8 @@ export class PackingMaterialProvider {
         return this.repository.createPackingMaterialItem(payload);
     }
 
-    getPackingMaterialItems(limit: string, page: string): Promise<PaginatedPackingMaterialItems> {
-        return this.repository.getPackingMaterialItems(limit, page);
+    getPackingMaterialItems(limit: string, page: string, filters?: PackingMaterialFilters): Promise<PaginatedPackingMaterialItems> {
+        return this.repository.getPackingMaterialItems(limit, page, filters);
     }
 
     getPackingMaterialItemByCode(code: string): Promise<PackingMaterialItem> {

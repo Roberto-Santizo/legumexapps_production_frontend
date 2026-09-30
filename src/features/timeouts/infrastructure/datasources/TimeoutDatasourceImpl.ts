@@ -1,6 +1,6 @@
-import { ApiResponseSchema } from "@/features/shared/shared";
+import { ApiResponseSchema, setQueryParams } from "@/features/shared/shared";
 import { isAxiosError, type AxiosInstance } from "axios";
-import { TimeoutSchema, PaginatedTimeoutsSchema, type TimeoutDatasource, type Timeout, type TimeoutForm, type PaginatedTimeouts } from "@/features/timeouts/timeouts";
+import { TimeoutSchema, PaginatedTimeoutsSchema, type TimeoutDatasource, type Timeout, type TimeoutForm, type PaginatedTimeouts, type TimeoutFilters } from "@/features/timeouts/timeouts";
 
 export class TimeoutDatasourceImpl implements TimeoutDatasource {
     constructor(private api: AxiosInstance, private url = '/timeouts') { }
@@ -22,9 +22,10 @@ export class TimeoutDatasourceImpl implements TimeoutDatasource {
         }
     }
 
-    async getTimeouts(limit: string, page: string): Promise<PaginatedTimeouts> {
+    async getTimeouts(limit: string, page: string, filters?: TimeoutFilters): Promise<PaginatedTimeouts> {
         try {
-            const url = `${this.url}?limit=${limit}&page=${page}`;
+            const params = setQueryParams({ limit, page, ...filters });
+            const url = `${this.url}?${params.toString()}`;
             const { data } = await this.api.get(url);
             const response = PaginatedTimeoutsSchema.safeParse(data);
 

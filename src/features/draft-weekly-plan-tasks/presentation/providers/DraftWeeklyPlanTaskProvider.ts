@@ -1,4 +1,4 @@
-import { type DraftWeeklyPlanTask, type DraftWeeklyPlanTaskForm, type DraftWeeklyPlanTaskRepository, type PaginatedDraftWeeklyPlanTasks } from "@/features/draft-weekly-plan-tasks/draft-weekly-plan-tasks";
+import { type DraftWeeklyPlanTask, type DraftWeeklyPlanTaskForm, type DraftWeeklyPlanTaskFilters, type DraftWeeklyPlanTaskRepository, type PaginatedDraftWeeklyPlanTasks } from "@/features/draft-weekly-plan-tasks/draft-weekly-plan-tasks";
 import { DraftWeeklyPlanTaskDatasourceImpl, DraftWeeklyPlanTaskRepositoryImpl, } from "@/features/draft-weekly-plan-tasks/infrastructure/infrastructure";
 import api from "@/config/http/axios";
 
@@ -9,8 +9,8 @@ export class DraftWeeklyPlanTaskProvider {
         return this.repository.createDraftWeeklyPlanTask(payload);
     }
 
-    getDraftWeeklyPlanTasks(draftWeeklyPlanId: string, limit: string, page: string): Promise<PaginatedDraftWeeklyPlanTasks> {
-        return this.repository.getDraftWeeklyPlanTasks(draftWeeklyPlanId, limit, page);
+    getDraftWeeklyPlanTasks(draftWeeklyPlanId: string, limit: string, page: string, filters?: DraftWeeklyPlanTaskFilters): Promise<PaginatedDraftWeeklyPlanTasks> {
+        return this.repository.getDraftWeeklyPlanTasks(draftWeeklyPlanId, limit, page, filters);
     }
 
     getDraftWeeklyPlanTaskById(id: string): Promise<DraftWeeklyPlanTask> {

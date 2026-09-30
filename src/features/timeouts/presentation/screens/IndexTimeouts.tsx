@@ -1,6 +1,6 @@
-import { BulkUploadModal, type BulkUploadColumn, ActionsMenu, CustomFilledButton, Loading, Pagination, Table, Tbody, Td, Th, Thead, Title, Tr, usePagination } from "@/features/shared/shared";
+import { FiltersButton, FiltersDrawer, BulkUploadModal, type BulkUploadColumn, ActionsMenu, CustomFilledButton, Loading, Pagination, Table, Tbody, Td, Th, Thead, Title, Tr, usePagination } from "@/features/shared/shared";
 import { EditIcon, EyeIcon, PlusIcon, UploadIcon } from "lucide-react";
-import { timeoutProvider } from "@/features/timeouts/timeouts";
+import { timeoutProvider, useTimeoutFilters, timeoutFilterFields } from "@/features/timeouts/timeouts";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useState } from "react";
@@ -16,10 +16,12 @@ export function IndexTimeouts() {
 
     const [searchParams, setSearchParams] = useSearchParams();
     const { page, rowsPerPage } = usePagination(searchParams);
+    const [showFilters, setShowFilters] = useState(false);
+    const { filters, setFilters, clearFilters } = useTimeoutFilters();
 
     const { data, isLoading } = useQuery({
-        queryKey: ['getTimeouts', page + 1, rowsPerPage],
-        queryFn: () => timeoutProvider.getTimeouts(`${rowsPerPage}`, `${page + 1}`)
+        queryKey: ['getTimeouts', page + 1, rowsPerPage, filters],
+        queryFn: () => timeoutProvider.getTimeouts(`${rowsPerPage}`, `${page + 1}`, filters)
     });
 
     if (isLoading) return <Loading />
@@ -28,6 +30,7 @@ export function IndexTimeouts() {
             <div className="flex justify-between items-center">
                 <Title title="Tiempos Muertos" subtitle="Listado de tiempos muertos registrados" />
                 <div className="flex gap-3">
+                    <FiltersButton filters={filters} onClick={() => setShowFilters(true)} />
                     <CustomFilledButton
                         label="Carga Masiva"
                         type="button"
@@ -42,6 +45,15 @@ export function IndexTimeouts() {
                     />
                 </div>
             </div>
+
+            <FiltersDrawer
+                open={showFilters}
+                close={() => setShowFilters(false)}
+                fields={timeoutFilterFields}
+                filters={filters}
+                setFilters={setFilters}
+                clearFilters={clearFilters}
+            />
 
             <BulkUploadModal
                 modal={bulkUpload}

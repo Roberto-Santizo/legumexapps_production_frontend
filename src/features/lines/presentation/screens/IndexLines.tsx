@@ -1,6 +1,6 @@
-import { BulkUploadModal, type BulkUploadColumn, ActionsMenu, CustomFilledButton, ErrorComponent, LoadingData, Pagination, Table, Tbody, Td, Th, Thead, Title, Tr, usePagination } from "@/features/shared/shared";
+import { FiltersButton, FiltersDrawer, BulkUploadModal, type BulkUploadColumn, ActionsMenu, CustomFilledButton, ErrorComponent, LoadingData, Pagination, Table, Tbody, Td, Th, Thead, Title, Tr, usePagination } from "@/features/shared/shared";
 import { EditIcon, EyeIcon, PlusIcon, UploadIcon } from "lucide-react";
-import { linesRepositoryProvider } from "@/features/lines/lines";
+import { linesRepositoryProvider, useLineFilters, lineFilterFields } from "@/features/lines/lines";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -17,10 +17,12 @@ export function IndexLines() {
     const [bulkUpload, setBulkUpload] = useState(false);
     const [searchParams, setSearchParams] = useSearchParams();
     const { page, rowsPerPage } = usePagination(searchParams);
+    const [showFilters, setShowFilters] = useState(false);
+    const { filters, setFilters, clearFilters } = useLineFilters();
 
     const { data, isLoading, isError, error } = useQuery({
-        queryKey: ['getLines', rowsPerPage, page],
-        queryFn: () => linesRepositoryProvider.getLines(`${rowsPerPage}`, `${page + 1}`),
+        queryKey: ['getLines', rowsPerPage, page, filters],
+        queryFn: () => linesRepositoryProvider.getLines(`${rowsPerPage}`, `${page + 1}`, '', filters),
         retry: false
     });
 
@@ -32,6 +34,7 @@ export function IndexLines() {
 
                 <Title title="Líneas" subtitle="Listado de líneas registradas" />
                 <div className="flex gap-3">
+                    <FiltersButton filters={filters} onClick={() => setShowFilters(true)} />
                     <CustomFilledButton
                         label="Carga Masiva"
                         type="button"
@@ -46,6 +49,15 @@ export function IndexLines() {
                     />
                 </div>
             </div>
+
+            <FiltersDrawer
+                open={showFilters}
+                close={() => setShowFilters(false)}
+                fields={lineFilterFields}
+                filters={filters}
+                setFilters={setFilters}
+                clearFilters={clearFilters}
+            />
 
             <BulkUploadModal
                 modal={bulkUpload}

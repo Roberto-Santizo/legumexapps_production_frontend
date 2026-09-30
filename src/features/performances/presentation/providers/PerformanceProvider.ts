@@ -28,6 +28,10 @@ export class PerformanceProvider {
     uploadFile(file: File): Promise<string> {
         return this.repository.uploadFile(file);
     }
+
+    toggleStatus(id: string): Promise<string> {
+        return this.repository.toggleStatus(id);
+    }
 }
 
 const datasource = new PerformanceDatasourceImpl(api);

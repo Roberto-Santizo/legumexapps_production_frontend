@@ -1,6 +1,6 @@
-import { BulkUploadModal, type BulkUploadColumn, ActionsMenu, CustomFilledButton, Loading, Pagination, Table, Tbody, Td, Th, Thead, Title, Tr, usePagination } from "@/features/shared/shared";
+import { FiltersButton, FiltersDrawer, BulkUploadModal, type BulkUploadColumn, ActionsMenu, CustomFilledButton, Loading, Pagination, Table, Tbody, Td, Th, Thead, Title, Tr, usePagination } from "@/features/shared/shared";
 import { EditIcon, EyeIcon, PlusIcon, UploadIcon } from "lucide-react";
-import { skuProvider } from "@/features/skus/skus";
+import { skuProvider, useSkuFilters, skuFilterFields } from "@/features/skus/skus";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -20,10 +20,12 @@ export function IndexSkus() {
 
     const [searchParams, setSearchParams] = useSearchParams();
     const { page, rowsPerPage } = usePagination(searchParams);
+    const [showFilters, setShowFilters] = useState(false);
+    const { filters, setFilters, clearFilters } = useSkuFilters();
 
     const { data, isLoading } = useQuery({
-        queryKey: ['getSkus', page + 1, rowsPerPage],
-        queryFn: () => skuProvider.getSkus(`${rowsPerPage}`, `${page + 1}`)
+        queryKey: ['getSkus', page + 1, rowsPerPage, filters],
+        queryFn: () => skuProvider.getSkus(`${rowsPerPage}`, `${page + 1}`, filters)
     });
 
     if (isLoading) return <Loading />
@@ -32,6 +34,7 @@ export function IndexSkus() {
             <div className="flex justify-between items-center">
                 <Title title="SKUs" subtitle="Listado de SKUs registrados" />
                 <div className="flex gap-3">
+                    <FiltersButton filters={filters} onClick={() => setShowFilters(true)} />
                     <CustomFilledButton
                         label="Carga Masiva"
                         type="button"
@@ -46,6 +49,15 @@ export function IndexSkus() {
                     />
                 </div>
             </div>
+
+            <FiltersDrawer
+                open={showFilters}
+                close={() => setShowFilters(false)}
+                fields={skuFilterFields}
+                filters={filters}
+                setFilters={setFilters}
+                clearFilters={clearFilters}
+            />
 
             <BulkUploadModal
                 modal={bulkUpload}

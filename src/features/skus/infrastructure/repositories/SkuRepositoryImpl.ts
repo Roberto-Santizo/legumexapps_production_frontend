@@ -1,4 +1,4 @@
-import type { SkuDatasource, Sku, SkuForm, SkuRepository, PaginatedSkus } from "@/features/skus/skus";
+import type { SkuDatasource, Sku, SkuForm, SkuRepository, PaginatedSkus, SkuFilters } from "@/features/skus/skus";
 
 export class SkuRepositoryImpl implements SkuRepository {
     constructor(private datasource: SkuDatasource) { }
@@ -7,8 +7,8 @@ export class SkuRepositoryImpl implements SkuRepository {
         return this.datasource.createSku(payload);
     }
 
-    getSkus(limit: string, page: string): Promise<PaginatedSkus> {
-        return this.datasource.getSkus(limit, page);
+    getSkus(limit: string, page: string, filters?: SkuFilters): Promise<PaginatedSkus> {
+        return this.datasource.getSkus(limit, page, filters);
     }
 
     getSkuByCode(code: string): Promise<Sku> {

@@ -1,4 +1,4 @@
-import { type RawMaterialItem, type RawMaterialItemForm, type RawMaterialRepository, type PaginatedRawMaterialItems } from "@/features/raw-materials/raw-materials";
+import { type RawMaterialItem, type RawMaterialItemForm, type RawMaterialRepository, type PaginatedRawMaterialItems, type RawMaterialFilters } from "@/features/raw-materials/raw-materials";
 import { RawMaterialDatasourceImpl, RawMaterialRepositoryImpl, } from "@/features/raw-materials/infrastructure/infrastructure";
 import api from "@/config/http/axios";
 
@@ -9,8 +9,8 @@ export class RawMaterialProvider {
         return this.repository.createRawMaterialItem(payload);
     }
 
-    getRawMaterialItems(limit: string, page: string): Promise<PaginatedRawMaterialItems> {
-        return this.repository.getRawMaterialItems(limit, page);
+    getRawMaterialItems(limit: string, page: string, filters?: RawMaterialFilters): Promise<PaginatedRawMaterialItems> {
+        return this.repository.getRawMaterialItems(limit, page, filters);
     }
 
     getRawMaterialItemByCode(code: string): Promise<RawMaterialItem> {

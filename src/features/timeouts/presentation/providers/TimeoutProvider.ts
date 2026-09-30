@@ -1,4 +1,4 @@
-import { type Timeout, type TimeoutForm, type TimeoutRepository, type PaginatedTimeouts } from "@/features/timeouts/timeouts";
+import { type Timeout, type TimeoutForm, type TimeoutRepository, type PaginatedTimeouts, type TimeoutFilters } from "@/features/timeouts/timeouts";
 import { TimeoutDatasourceImpl, TimeoutRepositoryImpl, } from "@/features/timeouts/infrastructure/infrastructure";
 import api from "@/config/http/axios";
 
@@ -9,8 +9,8 @@ export class TimeoutProvider {
         return this.repository.createTimeout(payload);
     }
 
-    getTimeouts(limit: string, page: string): Promise<PaginatedTimeouts> {
-        return this.repository.getTimeouts(limit, page);
+    getTimeouts(limit: string, page: string, filters?: TimeoutFilters): Promise<PaginatedTimeouts> {
+        return this.repository.getTimeouts(limit, page, filters);
     }
 
     getTimeoutById(id: string): Promise<Timeout> {

@@ -1,4 +1,4 @@
-import { type DraftWeeklyPlan, type DraftWeeklyPlanForm, type DraftWeeklyPlanRepository, type PaginatedDraftWeeklyPlans } from "@/features/draft-weekly-plans/draft-weekly-plans";
+import { type DraftWeeklyPlan, type DraftWeeklyPlanForm, type DraftWeeklyPlanRepository, type PaginatedDraftWeeklyPlans, type DraftWeeklyPlanFilters } from "@/features/draft-weekly-plans/draft-weekly-plans";
 import { DraftWeeklyPlanDatasourceImpl, DraftWeeklyPlanRepositoryImpl, } from "@/features/draft-weekly-plans/infrastructure/infrastructure";
 import api from "@/config/http/axios";
 
@@ -9,8 +9,8 @@ export class DraftWeeklyPlanProvider {
         return this.repository.createDraftWeeklyPlan(payload);
     }
 
-    getDraftWeeklyPlans(limit: string, page: string): Promise<PaginatedDraftWeeklyPlans> {
-        return this.repository.getDraftWeeklyPlans(limit, page);
+    getDraftWeeklyPlans(limit: string, page: string, filters?: DraftWeeklyPlanFilters): Promise<PaginatedDraftWeeklyPlans> {
+        return this.repository.getDraftWeeklyPlans(limit, page, filters);
     }
 
     getDraftWeeklyPlanById(id: string): Promise<DraftWeeklyPlan> {

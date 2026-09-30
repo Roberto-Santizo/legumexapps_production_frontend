@@ -1,6 +1,6 @@
-import { ApiResponseSchema } from "@/features/shared/shared";
+import { ApiResponseSchema, setQueryParams } from "@/features/shared/shared";
 import { isAxiosError, type AxiosInstance } from "axios";
-import { WeeklyPlanSchema, PaginatedWeeklyPlansSchema, type WeeklyPlanDatasource, type WeeklyPlan, type WeeklyPlanForm, type PaginatedWeeklyPlans, type CalendarEventItem, CalendarEventItemSchema, type WeeklyPlanSummaryByDate, WeeklyPlanSummaryByDateSchema } from "@/features/weekly-plans/weekly-plans";
+import { WeeklyPlanSchema, PaginatedWeeklyPlansSchema, type WeeklyPlanDatasource, type WeeklyPlan, type WeeklyPlanForm, type PaginatedWeeklyPlans, type CalendarEventItem, CalendarEventItemSchema, type WeeklyPlanSummaryByDate, WeeklyPlanSummaryByDateSchema, type WeeklyPlanFilters } from "@/features/weekly-plans/weekly-plans";
 import z from 'zod';
 
 export class WeeklyPlanDatasourceImpl implements WeeklyPlanDatasource {
@@ -59,9 +59,10 @@ export class WeeklyPlanDatasourceImpl implements WeeklyPlanDatasource {
         }
     }
 
-    async getWeeklyPlans(limit: string, page: string): Promise<PaginatedWeeklyPlans> {
+    async getWeeklyPlans(limit: string, page: string, filters?: WeeklyPlanFilters): Promise<PaginatedWeeklyPlans> {
         try {
-            const url = `${this.url}?limit=${limit}&page=${page}`;
+            const params = setQueryParams({ limit, page, ...filters });
+            const url = `${this.url}?${params.toString()}`;
             const { data } = await this.api.get(url);
             const response = PaginatedWeeklyPlansSchema.safeParse(data);
 
