@@ -1,13 +1,16 @@
 import { ApiResponseSchema, setQueryParams } from "@/features/shared/shared";
 import { isAxiosError, type AxiosInstance } from "axios";
-import { PackingMaterialTransactionSchema, PaginatedPackingMaterialTransactionsSchema, type PackingMaterialTransaction, type PackingMaterialTransactionCreateForm, type PackingMaterialTransactionDatasource, type PackingMaterialTransactionUpdateForm, type PaginatedPackingMaterialTransactions, type PackingMaterialTransactionFilters } from "@/features/packing-material-transactions/packing-material-transactions";
+import { buildPackingMaterialTransactionFormData, PackingMaterialTransactionSchema,PaginatedPackingMaterialTransactionsSchema, type PackingMaterialTransaction, type PackingMaterialTransactionCreateForm, type PackingMaterialTransactionDatasource, type PackingMaterialTransactionUpdateForm, type PaginatedPackingMaterialTransactions, type PackingMaterialTransactionFilters } from "@/features/packing-material-transactions/packing-material-transactions";
 
 export class PackingMaterialTransactionDatasourceImpl implements PackingMaterialTransactionDatasource {
     constructor(private api: AxiosInstance, private url = '/packing-material-transactions') { }
 
     async createPackingMaterialTransaction(payload: PackingMaterialTransactionCreateForm): Promise<string> {
         try {
-            const { data } = await this.api.post(this.url, payload);
+            const formData = buildPackingMaterialTransactionFormData(payload);
+            const { data } = await this.api.post(this.url, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
             const response = ApiResponseSchema.safeParse(data);
 
             if (response.success) {

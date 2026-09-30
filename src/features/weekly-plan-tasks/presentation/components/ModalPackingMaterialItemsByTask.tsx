@@ -1,4 +1,4 @@
-import { CustomFilledButton, CustomForm, getQueryParam, handleDeleteQueryParam, Modal, queryParamExists, TextAreaFormField, TextFormField, useNotification } from "@/features/shared/shared";
+import { CustomFilledButton, CustomForm, getQueryParam, handleDeleteQueryParam, Modal, queryParamExists, SignatureFormField, TextAreaFormField, TextFormField, useNotification } from "@/features/shared/shared";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
@@ -7,11 +7,19 @@ import { PackingMaterialItemByTaskComponent, weeklyPlanTaskProvider, type Packin
 import { packingMaterialTransactionProvider, type PackingMaterialTransactionCreateForm } from "@/features/packing-material-transactions/packing-material-transactions";
 
 const signatures = [
-    { name: "responsable_signature", label: "Firma del Responsable" },
-    { name: "user_signature", label: "Firma de Bodega" }
-];
+    { name: "responsable_signature", label: "Firma del Responsable", fileName: "responsable_signature.png", requiredMessage: "La firma del responsable es obligatoria" },
+    { name: "user_signature", label: "Firma de Bodega", fileName: "user_signature.png", requiredMessage: "La firma de bodega es obligatoria" }
+] as const;
 
-const SIGNATURE_PLACEHOLDER = "signatures/signature.png";
+const emptyDeliveryForm: PackingMaterialItemsByTaskDeliveryForm = {
+    reference: "",
+    responsable: "",
+    observations: "",
+    responsable_signature: null,
+    user_signature: null,
+    type: 1,
+    items: []
+};
 
 export function ModalPackingMaterialItemsByTask() {
     const location = useLocation();
@@ -31,10 +39,11 @@ export function ModalPackingMaterialItemsByTask() {
     const {
         handleSubmit,
         register,
+        control,
         reset,
         formState: { errors }
     } = useForm<PackingMaterialItemsByTaskDeliveryForm>({
-        defaultValues: { type: 1, items: [] }
+        defaultValues: emptyDeliveryForm
     });
 
     const closeModal = () => {
@@ -43,16 +52,13 @@ export function ModalPackingMaterialItemsByTask() {
 
     useEffect(() => {
         if (!show) {
-            reset({ reference: "", responsable: "", observations: "", type: 1, items: [] });
+            reset(emptyDeliveryForm);
             return;
         }
 
         if (data) {
             reset({
-                reference: "",
-                responsable: "",
-                observations: "",
-                type: 1,
+                ...emptyDeliveryForm,
                 items: data.map(({ quantity, lote, destination, packing_material_id }) => ({
                     quantity,
                     lote,
@@ -81,9 +87,7 @@ export function ModalPackingMaterialItemsByTask() {
 
         mutate({
             ...form,
-            weekly_plan_task_id: Number(taskId),
-            responsable_signature: SIGNATURE_PLACEHOLDER,
-            user_signature: SIGNATURE_PLACEHOLDER
+            weekly_plan_task_id: Number(taskId)
         });
     }
 
@@ -164,17 +168,15 @@ export function ModalPackingMaterialItemsByTask() {
 
                     <div className="grid gap-4 sm:grid-cols-2">
                         {signatures.map(signature => (
-                            <div key={signature.name} className="flex flex-col gap-2">
-                                <label className="text-sm font-medium text-gray-700">
-                                    {signature.label}
-                                </label>
-
-                                <div className="flex h-32 items-center justify-center rounded-xl border border-dashed border-gray-300 bg-gray-50 text-xs text-gray-500">
-                                    Toque para firmar
-                                </div>
-
-                                <p className="text-red-400 text-xs"></p>
-                            </div>
+                            <SignatureFormField<PackingMaterialItemsByTaskDeliveryForm>
+                                key={signature.name}
+                                name={signature.name}
+                                label={signature.label}
+                                fileName={signature.fileName}
+                                control={control}
+                                disabled={isPending}
+                                validation={{ required: signature.requiredMessage }}
+                            />
                         ))}
                     </div>
                 </section>

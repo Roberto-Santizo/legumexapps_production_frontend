@@ -44,4 +44,4 @@ export type SplitWeeklyPlanTaskForm = {
     portions: SplitWeeklyPlanTaskPortion[];
 }
 
-export type PackingMaterialItemsByTaskDeliveryForm = Omit<PackingMaterialTransactionCreateForm, 'responsable_signature' | 'user_signature' | 'weekly_plan_task_id'>;
+export type PackingMaterialItemsByTaskDeliveryForm = Omit<PackingMaterialTransactionCreateForm, 'weekly_plan_task_id'>;
