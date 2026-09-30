@@ -1,4 +1,4 @@
-import type { PositionDatasource, Position, PositionForm, PositionRepository, PaginatedPositions } from "@/features/positions/positions";
+import type { PositionDatasource, Position, PositionForm, PositionRepository, PaginatedPositions, PositionFilters } from "@/features/positions/positions";
 
 export class PositionRepositoryImpl implements PositionRepository {
     constructor(private datasource: PositionDatasource) { }
@@ -7,8 +7,8 @@ export class PositionRepositoryImpl implements PositionRepository {
         return this.datasource.createPosition(payload);
     }
 
-    getPositions(limit: string, page: string, lineCode: string): Promise<PaginatedPositions> {
-        return this.datasource.getPositions(limit, page, lineCode);
+    getPositions(limit: string, page: string, lineCode: string, filters?: PositionFilters): Promise<PaginatedPositions> {
+        return this.datasource.getPositions(limit, page, lineCode, filters);
     }
 
     getPositionById(id: string): Promise<Position> {

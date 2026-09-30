@@ -1,6 +1,6 @@
-import { ApiResponseSchema, BarChartDatumSchema, type BarChartDatum } from "@/features/shared/shared";
+import { ApiResponseSchema, BarChartDatumSchema, type BarChartDatum, setQueryParams } from "@/features/shared/shared";
 import { isAxiosError, type AxiosInstance } from "axios";
-import { DraftWeeklyPlanSchema, PaginatedDraftWeeklyPlansSchema, type DraftWeeklyPlan, type DraftWeeklyPlanDatasource, type DraftWeeklyPlanForm, type PaginatedDraftWeeklyPlans } from "@/features/draft-weekly-plans/draft-weekly-plans";
+import { DraftWeeklyPlanSchema, PaginatedDraftWeeklyPlansSchema, type DraftWeeklyPlan, type DraftWeeklyPlanDatasource, type DraftWeeklyPlanForm, type PaginatedDraftWeeklyPlans, type DraftWeeklyPlanFilters } from "@/features/draft-weekly-plans/draft-weekly-plans";
 import { z } from "zod";
 
 export class DraftWeeklyPlanDatasourceImpl implements DraftWeeklyPlanDatasource {
@@ -95,9 +95,10 @@ export class DraftWeeklyPlanDatasourceImpl implements DraftWeeklyPlanDatasource 
         }
     }
 
-    async getDraftWeeklyPlans(limit: string, page: string): Promise<PaginatedDraftWeeklyPlans> {
+    async getDraftWeeklyPlans(limit: string, page: string, filters?: DraftWeeklyPlanFilters): Promise<PaginatedDraftWeeklyPlans> {
         try {
-            const url = `${this.url}?limit=${limit}&page=${page}`;
+            const params = setQueryParams({ limit, page, ...filters });
+            const url = `${this.url}?${params.toString()}`;
             const { data } = await this.api.get(url);
             const response = PaginatedDraftWeeklyPlansSchema.safeParse(data);
 

@@ -1,4 +1,4 @@
-import { type Client, type ClientForm, type ClientRepository, type PaginatedClients } from "@/features/clients/clients";
+import { type Client, type ClientForm, type ClientRepository, type PaginatedClients, type ClientFilters } from "@/features/clients/clients";
 import { ClientDatasourceImpl, ClientRepositoryImpl, } from "@/features/clients/infrastructure/infrastructure";
 import api from "@/config/http/axios";
 
@@ -9,8 +9,8 @@ export class ClientProvider {
         return this.repository.createClient(payload);
     }
 
-    getClients(limit: string, page: string): Promise<PaginatedClients> {
-        return this.repository.getClients(limit, page);
+    getClients(limit: string, page: string, filters?: ClientFilters): Promise<PaginatedClients> {
+        return this.repository.getClients(limit, page, filters);
     }
 
     getClientById(id: string): Promise<Client> {

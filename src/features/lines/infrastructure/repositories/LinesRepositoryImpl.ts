@@ -1,4 +1,4 @@
-import type { Line, LineForm, LinesDatasource, LinesRepository, PaginatedLines } from "@/features/lines/lines";
+import type { Line, LineForm, LinesDatasource, LinesRepository, PaginatedLines, LineFilters } from "@/features/lines/lines";
 
 export class LinesRepositoryImpl implements LinesRepository {
     constructor(private datasource: LinesDatasource) { }
@@ -7,8 +7,8 @@ export class LinesRepositoryImpl implements LinesRepository {
         return this.datasource.createLine(payload);
     }
 
-    getLines(limit: string, page: string, skuId?: string): Promise<PaginatedLines> {
-        return this.datasource.getLines(limit, page, skuId);
+    getLines(limit: string, page: string, skuId?: string, filters?: LineFilters): Promise<PaginatedLines> {
+        return this.datasource.getLines(limit, page, skuId, filters);
     }
 
     getLineByCode(code: string): Promise<Line> {

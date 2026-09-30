@@ -1,6 +1,6 @@
-import { ApiResponseSchema } from "@/features/shared/shared";
+import { ApiResponseSchema, setQueryParams } from "@/features/shared/shared";
 import { isAxiosError, type AxiosInstance } from "axios";
-import { LineSchema, PaginatedLinesSchema, type Line, type LineForm, type LinesDatasource, type PaginatedLines } from "@/features/lines/lines";
+import { LineSchema, PaginatedLinesSchema, type Line, type LineForm, type LinesDatasource, type PaginatedLines, type LineFilters } from "@/features/lines/lines";
 
 export class LinesDatasourceImpl implements LinesDatasource {
     constructor(private api: AxiosInstance, private url = '/lines') { }
@@ -22,9 +22,10 @@ export class LinesDatasourceImpl implements LinesDatasource {
         }
     }
 
-    async getLines(limit: string, page: string, skuId?: string): Promise<PaginatedLines> {
+    async getLines(limit: string, page: string, skuId?: string, filters?: LineFilters): Promise<PaginatedLines> {
         try {
-            const url = `${this.url}?limit=${limit}&page=${page}&skuId=${skuId}`
+            const params = setQueryParams({ limit, page, skuId, ...filters });
+            const url = `${this.url}?${params.toString()}`;
             const { data } = await this.api.get(url);
             const response = PaginatedLinesSchema.safeParse(data);
 

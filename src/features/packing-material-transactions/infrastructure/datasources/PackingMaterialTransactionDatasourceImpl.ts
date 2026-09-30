@@ -1,6 +1,6 @@
-import { ApiResponseSchema } from "@/features/shared/shared";
+import { ApiResponseSchema, setQueryParams } from "@/features/shared/shared";
 import { isAxiosError, type AxiosInstance } from "axios";
-import { PackingMaterialTransactionSchema, PaginatedPackingMaterialTransactionsSchema, type PackingMaterialTransaction, type PackingMaterialTransactionCreateForm, type PackingMaterialTransactionDatasource, type PackingMaterialTransactionUpdateForm, type PaginatedPackingMaterialTransactions } from "@/features/packing-material-transactions/packing-material-transactions";
+import { PackingMaterialTransactionSchema, PaginatedPackingMaterialTransactionsSchema, type PackingMaterialTransaction, type PackingMaterialTransactionCreateForm, type PackingMaterialTransactionDatasource, type PackingMaterialTransactionUpdateForm, type PaginatedPackingMaterialTransactions, type PackingMaterialTransactionFilters } from "@/features/packing-material-transactions/packing-material-transactions";
 
 export class PackingMaterialTransactionDatasourceImpl implements PackingMaterialTransactionDatasource {
     constructor(private api: AxiosInstance, private url = '/packing-material-transactions') { }
@@ -22,9 +22,10 @@ export class PackingMaterialTransactionDatasourceImpl implements PackingMaterial
         }
     }
 
-    async getPackingMaterialTransactions(limit: string, page: string): Promise<PaginatedPackingMaterialTransactions> {
+    async getPackingMaterialTransactions(limit: string, page: string, filters?: PackingMaterialTransactionFilters): Promise<PaginatedPackingMaterialTransactions> {
         try {
-            const url = `${this.url}?limit=${limit}&page=${page}`;
+            const params = setQueryParams({ limit, page, ...filters });
+            const url = `${this.url}?${params.toString()}`;
             const { data } = await this.api.get(url);
             const response = PaginatedPackingMaterialTransactionsSchema.safeParse(data);
 

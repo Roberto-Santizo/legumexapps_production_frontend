@@ -38,6 +38,14 @@ export type UseFiltersProps<T> = {
 
 export type UseUrlFiltersProps<T> = UseFiltersProps<T>;
 
+export type FilterField<T> = {
+    name: Extract<keyof T, string>;
+    label: string;
+    type: 'text' | 'number' | 'select';
+    placeholder?: string;
+    options?: Option[];
+};
+
 type Column<T> = {
     header: string;
     key: keyof T;

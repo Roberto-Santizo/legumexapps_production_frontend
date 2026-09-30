@@ -1,6 +1,6 @@
-import { ApiResponseSchema } from "@/features/shared/shared";
+import { ApiResponseSchema, setQueryParams } from "@/features/shared/shared";
 import { isAxiosError, type AxiosInstance } from "axios";
-import { PositionSchema, PaginatedPositionsSchema, type PositionDatasource, type Position, type PositionForm, type PaginatedPositions } from "@/features/positions/positions";
+import { PositionSchema, PaginatedPositionsSchema, type PositionDatasource, type Position, type PositionForm, type PaginatedPositions, type PositionFilters } from "@/features/positions/positions";
 
 export class PositionDatasourceImpl implements PositionDatasource {
     constructor(private api: AxiosInstance, private url = '/positions') { }
@@ -22,9 +22,10 @@ export class PositionDatasourceImpl implements PositionDatasource {
         }
     }
 
-    async getPositions(limit: string, page: string, lineCode: string): Promise<PaginatedPositions> {
+    async getPositions(limit: string, page: string, lineCode: string, filters?: PositionFilters): Promise<PaginatedPositions> {
         try {
-            const url = `${this.url}?limit=${limit}&page=${page}&lineCode=${lineCode}`;
+            const params = setQueryParams({ limit, page, lineCode, ...filters });
+            const url = `${this.url}?${params.toString()}`;
             const { data } = await this.api.get(url);
             const response = PaginatedPositionsSchema.safeParse(data);
 

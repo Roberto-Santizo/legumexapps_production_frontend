@@ -1,6 +1,6 @@
-import { BulkUploadModal, type BulkUploadColumn, ActionsMenu, CustomFilledButton, Loading, Pagination, StatusTag, Table, Tbody, Td, Th, Thead, Title, Tr, useNotification, usePagination } from "@/features/shared/shared";
-import { EditIcon, EyeIcon, FilterIcon, PlusIcon, TrashIcon, UploadIcon } from "lucide-react";
-import { PerformanceFiltersComponent, performanceProvider, usePerformancesFilters } from "@/features/performances/performances";
+import { FiltersButton, FiltersDrawer, BulkUploadModal, type BulkUploadColumn, ActionsMenu, CustomFilledButton, Loading, Pagination, StatusTag, Table, Tbody, Td, Th, Thead, Title, Tr, useNotification, usePagination } from "@/features/shared/shared";
+import { EditIcon, EyeIcon, PlusIcon, TrashIcon, UploadIcon } from "lucide-react";
+import { performanceFilterFields, performanceProvider, usePerformancesFilters } from "@/features/performances/performances";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useState } from "react";
@@ -21,7 +21,7 @@ export function IndexPerformances() {
     const [showFilters, setShowFilters] = useState(false);
 
     const [searchParams, setSearchParams] = useSearchParams();
-    const { filters } = usePerformancesFilters();
+    const { filters, setFilters, clearFilters } = usePerformancesFilters();
     const { page, rowsPerPage } = usePagination(searchParams);
 
     const { data, isLoading, refetch } = useQuery({
@@ -47,6 +47,7 @@ export function IndexPerformances() {
             <div className="flex justify-between items-center">
                 <Title title="Rendimientos" subtitle="Listado de rendimientos registrados" />
                 <div className="flex gap-3">
+                    <FiltersButton filters={filters} onClick={() => setShowFilters(true)} />
                     <CustomFilledButton
                         label="Carga Masiva"
                         type="button"
@@ -59,16 +60,17 @@ export function IndexPerformances() {
                         icon={<PlusIcon />}
                         onClick={() => navigate('/rendimientos/crear')}
                     />
-                    <CustomFilledButton
-                        label="Filtros"
-                        type="button"
-                        icon={<FilterIcon />}
-                        onClick={() => setShowFilters(true)}
-                    />
                 </div>
             </div>
 
-            <PerformanceFiltersComponent close={() => setShowFilters(false)} showFilters={showFilters} />
+            <FiltersDrawer
+                open={showFilters}
+                close={() => setShowFilters(false)}
+                fields={performanceFilterFields}
+                filters={filters}
+                setFilters={setFilters}
+                clearFilters={clearFilters}
+            />
 
             <BulkUploadModal
                 modal={bulkUpload}

@@ -1,4 +1,4 @@
-import { type Sku, type SkuForm, type SkuRepository, type PaginatedSkus } from "@/features/skus/skus";
+import { type Sku, type SkuForm, type SkuRepository, type PaginatedSkus, type SkuFilters } from "@/features/skus/skus";
 import { SkuDatasourceImpl, SkuRepositoryImpl, } from "@/features/skus/infrastructure/infrastructure";
 import api from "@/config/http/axios";
 
@@ -9,8 +9,8 @@ export class SkuProvider {
         return this.repository.createSku(payload);
     }
 
-    getSkus(limit: string, page: string): Promise<PaginatedSkus> {
-        return this.repository.getSkus(limit, page);
+    getSkus(limit: string, page: string, filters?: SkuFilters): Promise<PaginatedSkus> {
+        return this.repository.getSkus(limit, page, filters);
     }
 
     getSkuByCode(code: string): Promise<Sku> {

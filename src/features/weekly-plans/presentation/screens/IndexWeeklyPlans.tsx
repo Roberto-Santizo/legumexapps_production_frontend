@@ -1,8 +1,9 @@
-import { ActionsMenu, CustomFilledButton, Loading, Pagination, Table, Tbody, Td, Th, Thead, Title, Tr, useNotification, usePagination } from "@/features/shared/shared";
+import { FiltersButton, FiltersDrawer, ActionsMenu, CustomFilledButton, Loading, Pagination, Table, Tbody, Td, Th, Thead, Title, Tr, useNotification, usePagination } from "@/features/shared/shared";
 import { CalendarIcon, EditIcon, EyeIcon, PlusIcon, TrashIcon } from "lucide-react";
-import { weeklyPlanProvider } from "@/features/weekly-plans/weekly-plans";
+import { weeklyPlanProvider, useWeeklyPlanFilters, weeklyPlanFilterFields } from "@/features/weekly-plans/weekly-plans";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useState } from "react";
 
 export function IndexWeeklyPlans() {
     const navigate = useNavigate();
@@ -10,10 +11,12 @@ export function IndexWeeklyPlans() {
 
     const [searchParams, setSearchParams] = useSearchParams();
     const { page, rowsPerPage } = usePagination(searchParams);
+    const [showFilters, setShowFilters] = useState(false);
+    const { filters, setFilters, clearFilters } = useWeeklyPlanFilters();
 
     const { data, isLoading, refetch } = useQuery({
-        queryKey: ['getWeeklyPlans', page + 1, rowsPerPage],
-        queryFn: () => weeklyPlanProvider.getWeeklyPlans(`${rowsPerPage}`, `${page + 1}`)
+        queryKey: ['getWeeklyPlans', page + 1, rowsPerPage, filters],
+        queryFn: () => weeklyPlanProvider.getWeeklyPlans(`${rowsPerPage}`, `${page + 1}`, filters)
     });
 
     const { mutate } = useMutation({
@@ -33,13 +36,25 @@ export function IndexWeeklyPlans() {
         <div className="space-y-5">
             <div className="flex justify-between items-center">
                 <Title title="Planes Semanales" subtitle="Listado de planes semanales registrados" />
-                <CustomFilledButton
-                    label="Crear Plan Semanal"
-                    type="button"
-                    icon={<PlusIcon />}
-                    onClick={() => navigate('/planes-semanales/crear')}
-                />
+                <div className="flex gap-3">
+                    <FiltersButton filters={filters} onClick={() => setShowFilters(true)} />
+                    <CustomFilledButton
+                        label="Crear Plan Semanal"
+                        type="button"
+                        icon={<PlusIcon />}
+                        onClick={() => navigate('/planes-semanales/crear')}
+                    />
+                </div>
             </div>
+
+            <FiltersDrawer
+                open={showFilters}
+                close={() => setShowFilters(false)}
+                fields={weeklyPlanFilterFields}
+                filters={filters}
+                setFilters={setFilters}
+                clearFilters={clearFilters}
+            />
 
             <section>
                 <Table>

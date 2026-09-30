@@ -1,4 +1,4 @@
-import type { TimeoutDatasource, Timeout, TimeoutForm, TimeoutRepository, PaginatedTimeouts } from "@/features/timeouts/timeouts";
+import type { TimeoutDatasource, Timeout, TimeoutForm, TimeoutRepository, PaginatedTimeouts, TimeoutFilters } from "@/features/timeouts/timeouts";
 
 export class TimeoutRepositoryImpl implements TimeoutRepository {
     constructor(private datasource: TimeoutDatasource) { }
@@ -7,8 +7,8 @@ export class TimeoutRepositoryImpl implements TimeoutRepository {
         return this.datasource.createTimeout(payload);
     }
 
-    getTimeouts(limit: string, page: string): Promise<PaginatedTimeouts> {
-        return this.datasource.getTimeouts(limit, page);
+    getTimeouts(limit: string, page: string, filters?: TimeoutFilters): Promise<PaginatedTimeouts> {
+        return this.datasource.getTimeouts(limit, page, filters);
     }
 
     getTimeoutById(id: string): Promise<Timeout> {
