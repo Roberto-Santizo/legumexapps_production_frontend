@@ -34,3 +34,4 @@ export * from './TimelineStep';
 export * from './BulkUploadModal';
 
 export * from './FiltersDrawer';
+export * from './SignatureFormField';

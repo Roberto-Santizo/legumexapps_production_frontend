@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { StatusMessageComponent } from "@/features/weekly-plan-tasks/presentation/components/StatusMessageComponent";
+import { WeeklyPlanTaskProgressMetric } from "@/features/weekly-plans/weekly-plans";
 
 type Props = {
     task: WeeklyPlanTask;
@@ -41,70 +42,53 @@ export function WeeklyPlanTaskByDateComponent({ task, refetch }: Props) {
     }
 
     return (
-        <div
+        <article
             key={task.id}
-            className="flex items-center gap-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition-all duration-200 hover:border-gray-300 hover:shadow-md"
+            className="group rounded-xl border border-line bg-surface transition-colors duration-150 hover:border-line-strong"
         >
-            <div className="flex-1">
-                <div className="flex items-center justify-between gap-2">
-                    <h3 className="text-sm font-semibold text-gray-900">
-                        {task.sku_name}
+            <header className="flex items-start justify-between gap-3 px-4 pt-4">
+                <div className="min-w-0">
+                    <h3 className="truncate text-sm font-semibold text-ink" title={task.sku_name}>
+                        {task.sku_code}  
                     </h3>
-
-                    <StatusMessageComponent message={task.status_message} status={task.status}/>
-                </div>
-
-                <p className="mt-1 text-xs text-gray-500">
-                    {task.line_name} · {task.destination}
-                </p>
-
-                <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-xs text-gray-600">
-                    <p>
-                        Cajas
-                        <span className="ml-1 font-semibold text-gray-900">
-                            {task.produced_boxes ?? 0}/{task.boxes}
-                        </span>
-                    </p>
-
-                    <p>
-                        Pallets
-                        <span className="ml-1 font-semibold text-gray-900">
-                            {task.produced_pallets ?? 0}/{task.pallets}
-                        </span>
-                    </p>
-
-                    <p>
-                        Horas
-                        <span className="ml-1 font-semibold text-gray-900">
-                            {task.hours}
-                        </span>
+                    <p className="mt-0.5 truncate text-xs text-ink-muted">
+                        {task.line_name}
+                        <span className="mx-1.5 text-ink-subtle">·</span>
+                        {task.destination}
+                        <span className="mx-1.5 text-ink-subtle">·</span>
+                        {task.sku_name}
                     </p>
                 </div>
+
+                <div className="flex shrink-0 items-center gap-1">
+                    <StatusMessageComponent message={task.status_message} status={task.status} />
+                    <ActionsMenu
+                        items={[
+                            { label: "Ver Detalles", icon: <EyeIcon />, onClick: () => navigate(`/planes-semanales/tareas/${task.id}`) },
+                            { label: "Editar", icon: <EditIcon />, onClick: () => setModal(true) },
+                            { label: "Observaciones", icon: <MessageSquareIcon />, onClick: handleOnObservationAction },
+                            { label: "Eliminar", icon: <TrashIcon />, onClick: handleDeleteItem, danger: true },
+                        ]}
+                    />
+                </div>
+            </header>
+
+            <div className="flex flex-col gap-4 px-4 pb-4 pt-3 sm:flex-row sm:items-end">
+                <WeeklyPlanTaskProgressMetric label="Cajas" produced={task.produced_boxes} planned={task.boxes} />
             </div>
 
-            <div className="flex flex-col justify-center items-center">
-                <ActionsMenu
-                    items={[
-                        { label: "Ver Detalles", icon: <EyeIcon />, onClick: () => navigate(`/planes-semanales/tareas/${task.id}`) },
-                        { label: "Editar", icon: <EditIcon />, onClick: () => setModal(true) },
-                        { label: "Observaciones", icon: <MessageSquareIcon />, onClick: handleOnObservationAction },
-                        { label: "Eliminar", icon: <TrashIcon />, onClick: handleDeleteItem, danger: true },
-                    ]}
-                />
-
-
-                {task.status == 1 && (
+            {task.status == 1 && (
+                <footer className="flex justify-end border-t border-line bg-canvas/60 px-4 py-2 rounded-b-xl">
                     <button
                         type="button"
-                        onClick={() => handleOnPackingMaterialAction()}
-                        title="Dividir Tarea"
-                        className="rounded-md p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                        onClick={handleOnPackingMaterialAction}
+                        className="inline-flex items-center gap-1.5 rounded-md border border-line bg-surface px-2.5 py-1 text-xs font-medium text-ink-muted transition-colors hover:border-line-strong hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20"
                     >
-                        <BoxIcon className="size-7" />
+                        <BoxIcon className="size-3.5" />
+                        Entregar Material de Empaque
                     </button>
-                )}
-
-            </div>
+                </footer>
+            )}
 
             <ModalUpdateWeeklyPlanTask
                 modal={modal}
@@ -112,6 +96,6 @@ export function WeeklyPlanTaskByDateComponent({ task, refetch }: Props) {
                 refetch={refetch}
                 taskId={String(task.id)}
             />
-        </div>
+        </article>
     );
 }
