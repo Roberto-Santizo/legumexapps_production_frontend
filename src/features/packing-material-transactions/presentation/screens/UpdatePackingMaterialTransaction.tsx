@@ -35,7 +35,7 @@ export function UpdatePackingMaterialTransaction() {
 
     useEffect(() => {
         if (data) {
-            const { id, user_name, ...rest } = data;
+            const { id, user_name, responsable_signature, user_signature, ...rest } = data;
             setValues(rest);
         }
     }, [data]);

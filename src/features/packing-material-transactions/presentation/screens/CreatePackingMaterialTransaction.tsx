@@ -16,7 +16,7 @@ export function CreatePackingMaterialTransaction() {
         control,
         formState: { errors }
     } = useForm<PackingMaterialTransactionCreateForm>({
-        defaultValues: { items: [emptyItem] }
+        defaultValues: { responsable_signature: null, user_signature: null, weekly_plan_task_id: null, items: [emptyItem] }
     });
 
     const { mutate, isPending } = useMutation({

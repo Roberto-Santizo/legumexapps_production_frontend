@@ -39,26 +39,6 @@ export function PackingMaterialTransactionUpdateFormComponent({ register, errors
                 validation={{ required: 'El campo es requerido' }}
                 errorMessage={errors.observations?.message}
             />
-
-            <TextFormField<PackingMaterialTransactionUpdateForm>
-                name="responsable_signature"
-                label="Firma del Responsable"
-                placeholder="Ruta de la firma del responsable"
-                register={register}
-                type="text"
-                validation={{ required: 'El campo es requerido' }}
-                errorMessage={errors.responsable_signature?.message}
-            />
-
-            <TextFormField<PackingMaterialTransactionUpdateForm>
-                name="user_signature"
-                label="Firma del Usuario"
-                placeholder="Ruta de la firma del usuario"
-                register={register}
-                type="text"
-                validation={{ required: 'El campo es requerido' }}
-                errorMessage={errors.user_signature?.message}
-            />
         </>
     )
 }

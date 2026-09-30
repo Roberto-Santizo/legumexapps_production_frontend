@@ -1,4 +1,4 @@
-import { CustomFilledButton, TextFormField } from "@/features/shared/shared";
+import { CustomFilledButton, SignatureFormField, TextFormField } from "@/features/shared/shared";
 import { PlusIcon, Trash2Icon } from "lucide-react";
 import { useFieldArray, type Control, type FieldErrors, type UseFormRegister } from "react-hook-form";
 import type { PackingMaterialTransactionCreateForm } from "@/features/packing-material-transactions/packing-material-transactions";
@@ -46,25 +46,23 @@ export function PackingMaterialTransactionFormComponent({ register, errors, cont
                 errorMessage={errors.observations?.message}
             />
 
-            <TextFormField<PackingMaterialTransactionCreateForm>
-                name="responsable_signature"
-                label="Firma del Responsable"
-                placeholder="Ruta de la firma del responsable"
-                register={register}
-                type="text"
-                validation={{ required: 'El campo es requerido' }}
-                errorMessage={errors.responsable_signature?.message}
-            />
+            <div className="grid gap-4 sm:grid-cols-2">
+                <SignatureFormField<PackingMaterialTransactionCreateForm>
+                    name="responsable_signature"
+                    label="Firma del Responsable"
+                    fileName="responsable_signature.png"
+                    control={control}
+                    validation={{ required: 'La firma del responsable es obligatoria' }}
+                />
 
-            <TextFormField<PackingMaterialTransactionCreateForm>
-                name="user_signature"
-                label="Firma del Usuario"
-                placeholder="Ruta de la firma del usuario"
-                register={register}
-                type="text"
-                validation={{ required: 'El campo es requerido' }}
-                errorMessage={errors.user_signature?.message}
-            />
+                <SignatureFormField<PackingMaterialTransactionCreateForm>
+                    name="user_signature"
+                    label="Firma del Usuario"
+                    fileName="user_signature.png"
+                    control={control}
+                    validation={{ required: 'La firma del usuario es obligatoria' }}
+                />
+            </div>
 
             <TextFormField<PackingMaterialTransactionCreateForm>
                 name="type"
@@ -82,7 +80,7 @@ export function PackingMaterialTransactionFormComponent({ register, errors, cont
                 placeholder="Id de la tarea del plan semanal"
                 register={register}
                 type="number"
-                validation={{ required: 'El campo es requerido', valueAsNumber: true }}
+                validation={{ setValueAs: (value) => value === "" ? null : Number(value) }}
                 errorMessage={errors.weekly_plan_task_id?.message}
             />
 
