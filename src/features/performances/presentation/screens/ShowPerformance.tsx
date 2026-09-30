@@ -22,7 +22,7 @@ export function ShowPerformance() {
                 <p className="">{data.line}</p>
                 <p className="">{data.lbs_performance}</p>
                 <p className="">{data.accepted_percentage}</p>
-                <p className="">{data.payment_method === 0 ? 'Horas Linea' : 'Horas Rendimiento'}</p>
+                <p className="">{data.payment_method ? 'Horas Linea' : 'Horas Rendimiento'}</p>
             </section>
         </div>
     )

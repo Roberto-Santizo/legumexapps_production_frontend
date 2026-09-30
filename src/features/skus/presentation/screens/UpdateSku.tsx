@@ -38,7 +38,11 @@ export function UpdateSku() {
     useEffect(() => {
         if (data) {
             const { id, client, ...rest } = data;
-            setValues(rest);
+            setValues({
+                ...rest,
+                presentation: rest.presentation ?? undefined,
+                boxes_per_pallet: rest.boxes_per_pallet ?? undefined,
+            });
         }
     }, [data]);
 

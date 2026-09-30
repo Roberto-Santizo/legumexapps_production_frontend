@@ -1,11 +1,11 @@
 export const paymentMethodOptions = [
-    { value: 0, label: "Horas Linea" },
-    { value: 1, label: "Horas Rendimiento" }
+    { value: 1, label: "Horas Linea" },
+    { value: 0, label: "Horas Rendimiento" }
 ];
 
 export const paymentMethodFilterOptions = [
-    { value: '0', label: "Horas Linea" },
-    { value: '1', label: "Horas Rendimiento" }
+    { value: '1', label: "Horas Linea" },
+    { value: '0', label: "Horas Rendimiento" }
 ];
 
 export const statusFilterOptions = [

@@ -5,6 +5,24 @@ import { PerformanceSchema, PaginatedPerformancesSchema, type PerformanceDatasou
 export class PerformanceDatasourceImpl implements PerformanceDatasource {
     constructor(private api: AxiosInstance, private url = '/performances') { }
 
+    async toggleStatus(id: string): Promise<string> {
+         try {
+            const url = `${this.url}/${id}/toggle-status`
+            const { data } = await this.api.patch(url);
+            const response = ApiResponseSchema.safeParse(data);
+
+            if (response.success) {
+                return response.data.message;
+            }
+
+            throw new Error("Información no válida");
+        } catch (error) {
+            if (isAxiosError(error)) throw new Error(error.response?.data.message);
+
+            throw new Error("Error no controlado");
+        }
+    }
+
     async createPerformance(payload: PerformanceForm): Promise<string> {
         try {
             const { data } = await this.api.post(this.url, payload);

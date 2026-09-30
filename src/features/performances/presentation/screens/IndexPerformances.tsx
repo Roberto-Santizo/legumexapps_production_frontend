@@ -17,8 +17,8 @@ export function IndexPerformances() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const [bulkUpload, setBulkUpload] = useState(false);
-    const notification = useNotification();
     const [showFilters, setShowFilters] = useState(false);
+    const notification = useNotification();
 
     const [searchParams, setSearchParams] = useSearchParams();
     const { filters, setFilters, clearFilters } = usePerformancesFilters();
@@ -31,6 +31,17 @@ export function IndexPerformances() {
 
     const { mutate } = useMutation({
         mutationFn: (id: string) => performanceProvider.deletePerformanceById(id),
+        onSuccess: (message) => {
+            notification.success(message);
+            refetch();
+        },
+        onError: (err) => {
+            notification.error(err.message);
+        }
+    });
+
+    const { mutate: toggleStatus } = useMutation({
+        mutationFn: (id: string) => performanceProvider.toggleStatus(id),
         onSuccess: (message) => {
             notification.success(message);
             refetch();
@@ -102,9 +113,9 @@ export function IndexPerformances() {
                                 <Td>{item.line}</Td>
                                 <Td>{item.lbs_performance}</Td>
                                 <Td>{item.accepted_percentage}</Td>
-                                <Td>{item.payment_method === 0 ? 'Horas Linea' : 'Horas Rendimiento'}</Td>
+                                <Td>{item.payment_method ? 'Horas Linea' : 'Horas Rendimiento'}</Td>
                                 <Td>
-                                    <StatusTag flag={item.status}/>
+                                    <StatusTag onClick={() => toggleStatus(`${item.id}`)} flag={item.status} />
                                 </Td>
                                 <Td className="flex gap-3">
                                     <ActionsMenu
