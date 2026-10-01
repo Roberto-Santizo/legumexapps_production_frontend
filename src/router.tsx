@@ -14,6 +14,7 @@ import { IndexPackingMaterialTransactions, ShowPackingMaterialTransaction, Updat
 import { Login } from "@/features/auth/auth";
 import { NotFound, ProtectedLayout, PublicLayout } from "@/features/shared/shared";
 import { ShowWeeklyPlanTask, WeeklyPlanTaskAssignPersonel, WeeklyPlanTasksDetailsByLineDate } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
+import { IndexWeeklyPlanEmployees } from "@/features/weekly-plan-employees/weekly-plan-employees";
 
 export default function AppRouter() {
     return (
@@ -98,6 +99,10 @@ export default function AppRouter() {
                     <Route path="/planes-semanales/tareas/:id" element={<ShowWeeklyPlanTask />} />
                     <Route path="/planes-semanales/tareas/:lineCode/:date" element={<WeeklyPlanTasksDetailsByLineDate />} />
                     <Route path="/planes-semanales/tareas/asignar-personal/:id" element={<WeeklyPlanTaskAssignPersonel />} />
+                </Route>
+
+                <Route element={<ProtectedLayout />}>
+                    <Route path="/empleados-planes-semanales" element={<IndexWeeklyPlanEmployees />} />
                 </Route>
 
                 <Route element={<ProtectedLayout />}>
