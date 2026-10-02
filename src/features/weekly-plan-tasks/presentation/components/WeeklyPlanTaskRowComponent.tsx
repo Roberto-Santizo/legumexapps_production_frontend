@@ -1,8 +1,9 @@
-import { ActionsMenu, formatNumber } from "@/features/shared/shared";
+import { ActionsMenu, formatNumber, handleSetQueryParam } from "@/features/shared/shared";
 import { EyeIcon, PersonStandingIcon, PlayIcon, StopCircleIcon, TableIcon } from "lucide-react";
 import { InformationField } from "@/features/shared/shared";
 import { ModalEndWeeklyPlanTask, ModalUpdateWeeklyPlanTask, StatusMessageComponent, useStartWeeklyPlanTask, type WeeklyPlanTask } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
-import { useNavigate } from "react-router-dom";
+import { RecordedPoundsLabel } from "@/features/weekly-plan-task-performance-records/weekly-plan-task-performance-records";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 type Props = {
@@ -16,6 +17,7 @@ export function WeeklyPlanTaskRowComponent({ task, refetch }: Props) {
     const [endModal, setEndModal] = useState(false);
     const { handleStartTask } = useStartWeeklyPlanTask(refetch);
     const navigate = useNavigate();
+    const location = useLocation();
 
     return (
         <article
@@ -45,6 +47,10 @@ export function WeeklyPlanTaskRowComponent({ task, refetch }: Props) {
                     <span className="text-ink-subtle"> / {formatNumber(task.boxes)} cajas</span>
                 </p>
 
+                {(task.status == 4 || task.recorded_pounds > 0) && (
+                    <RecordedPoundsLabel recorded={task.recorded_pounds} planned={task.planned_pounds} />
+                )}
+
             </div>
 
             <div className="flex items-center gap-1 justify-self-end">
@@ -69,7 +75,7 @@ export function WeeklyPlanTaskRowComponent({ task, refetch }: Props) {
                     <ActionsMenu
                         items={[
                             { label: "Ver Detalles", icon: <EyeIcon />, onClick: () => navigate(`/planes-semanales/tareas/${task.id}`) },
-                            { label: "Rendimiento", icon: <TableIcon />, onClick: () => navigate(`/planes-semanales/tareas/${task.id}`) },
+                            { label: "Rendimiento", icon: <TableIcon />, onClick: () => handleSetQueryParam(location, navigate, 'taskPerformance', String(task.id)) },
                             { label: "Cerrar Tarea", icon: <StopCircleIcon />, onClick: () => setEndModal(true) },
                         ]}
                     />
