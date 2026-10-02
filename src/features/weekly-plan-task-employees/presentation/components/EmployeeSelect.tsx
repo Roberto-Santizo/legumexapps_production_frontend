@@ -58,6 +58,8 @@ export function EmployeeSelect({ options, value, onChange, placeholder = 'Buscar
             noOptionsMessage={() => 'Sin empleados disponibles'}
             loadingMessage={() => 'Cargando empleados'}
             menuPortalTarget={document.body}
+            menuPosition="fixed"
+            menuShouldScrollIntoView={false}
             styles={{ menuPortal: (base) => ({ ...base, zIndex: 60 }) }}
         />
     )
