@@ -1,7 +1,7 @@
 import { ActionsMenu, formatNumber } from "@/features/shared/shared";
-import { EyeIcon, PersonStandingIcon, PlayIcon, TableIcon } from "lucide-react";
+import { EyeIcon, PersonStandingIcon, PlayIcon, StopCircleIcon, TableIcon } from "lucide-react";
 import { InformationField } from "@/features/shared/shared";
-import { ModalUpdateWeeklyPlanTask, StatusMessageComponent, type WeeklyPlanTask } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
+import { ModalEndWeeklyPlanTask, ModalUpdateWeeklyPlanTask, StatusMessageComponent, useStartWeeklyPlanTask, type WeeklyPlanTask } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
@@ -13,6 +13,8 @@ type Props = {
 
 export function WeeklyPlanTaskRowComponent({ task, refetch }: Props) {
     const [modal, setModal] = useState(false);
+    const [endModal, setEndModal] = useState(false);
+    const { handleStartTask } = useStartWeeklyPlanTask(refetch);
     const navigate = useNavigate();
 
     return (
@@ -57,7 +59,8 @@ export function WeeklyPlanTaskRowComponent({ task, refetch }: Props) {
                 {task.status == 3 && (
                     <ActionsMenu
                         items={[
-                            { label: "Iniciar Tarea", icon: <PlayIcon />, onClick: () => navigate(`/planes-semanales/tareas/asignar-personal/${task.id}`) },
+                            { label: "Ver Asignaciones", icon: <EyeIcon />, onClick: () => navigate(`/planes-semanales/tareas/asignar-personal/${task.id}`) },
+                            { label: "Iniciar Tarea", icon: <PlayIcon />, onClick: () => handleStartTask(String(task.id)) },
                         ]}
                     />
                 )}
@@ -67,6 +70,7 @@ export function WeeklyPlanTaskRowComponent({ task, refetch }: Props) {
                         items={[
                             { label: "Ver Detalles", icon: <EyeIcon />, onClick: () => navigate(`/planes-semanales/tareas/${task.id}`) },
                             { label: "Rendimiento", icon: <TableIcon />, onClick: () => navigate(`/planes-semanales/tareas/${task.id}`) },
+                            { label: "Cerrar Tarea", icon: <StopCircleIcon />, onClick: () => setEndModal(true) },
                         ]}
                     />
                 )}
@@ -79,6 +83,15 @@ export function WeeklyPlanTaskRowComponent({ task, refetch }: Props) {
                 refetch={refetch}
                 taskId={String(task.id)}
             />
+
+            {task.status == 4 && (
+                <ModalEndWeeklyPlanTask
+                    modal={endModal}
+                    closeModal={() => setEndModal(false)}
+                    refetch={refetch}
+                    task={task}
+                />
+            )}
         </article>
     )
 }

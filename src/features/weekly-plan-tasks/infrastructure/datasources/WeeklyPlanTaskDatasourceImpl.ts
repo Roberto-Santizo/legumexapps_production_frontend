@@ -1,10 +1,46 @@
 import { ApiResponseSchema, setQueryParams } from "@/features/shared/shared";
 import { isAxiosError, type AxiosInstance } from "axios";
-import { WeeklyPlanTaskSchema, PaginatedWeeklyPlanTasksSchema, type WeeklyPlanTaskDatasource, type WeeklyPlanTask, type WeeklyPlanTaskCreateForm, type WeeklyPlanTaskUpdateForm, type PaginatedWeeklyPlanTasks, type AssignOperationDateForm, type SplitWeeklyPlanTaskForm, type WeeklyPlanTaskPackingMaterialItem, WeeklyPlanTaskPackingMaterialItemSchema, type WeeklyPlanTaskFilters } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
+import { WeeklyPlanTaskSchema, PaginatedWeeklyPlanTasksSchema, type WeeklyPlanTaskDatasource, type WeeklyPlanTask, type WeeklyPlanTaskCreateForm, type WeeklyPlanTaskUpdateForm, type PaginatedWeeklyPlanTasks, type AssignOperationDateForm, type SplitWeeklyPlanTaskForm, type WeeklyPlanTaskPackingMaterialItem, WeeklyPlanTaskPackingMaterialItemSchema, type WeeklyPlanTaskFilters, type WeeklyPlanTaskEndForm } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
 import { z } from "zod";
 
 export class WeeklyPlanTaskDatasourceImpl implements WeeklyPlanTaskDatasource {
     constructor(private api: AxiosInstance, private url = '/weekly-plan-tasks') { }
+
+    async startWeeklyPlanTask(id: string): Promise<string> {
+        try {
+            const url = `${this.url}/${id}/start`;
+            const { data } = await this.api.post(url);
+            const response = ApiResponseSchema.safeParse(data);
+
+            if (response.success) {
+                return response.data.message;
+            }
+
+            throw new Error("Información no válida");
+        } catch (error) {
+            if (isAxiosError(error)) throw new Error(error.response?.data.message);
+
+            throw new Error("Error no controlado");
+        }
+    }
+
+    async endWeeklyPlanTask(id: string, payload: WeeklyPlanTaskEndForm): Promise<string> {
+        try {
+            const url = `${this.url}/${id}/end`;
+            const { data } = await this.api.post(url, payload);
+            const response = ApiResponseSchema.safeParse(data);
+
+            if (response.success) {
+                return response.data.message;
+            }
+
+            throw new Error("Información no válida");
+        } catch (error) {
+            if (isAxiosError(error)) throw new Error(error.response?.data.message);
+
+            throw new Error("Error no controlado");
+        }
+    }
 
     async getPackingMaterialItemsByTaskId(id: string): Promise<WeeklyPlanTaskPackingMaterialItem[]> {
         try {

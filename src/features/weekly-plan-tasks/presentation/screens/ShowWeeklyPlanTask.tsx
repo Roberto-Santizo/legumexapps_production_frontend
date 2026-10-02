@@ -1,6 +1,6 @@
 import { ErrorComponent, formatNumber, Loading, TimelineStep } from "@/features/shared/shared";
 import { ModalCreateWeeklyPlanTaskObservation, WeeklyPlanTaskObservationsPanel } from "@/features/weekly-plan-task-observations/weekly-plan-task-observations";
-import { ProductionMeter, WeeklyPlanTaskHeader, weeklyPlanTaskProvider } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
+import { formatUtcDateTime, ProductionMeter, WeeklyPlanTaskHeader, weeklyPlanTaskProvider } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 
@@ -49,8 +49,8 @@ export function ShowWeeklyPlanTask() {
                 <div className="overflow-hidden rounded-xl border border-line bg-surface">
                     <div className="flex flex-col divide-y divide-line sm:flex-row sm:divide-x sm:divide-y-0">
                         <TimelineStep label="Programada" date={data.operation_date_string} />
-                        <TimelineStep label="Inicio" date={data.start_date} />
-                        <TimelineStep label="Fin" date={data.end_date} />
+                        <TimelineStep label="Inicio" date={formatUtcDateTime(data.start_date)} />
+                        <TimelineStep label="Fin" date={formatUtcDateTime(data.end_date)} />
                     </div>
                 </div>
             </section>
