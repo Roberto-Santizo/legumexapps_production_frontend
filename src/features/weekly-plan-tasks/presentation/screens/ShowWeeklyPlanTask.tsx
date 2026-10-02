@@ -1,6 +1,7 @@
 import { ErrorComponent, formatNumber, Loading, TimelineStep } from "@/features/shared/shared";
 import { ModalCreateWeeklyPlanTaskObservation, WeeklyPlanTaskObservationsPanel } from "@/features/weekly-plan-task-observations/weekly-plan-task-observations";
 import { ModalUpdateWeeklyPlanTaskPerformanceRecord, PoundsProgressMeter, WeeklyPlanTaskPerformanceRecordsPanel } from "@/features/weekly-plan-task-performance-records/weekly-plan-task-performance-records";
+import { ModalEndWeeklyPlanTaskTimeout, ModalUpdateWeeklyPlanTaskTimeout, TimeoutHoursStat, WeeklyPlanTaskTimeoutsPanel } from "@/features/weekly-plan-task-timeouts/weekly-plan-task-timeouts";
 import { formatUtcDateTime, ProductionMeter, WeeklyPlanTaskHeader, weeklyPlanTaskProvider } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -30,11 +31,13 @@ export function ShowWeeklyPlanTask() {
                     <PoundsProgressMeter recorded={data.recorded_pounds} planned={data.planned_pounds} />
                 </div>
 
-                <div className="grid grid-cols-1 divide-y divide-line overflow-hidden rounded-xl border border-line bg-surface sm:grid-cols-2 sm:divide-x sm:divide-y-0">
+                <div className="grid grid-cols-1 divide-y divide-line overflow-hidden rounded-xl border border-line bg-surface sm:grid-cols-3 sm:divide-x sm:divide-y-0">
                     <div className="flex items-baseline justify-between gap-3 px-5 py-4">
                         <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-subtle">Horas</p>
                         <p className="font-mono text-lg text-ink">{data.hours}</p>
                     </div>
+
+                    <TimeoutHoursStat timeoutHours={data.timeout_hours} stopped={data.open_timeout_id !== null} />
 
                     <div className="flex items-baseline justify-between gap-3 px-5 py-4">
                         <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-subtle">Libras pesadas</p>
@@ -59,11 +62,17 @@ export function ShowWeeklyPlanTask() {
 
             <WeeklyPlanTaskPerformanceRecordsPanel weeklyPlanTaskId={id!} editable={data.status === 4} />
 
+            <WeeklyPlanTaskTimeoutsPanel weeklyPlanTaskId={id!} editable={data.status === 4} />
+
             <WeeklyPlanTaskObservationsPanel weeklyPlanTaskId={id!} />
 
             <ModalCreateWeeklyPlanTaskObservation />
 
             <ModalUpdateWeeklyPlanTaskPerformanceRecord />
+
+            <ModalEndWeeklyPlanTaskTimeout />
+
+            <ModalUpdateWeeklyPlanTaskTimeout weeklyPlanTaskId={id!} />
         </div>
     )
 }
