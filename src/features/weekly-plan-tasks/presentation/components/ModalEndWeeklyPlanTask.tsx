@@ -2,6 +2,7 @@ import { CustomFilledButton, CustomForm, Modal, TextFormField, useNotification }
 import { EndTaskSummary, toFiniteNumber, weeklyPlanTaskProvider, type WeeklyPlanTask, type WeeklyPlanTaskEndForm } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
 import { useForm, useWatch } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 type Props = {
     modal: boolean;
@@ -17,11 +18,16 @@ export function ModalEndWeeklyPlanTask({ modal, closeModal, refetch, task }: Pro
         handleSubmit,
         register,
         reset,
+        setValue,
         control,
         formState: { errors }
     } = useForm<WeeklyPlanTaskEndForm>();
 
     const producedBoxes = toFiniteNumber(useWatch({ control, name: 'produced_boxes' }));
+
+    useEffect(() => {
+        if (modal && task.recorded_pounds > 0) setValue('weighed_pounds', task.recorded_pounds);
+    }, [modal, task.recorded_pounds, setValue]);
 
     const { mutate, isPending } = useMutation({
         mutationFn: (payload: WeeklyPlanTaskEndForm) => weeklyPlanTaskProvider.endWeeklyPlanTask(String(task.id), payload),
