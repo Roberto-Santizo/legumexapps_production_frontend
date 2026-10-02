@@ -8,6 +8,8 @@ export const WeeklyPlanTaskSchema = z.object({
     pallets: z.number(),
     produced_pallets: z.number().nullable(),
     hours: z.number(),
+    timeout_hours: z.number(),
+    open_timeout_id: z.number().nullable(),
     weighed_pounds: z.number().nullable(),
     recorded_pounds: z.number(),
     planned_pounds: z.number(),
