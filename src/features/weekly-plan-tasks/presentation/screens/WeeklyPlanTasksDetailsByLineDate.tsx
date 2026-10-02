@@ -2,6 +2,7 @@ import { defaultWeeklyPlanTaskFilters, ModalPackingMaterialItemsByTask, weeklyPl
 import { ErrorComponent, Loading } from "@/features/shared/shared";
 import { ModalCreateWeeklyPlanTaskObservation } from "@/features/weekly-plan-task-observations/weekly-plan-task-observations";
 import { ModalCreateWeeklyPlanTaskPerformanceRecord } from "@/features/weekly-plan-task-performance-records/weekly-plan-task-performance-records";
+import { ModalEndWeeklyPlanTaskTimeout, ModalStartWeeklyPlanTaskTimeout } from "@/features/weekly-plan-task-timeouts/weekly-plan-task-timeouts";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeftIcon } from "lucide-react";
@@ -56,6 +57,10 @@ export function WeeklyPlanTasksDetailsByLineDate() {
             <ModalCreateWeeklyPlanTaskObservation />
 
             <ModalCreateWeeklyPlanTaskPerformanceRecord />
+
+            <ModalStartWeeklyPlanTaskTimeout />
+
+            <ModalEndWeeklyPlanTaskTimeout />
         </div>
     )
 }
