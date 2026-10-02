@@ -31,6 +31,10 @@ export function getDeviationRatio(difference: number, theoretical: number): numb
     return theoretical > 0 ? difference / theoretical : 0;
 }
 
+export function getDeviationBarWidth(ratio: number, fullScale = 0.05): number {
+    return Math.min(Math.abs(ratio) / fullScale, 1) * 50;
+}
+
 export function summarizePerformanceRecords(records: WeeklyPlanTaskPerformanceRecord[]): WeeklyPlanTaskPerformanceRecordsSummary {
     const comparable = records.filter(hasTheoretical);
 

@@ -6,3 +6,8 @@ export * from './RecordedPoundsLabel';
 export * from './PerformanceRecordTaskNotice';
 export * from './PerformanceRecordTaskSummary';
 export * from './ModalCreateWeeklyPlanTaskPerformanceRecord';
+export * from './DeviationCell';
+export * from './PerformanceRecordRow';
+export * from './PerformanceRecordsTotalsRow';
+export * from './WeeklyPlanTaskPerformanceRecordsPanel';
+export * from './ModalUpdateWeeklyPlanTaskPerformanceRecord';
