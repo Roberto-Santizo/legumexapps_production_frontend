@@ -6,10 +6,11 @@ type Props = {
     onClick?: () => void;
     icon?: React.ReactNode;
     disabled?: boolean;
+    isLoading?: boolean;
     fullWitdh?: boolean;
     className?: string;
 }
-export function CustomFilledButton({ label, type, onClick, icon, disabled = false, fullWitdh = false, className }: Props) {
+export function CustomFilledButton({ label, type, onClick, icon, disabled = false, isLoading = disabled, fullWitdh = false, className }: Props) {
     const hasIcon = icon ? true : false;
     const classNameComponent = `
                 ${fullWitdh ? "w-full" : ""}
@@ -40,7 +41,7 @@ export function CustomFilledButton({ label, type, onClick, icon, disabled = fals
     return (
         <button disabled={disabled} type={type} className={classNameComponent} onClick={onClick ? () => onClick() : () => { }}>
             {icon ? (icon) : (<></>)}
-            {disabled ? <SpinnerComponent /> : (<p className="text-white font-semibold">{label}</p>)}
+            {isLoading ? <SpinnerComponent /> : (<p className="text-white font-semibold">{label}</p>)}
         </button>
     )
 }

@@ -1,9 +1,8 @@
-import { authRepositoryProvider, login, type LoginForm } from "@/features/auth/auth";
-import { CustomFilledButton, PasswordFormField, TextFormField } from "@/features/shared/shared";
+import { authRepositoryProvider, login, LoginBrandPanel, LoginFormComponent, type LoginForm } from "@/features/auth/auth";
+import { CustomFilledButton, useNotification } from "@/features/shared/shared";
 import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
-import { useNotification } from "@/features/shared/shared";
 import type { AppDispatch } from "@/config/config";
 
 export function Login() {
@@ -29,34 +28,29 @@ export function Login() {
     });
 
     const onSubmit = (data: LoginForm) => mutate(data);
+
     return (
-        <div className="grid place-items-center h-screen">
-            <div className="flex flex-col w-1/4">
-                <form className="flex flex-col justify-center space-y-6 shadow-xl p-6 bg-white" onSubmit={handleSubmit(onSubmit)}>
-                    <h1 className="text-2xl font-bold text-center mb-5">Iniciar Sesión</h1>
+        <div className="grid min-h-screen bg-canvas lg:grid-cols-[5fr_7fr]">
+            <LoginBrandPanel today={new Date()} />
 
-                    <TextFormField<LoginForm>
-                        name="username"
-                        label="Nombre de Usuario"
-                        placeholder="Ingrese el nombre de usuario"
-                        type="text"
-                        errorMessage={errors.username?.message}
-                        register={register}
-                        validation={{ required: 'El nombre de usuario es requerido' }}
-                    />
+            <section className="flex items-center justify-center px-4 py-12 sm:px-10">
+                <div className="flex w-full max-w-sm flex-col gap-8">
+                    <header className="flex flex-col gap-2">
+                        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ink-subtle">Acceso de personal</p>
+                        <h1 className="text-3xl font-semibold tracking-tight text-ink">Iniciar sesión</h1>
+                        <p className="text-sm text-ink-muted">Ingresa con el usuario y la contraseña que te asignó administración.</p>
+                    </header>
 
-                    <PasswordFormField<LoginForm>
-                        name="password"
-                        label="Contraseña"
-                        placeholder="Contraseña"
-                        errorMessage={errors.password?.message}
-                        register={register}
-                        validation={{ required: 'La contraseña es requerida' }}
-                    />
+                    <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)} noValidate>
+                        <LoginFormComponent register={register} errors={errors} />
+                        <CustomFilledButton label="Iniciar sesión" type="submit" disabled={isPending} fullWitdh className="py-2.5" />
+                    </form>
 
-                    <CustomFilledButton label={isPending ? 'Iniciando sesión' : 'Iniciar Sesión'} type="submit" disabled={isPending}/>
-                </form>
-            </div>
+                    <p className="border-t border-line pt-6 text-xs leading-relaxed text-ink-subtle">
+                        ¿No puedes ingresar? Solicita el restablecimiento de tu contraseña al administrador del sistema.
+                    </p>
+                </div>
+            </section>
         </div>
     )
 }
