@@ -81,6 +81,14 @@ export function WeeklyPlanTaskRowComponent({ task, refetch }: Props) {
                     />
                 )}
 
+                 {task.status == 5 && (
+                    <ActionsMenu
+                        items={[
+                            { label: "Ver Detalles", icon: <EyeIcon />, onClick: () => navigate(`/planes-semanales/tareas/${task.id}`) },
+                        ]}
+                    />
+                )}
+
             </div>
 
             <ModalUpdateWeeklyPlanTask
