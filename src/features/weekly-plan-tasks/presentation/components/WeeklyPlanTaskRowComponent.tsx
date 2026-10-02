@@ -1,5 +1,5 @@
 import { ActionsMenu, formatNumber } from "@/features/shared/shared";
-import { EyeIcon, PersonStandingIcon, TableIcon } from "lucide-react";
+import { EyeIcon, PersonStandingIcon, PlayIcon, TableIcon } from "lucide-react";
 import { InformationField } from "@/features/shared/shared";
 import { ModalUpdateWeeklyPlanTask, StatusMessageComponent, type WeeklyPlanTask } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
 import { useNavigate } from "react-router-dom";
@@ -50,6 +50,14 @@ export function WeeklyPlanTaskRowComponent({ task, refetch }: Props) {
                     <ActionsMenu
                         items={[
                             { label: "Asignar Personal", icon: <PersonStandingIcon />, onClick: () => navigate(`/planes-semanales/tareas/asignar-personal/${task.id}`) },
+                        ]}
+                    />
+                )}
+
+                {task.status == 3 && (
+                    <ActionsMenu
+                        items={[
+                            { label: "Iniciar Tarea", icon: <PlayIcon />, onClick: () => navigate(`/planes-semanales/tareas/asignar-personal/${task.id}`) },
                         ]}
                     />
                 )}

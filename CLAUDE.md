@@ -44,7 +44,7 @@ Data flow: **Screen → provider singleton → Repository → Datasource → axi
 
 `src/features/packing-materials` is the canonical reference implementation of the full CRUD slice. Read it before writing a new feature. The `/scaffold-feature` skill (`.claude/skills/scaffold-feature/SKILL.md`) generates a slice following it.
 
-Current features: `auth`, `clients`, `dashboard`, `draft-weekly-plans`, `draft-weekly-plan-tasks`, `line-dependencies`, `lines`, `packing-materials`, `packing-material-transactions`, `packing-material-transaction-items`, `performances`, `positions`, `raw-materials`, `shared`, `skus`, `sku-packing-materials`, `skus-raw-materials`, `timeouts`, `users`, `weekly-plans`, `weekly-plan-tasks`, `weekly-plan-task-observations`. Not every feature is a full CRUD slice — some (e.g. `packing-material-transaction-items`, `weekly-plan-task-observations`, `line-dependencies`) exist only as sub-resources consumed from another feature's screens through modals/drawers/panels.
+Current features: `auth`, `clients`, `dashboard`, `draft-weekly-plans`, `draft-weekly-plan-tasks`, `line-dependencies`, `lines`, `packing-materials`, `packing-material-transactions`, `packing-material-transaction-items`, `performances`, `positions`, `raw-materials`, `shared`, `skus`, `sku-packing-materials`, `skus-raw-materials`, `timeouts`, `users`, `weekly-plan-employees`, `weekly-plans`, `weekly-plan-tasks`, `weekly-plan-task-employees`, `weekly-plan-task-observations`. Not every feature is a full CRUD slice — some (e.g. `packing-material-transaction-items`, `weekly-plan-task-observations`, `weekly-plan-task-employees`, `line-dependencies`) exist only as sub-resources consumed from another feature's screens through modals/drawers/panels.
 
 ### Barrel files
 
@@ -61,19 +61,21 @@ components/       design system + form fields (flat, one file per component)
 hooks/            usePagination, usePermissions (file usePermission.ts), useNotification, useUrlFilters, useFilters
 animations/       framer-motion wrappers: FadeIn(Up|Down|Left|Right), BlurIn, ScaleIn(Bounce), RotateIn, SlideInUp, StaggerContainer/StaggerItem
 core/             initializer/AppInitializer, navigation/NAV_SECTIONS, notifications/
-domain/           schemas, types, interfaces, errors (DomainError)
-infrastructure/   utils/utils.ts
+domain/           schemas, types (incl. FilterField, BulkUploadColumn, Option), interfaces, errors (DomainError), validation (FileRules, extraordinaryOptions, trueOrFalseOptions)
+infrastructure/   utils/utils.ts, providers/ (ToastNotificationProvider, ToastStore), data/
 presentation/     screens/ (Loading, LoadingData, Spinner, NotFound), layouts/ (ProtectedLayout, PublicLayout)
 references/       @react-pdf/renderer documents (e.g. PackingMaterialTransactionDocument)
 ```
 
 - Components: `Table`/`Thead`/`Tbody`/`Tr`/`Th`/`Td`, `CustomForm`, `CustomFilledButton`, `CustomNavTable`, `CustomNavLink`, `CustomHeader`, `CustomSideBar`, `Title`, `Pagination`, `Modal`, `Drawer`, `ActionsMenu`, `Toaster`, `ErrorComponent`, `SpinnerComponent`, `StatusTag` (Activo/Inactivo pill from a flag), `InformationField` (label/value pair, optional `mono`), `TimelineStep` (label + date or "Sin registrar"), and cards `BarChartCard` / `DonutSummaryCard` / `InfoCard` / `DateCard`.
-- Form fields: `TextFormField`, `TextAreaFormField`, `SelectFormField`, `DateFormField`, `FileFormField`, `PasswordFormField` — all generic over the form type, taking `register` / `validation` / `errorMessage`.
+- `FiltersButton` + `FiltersDrawer` (same file): filter UI for index screens, driven by a `FilterField<T>[]` config plus `{ filters, setFilters, clearFilters }` from a filter hook.
+- `BulkUploadModal`: Excel bulk upload — takes `columns: BulkUploadColumn[]` (template headers, downloadable via `downloadExcelTemplate`), `upload: (file) => Promise<string>` (usually `xProvider.uploadFile`), `onSuccess`; parses `Línea N: …` backend errors into a per-row list.
+- Form fields: `TextFormField`, `TextAreaFormField`, `SelectFormField`, `DateFormField`, `FileFormField`, `PasswordFormField` — all generic over the form type, taking `register` / `validation` / `errorMessage`. `SignatureFormField` is the exception: canvas signature bound via `control` (`useController`), yields a PNG `File`.
 - Schemas: `ApiResponseSchema` / `ApiPaginatedResponseSchema` (every feature's paginated schema extends one), plus `FileResponseSchema` and chart datum schemas.
-- `useUrlFilters` is exported from `hooks/useUrlFilters` but **not** from the `hooks` barrel — import it by path. Feature-specific filter hooks wrap it under `<feature>/infrastructure/filters/` (see `usePerformanceFilters`).
+- `useUrlFilters` is exported from `hooks/useUrlFilters` but **not** from the `hooks` barrel — import it by path. Feature-specific filter hooks wrap it under `<feature>/infrastructure/filters/`, one file each: `<x>FilterSchema.ts`, `default<X>Filters.ts`, `<x>FilterFields.ts` (`FilterField<T>[]` for `FiltersDrawer`), `use<X>Filters.ts`, plus `filters.ts` barrel (see `clients`).
 - `useFilters` (`hooks/useFilters`, also **not** in the barrel) is the local-state twin of `useUrlFilters`: same `{ filters, setFilters, clearFilters }` contract and same `{ schema, defaults }` props, but backed by `useState` — use it when the filters should not appear in the URL (see `useWeeklyPlanTaskFilters`).
 
-`shared/infrastructure/utils/utils.ts`: query-param helpers (`getQueryParam`, `queryParamExists`, `handleSetQueryParam`, `handleDeleteQueryParam`, `setQueryParams`), date helpers (`formatDateValue`, `getCurrentDate`, `parseDateValue`, `getIsoWeekDates`), `downloadBase64File` (for base64 payloads returned by the API), and `exportToExcel`.
+`shared/infrastructure/utils/utils.ts`: query-param helpers (`getQueryParam`, `queryParamExists`, `handleSetQueryParam`, `handleDeleteQueryParam`, `setQueryParams`), date helpers (`formatDateValue`, `getCurrentDate`, `parseDateValue`, `getIsoWeekDates`), `downloadBase64File` (for base64 payloads returned by the API), `exportToExcel`, `downloadExcelTemplate`, `formatNumber` (`es-GT`), and signature-canvas helpers (`getCanvasPoint`, `resizeSignatureCanvas`, `canvasToPngFile`).
 
 ### Auth
 
@@ -87,13 +89,13 @@ Not a toast library — a `NotificationAdapter` interface (`success` / `error` /
 
 All routes are declared centrally in `src/router.tsx` — scaffolding a feature does not register them. Route paths are **Spanish** while feature folders are English. Standard CRUD shape: `/<path>`, `/<path>/crear`, `/<path>/:id`, `/<path>/:id/editar`, each group wrapped in its own `<Route element={<ProtectedLayout />}>`. Sidebar links and breadcrumbs derive from `NAV_SECTIONS` in `shared/core/navigation/navigation.ts` — add new routes there too.
 
-Path → feature: `/lineas` lines · `/posiciones` positions · `/skus` skus · `/items-material-empaque` packing-materials · `/items-materia-prima` raw-materials · `/tiempos-muertos` timeouts · `/clientes` clients · `/rendimientos` performances · `/planes-semanales` weekly-plans · `/draft-planes-semanales` draft-weekly-plans · `/material-empaque-transacciones` packing-material-transactions (no create route) · `/dashboard` · `/login`.
+Path → feature: `/lineas` lines · `/posiciones` positions · `/skus` skus · `/items-material-empaque` packing-materials · `/items-materia-prima` raw-materials · `/tiempos-muertos` timeouts · `/clientes` clients · `/rendimientos` performances · `/planes-semanales` weekly-plans · `/draft-planes-semanales` draft-weekly-plans · `/empleados-planes-semanales` weekly-plan-employees (index + bulk upload only) · `/material-empaque-transacciones` packing-material-transactions (no create route) · `/dashboard` · `/login`.
 
-Non-CRUD routes exist too: `/planes-semanales/calendario/:id`, `/planes-semanales/tareas/:id`, `/planes-semanales/tareas/:lineCode/:date`, `/planes-semanales/tareas/asignar-personal/:id`.
+Non-CRUD routes exist too: `/planes-semanales/calendario/:id`, `/planes-semanales/tareas/:id`, `/planes-semanales/tareas/:lineCode/:date`, `/planes-semanales/tareas/asignar-personal/:id` (renders the `weekly-plan-task-employees` roster/assignment components).
 
 ### Screen conventions
 
-- Index: `useSearchParams` + `usePagination` → `useQuery` with `queryKey: ['getX', page + 1, rowsPerPage]`, table, delete `useMutation` guarded by `notification.question`, `<Pagination />`.
+- Index: `useSearchParams` + `usePagination` → `useQuery` with `queryKey: ['getX', page + 1, rowsPerPage]`, table, delete `useMutation` guarded by `notification.question`, `<Pagination />`. Catalog indexes also carry `FiltersButton`/`FiltersDrawer` and a "Carga Masiva" `BulkUploadModal` (datasource exposes `uploadFile(file): Promise<string>`).
 - Create/Update: `useForm<XForm>()` + a shared `<XFormComponent register={register} errors={errors} />` inside `CustomForm`, submit via `useMutation`, `notification.success(message)` then `navigate` back to the index.
 - Guard rendering with `if (isLoading) return <Loading />` then `if (data) return (...)`.
 - Sub-resources (transaction items, task observations, …) are edited in place from the parent screen via `Modal` / `Drawer` / side panels driven by query params (`handleSetQueryParam` / `queryParamExists`), not by their own routes; after mutating, `queryClient.invalidateQueries` / `refetch` the parent query.
