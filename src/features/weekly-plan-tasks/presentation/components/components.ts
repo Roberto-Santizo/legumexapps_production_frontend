@@ -20,3 +20,5 @@ export * from './WeeklyPlanTasksSelectionBar';
 export * from './SplitTaskSummary';
 export * from './SplitAllocationMeter';
 export * from './SplitPortionRow';
+export * from './ModalEndWeeklyPlanTask';
+export * from './EndTaskSummary';

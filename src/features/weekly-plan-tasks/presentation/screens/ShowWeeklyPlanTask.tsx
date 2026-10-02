@@ -1,6 +1,7 @@
 import { ErrorComponent, formatNumber, Loading, TimelineStep } from "@/features/shared/shared";
 import { ModalCreateWeeklyPlanTaskObservation, WeeklyPlanTaskObservationsPanel } from "@/features/weekly-plan-task-observations/weekly-plan-task-observations";
-import { ProductionMeter, WeeklyPlanTaskHeader, weeklyPlanTaskProvider } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
+import { ModalUpdateWeeklyPlanTaskPerformanceRecord, PoundsProgressMeter, WeeklyPlanTaskPerformanceRecordsPanel } from "@/features/weekly-plan-task-performance-records/weekly-plan-task-performance-records";
+import { formatUtcDateTime, ProductionMeter, WeeklyPlanTaskHeader, weeklyPlanTaskProvider } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 
@@ -23,9 +24,10 @@ export function ShowWeeklyPlanTask() {
             <section className="space-y-3">
                 <h2 className="text-sm font-semibold text-ink">Avance de producción</h2>
 
-                <div className="grid grid-cols-1 divide-y divide-line overflow-hidden rounded-xl border border-line bg-surface sm:grid-cols-2 sm:divide-x sm:divide-y-0">
+                <div className="grid grid-cols-1 divide-y divide-line overflow-hidden rounded-xl border border-line bg-surface lg:grid-cols-3 lg:divide-x lg:divide-y-0">
                     <ProductionMeter label="Cajas" unit="cajas" produced={data.produced_boxes} planned={data.boxes} />
                     <ProductionMeter label="Pallets" unit="pallets" produced={data.produced_pallets} planned={data.pallets} />
+                    <PoundsProgressMeter recorded={data.recorded_pounds} planned={data.planned_pounds} />
                 </div>
 
                 <div className="grid grid-cols-1 divide-y divide-line overflow-hidden rounded-xl border border-line bg-surface sm:grid-cols-2 sm:divide-x sm:divide-y-0">
@@ -49,15 +51,19 @@ export function ShowWeeklyPlanTask() {
                 <div className="overflow-hidden rounded-xl border border-line bg-surface">
                     <div className="flex flex-col divide-y divide-line sm:flex-row sm:divide-x sm:divide-y-0">
                         <TimelineStep label="Programada" date={data.operation_date_string} />
-                        <TimelineStep label="Inicio" date={data.start_date} />
-                        <TimelineStep label="Fin" date={data.end_date} />
+                        <TimelineStep label="Inicio" date={formatUtcDateTime(data.start_date)} />
+                        <TimelineStep label="Fin" date={formatUtcDateTime(data.end_date)} />
                     </div>
                 </div>
             </section>
 
+            <WeeklyPlanTaskPerformanceRecordsPanel weeklyPlanTaskId={id!} editable={data.status === 4} />
+
             <WeeklyPlanTaskObservationsPanel weeklyPlanTaskId={id!} />
 
             <ModalCreateWeeklyPlanTaskObservation />
+
+            <ModalUpdateWeeklyPlanTaskPerformanceRecord />
         </div>
     )
 }

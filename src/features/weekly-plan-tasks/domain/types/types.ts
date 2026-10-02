@@ -44,4 +44,9 @@ export type SplitWeeklyPlanTaskForm = {
     portions: SplitWeeklyPlanTaskPortion[];
 }
 
+export type WeeklyPlanTaskEndForm = {
+    produced_boxes: number;
+    weighed_pounds: number;
+}
+
 export type PackingMaterialItemsByTaskDeliveryForm = Omit<PackingMaterialTransactionCreateForm, 'weekly_plan_task_id'>;
