@@ -1,6 +1,7 @@
 import { ErrorComponent, Loading, Title } from "@/features/shared/shared";
 import { captureTypeDescriptions, captureTypeLabels } from "@/features/capture-fields/capture-fields";
 import { LineDependenciesByLine } from "@/features/line-dependencies/line-dependencies";
+import { LineFieldsConfigurator } from "@/features/line-fields/line-fields";
 import { linesRepositoryProvider } from "@/features/lines/lines";
 import { MoonIcon, SunIcon } from "lucide-react";
 import { PositionsByLine } from "@/features/positions/positions";
@@ -49,6 +50,7 @@ export function ShowLine() {
                     </div>
                 </section>
 
+                <LineFieldsConfigurator lineCode={data.code} captureType={data.capture_type} />
                 <PositionsByLine code={data.code} />
                 <LineDependenciesByLine id={data.id} />
             </div>

@@ -1,5 +1,6 @@
 import { CustomFilledButton, CustomForm, Loading, Title, useNotification } from "@/features/shared/shared";
 import { type LineForm, LineFormComponent, linesRepositoryProvider } from "@/features/lines/lines";
+import { lineFieldsProvider, lineFieldsQueryKey } from "@/features/line-fields/line-fields";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -21,6 +22,11 @@ export function UpdateLine() {
     const { data, isLoading } = useQuery({
         queryKey: ['getLineByCode', id],
         queryFn: () => linesRepositoryProvider.getLineByCode(id!)
+    });
+
+    const { data: lineFields } = useQuery({
+        queryKey: lineFieldsQueryKey(id!),
+        queryFn: () => lineFieldsProvider.getLineFields(id!)
     });
 
     const { mutate, isPending } = useMutation({
@@ -50,7 +56,7 @@ export function UpdateLine() {
 
             <section>
                 <CustomForm onSubmit={handleSubmit(onSubmit)}>
-                    <LineFormComponent register={register} control={control} errors={errors} />
+                    <LineFormComponent register={register} control={control} errors={errors} captureTypeLocked={Boolean(lineFields?.length)} />
                     <CustomFilledButton type="submit" disabled={isPending} label="Guardar Cambios" />
                 </CustomForm>
             </section>
