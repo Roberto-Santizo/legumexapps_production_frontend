@@ -33,7 +33,7 @@ export const toCaptureFieldPayload = (form: CaptureFieldForm, field?: CaptureFie
     return payload;
 };
 
-export const hasDuplicateOptions = (options: CaptureFieldOptionForm[]): boolean => {
-    const values = options.map(option => option.value.trim().toLowerCase());
-    return new Set(values).size !== values.length;
-};
+const normalizeOption = (value: string): string => value.trim().toLowerCase();
+
+export const isDuplicateOption = (value: string, options: CaptureFieldOptionForm[]): boolean =>
+    options.filter(option => normalizeOption(option.value) === normalizeOption(value)).length > 1;

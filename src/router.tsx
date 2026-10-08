@@ -3,6 +3,7 @@ import { CalendarWeeklyPlan, CreateWeeklyPlan, IndexWeeklyPlans, ShowWeeklyPlan,
 import { CreateClient, IndexClients, ShowClient, UpdateClient } from "@/features/clients/clients";
 import { CreateDraftWeeklyPlan, IndexDraftWeeklyPlans, ShowDraftWeeklyPlan, UpdateDraftWeeklyPlan } from "@/features/draft-weekly-plans/draft-weekly-plans";
 import { CreateLine, IndexLines, ShowLine, UpdateLine } from "@/features/lines/lines";
+import { CreateCaptureField, IndexCaptureFields, ShowCaptureField, UpdateCaptureField } from "@/features/capture-fields/capture-fields";
 import { CreatePackingMaterial, IndexPackingMaterials, ShowPackingMaterial, UpdatePackingMaterial } from "@/features/packing-materials/packing-materials";
 import { CreatePerformance, IndexPerformances, ShowPerformance, UpdatePerformance } from "@/features/performances/performances";
 import { CreatePosition, IndexPositions, ShowPosition, UpdatePosition } from "@/features/positions/positions";
@@ -38,6 +39,13 @@ export default function AppRouter() {
                     <Route path="/lineas/crear" element={<CreateLine />} />
                     <Route path="/lineas/:id/editar" element={<UpdateLine />} />
                     <Route path="/lineas/:id" element={<ShowLine />} />
+                </Route>
+
+                <Route element={<ProtectedLayout />}>
+                    <Route path="/campos-captura" element={<IndexCaptureFields />} />
+                    <Route path="/campos-captura/crear" element={<CreateCaptureField />} />
+                    <Route path="/campos-captura/:id/editar" element={<UpdateCaptureField />} />
+                    <Route path="/campos-captura/:id" element={<ShowCaptureField />} />
                 </Route>
 
                 <Route element={<ProtectedLayout />}>
