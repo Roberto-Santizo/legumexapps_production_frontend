@@ -1,8 +1,9 @@
 import { ActionsMenu, formatNumber, handleSetQueryParam } from "@/features/shared/shared";
-import { EyeIcon, PersonStandingIcon, PlayIcon, StopCircleIcon, TableIcon } from "lucide-react";
+import { EyeIcon, PersonStandingIcon, PlayIcon, StopCircleIcon, TableIcon, TimerIcon, TimerOffIcon } from "lucide-react";
 import { InformationField } from "@/features/shared/shared";
 import { ModalEndWeeklyPlanTask, ModalUpdateWeeklyPlanTask, StatusMessageComponent, useStartWeeklyPlanTask, type WeeklyPlanTask } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
 import { RecordedPoundsLabel } from "@/features/weekly-plan-task-performance-records/weekly-plan-task-performance-records";
+import { StoppedLineTag } from "@/features/weekly-plan-task-timeouts/weekly-plan-task-timeouts";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
@@ -18,6 +19,7 @@ export function WeeklyPlanTaskRowComponent({ task, refetch }: Props) {
     const { handleStartTask } = useStartWeeklyPlanTask(refetch);
     const navigate = useNavigate();
     const location = useLocation();
+    const isStopped = task.open_timeout_id !== null;
 
     return (
         <article
@@ -30,7 +32,10 @@ export function WeeklyPlanTaskRowComponent({ task, refetch }: Props) {
                         {task.sku_name}
                     </h3>
 
-                    <StatusMessageComponent message={task.status_message} status={task.status} />
+                    <div className="flex shrink-0 items-center gap-2">
+                        {isStopped && <StoppedLineTag />}
+                        <StatusMessageComponent message={task.status_message} status={task.status} />
+                    </div>
                 </div>
                 
                 <dl className="mt-3 grid grid-cols-2 gap-x-8 gap-y-3">
@@ -76,7 +81,12 @@ export function WeeklyPlanTaskRowComponent({ task, refetch }: Props) {
                         items={[
                             { label: "Ver Detalles", icon: <EyeIcon />, onClick: () => navigate(`/planes-semanales/tareas/${task.id}`) },
                             { label: "Rendimiento", icon: <TableIcon />, onClick: () => handleSetQueryParam(location, navigate, 'taskPerformance', String(task.id)) },
-                            { label: "Cerrar Tarea", icon: <StopCircleIcon />, onClick: () => setEndModal(true) },
+                            ...(isStopped
+                                ? [{ label: "Cerrar Tiempo Muerto", icon: <TimerOffIcon />, onClick: () => handleSetQueryParam(location, navigate, 'endTimeout', String(task.id)) }]
+                                : [
+                                    { label: "Abrir Tiempo Muerto", icon: <TimerIcon />, onClick: () => handleSetQueryParam(location, navigate, 'startTimeout', String(task.id)) },
+                                    { label: "Cerrar Tarea", icon: <StopCircleIcon />, onClick: () => setEndModal(true) },
+                                ]),
                         ]}
                     />
                 )}
