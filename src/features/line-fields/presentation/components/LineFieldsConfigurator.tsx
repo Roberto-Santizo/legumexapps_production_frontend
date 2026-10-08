@@ -1,7 +1,6 @@
-import { CustomFilledButton, handleSetQueryParam } from "@/features/shared/shared";
-import { captureTypeLabels, type CaptureType } from "@/features/capture-fields/capture-fields";
-import { AssignLineFieldsDrawer, blockingCalculated, LineFieldRow, LineFieldsEmptyState, lineFieldsProvider, lineFieldsQueryKey, ModalEditLineField, useRemoveLineField, useReorderLineFields, useUpdateLineField } from "@/features/line-fields/line-fields";
-import { ListChecksIcon, PlusIcon } from "lucide-react";
+import { handleSetQueryParam } from "@/features/shared/shared";
+import type { CaptureType } from "@/features/capture-fields/capture-fields";
+import { AssignLineFieldsDrawer, blockingCalculated, LineFieldRow, LineFieldsConfiguratorHeader, LineFieldsEmptyState, lineFieldsProvider, lineFieldsQueryKey, ModalEditLineField, ModalLineCapturePreview, useRemoveLineField, useReorderLineFields, useUpdateLineField } from "@/features/line-fields/line-fields";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -15,6 +14,7 @@ export function LineFieldsConfigurator({ lineCode, captureType }: Props) {
     const location = useLocation();
     const navigate = useNavigate();
     const [drawer, setDrawer] = useState(false);
+    const [preview, setPreview] = useState(false);
     const { moveField, isReordering } = useReorderLineFields(lineCode);
     const { handleRemoveField, isRemoving } = useRemoveLineField(lineCode);
     const { updateField, isUpdating } = useUpdateLineField({ lineCode });
@@ -30,21 +30,12 @@ export function LineFieldsConfigurator({ lineCode, captureType }: Props) {
 
     return (
         <section className="overflow-hidden rounded-2xl border border-line bg-surface">
-            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-line px-5 py-4">
-                <div className="flex items-center gap-4">
-                    <ListChecksIcon className="size-4 text-ink-subtle" />
-                    <div>
-                        <h3 className="text-sm font-semibold text-ink">Formulario de captura</h3>
-                        <p className="mt-0.5 text-xs text-ink-muted">
-                            Familia {captureTypeLabels[captureType]} · {fields.length} {fields.length === 1 ? 'campo' : 'campos'} en el orden en que se capturan
-                        </p>
-                    </div>
-                </div>
-
-                {fields.length > 0 && (
-                    <CustomFilledButton label="Agregar campos" type="button" icon={<PlusIcon className="size-4" />} onClick={() => setDrawer(true)} />
-                )}
-            </div>
+            <LineFieldsConfiguratorHeader
+                captureType={captureType}
+                count={fields.length}
+                onPreview={() => setPreview(true)}
+                onAdd={() => setDrawer(true)}
+            />
 
             {isLoading && (
                 <div className="space-y-px">
@@ -95,6 +86,8 @@ export function LineFieldsConfigurator({ lineCode, captureType }: Props) {
             />
 
             <ModalEditLineField lineCode={lineCode} fields={fields} />
+
+            <ModalLineCapturePreview open={preview} close={() => setPreview(false)} fields={fields} />
         </section>
     )
 }

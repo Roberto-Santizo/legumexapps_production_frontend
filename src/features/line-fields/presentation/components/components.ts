@@ -5,4 +5,8 @@ export * from './AvailableCaptureFieldItem';
 export * from './AssignLineFieldsDrawer';
 export * from './LineFieldFormComponent';
 export * from './ModalEditLineField';
+export * from './LineCaptureFieldControl';
+export * from './LineCaptureForm';
+export * from './ModalLineCapturePreview';
+export * from './LineFieldsConfiguratorHeader';
 export * from './LineFieldsConfigurator';

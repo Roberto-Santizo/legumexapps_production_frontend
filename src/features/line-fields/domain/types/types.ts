@@ -25,3 +25,9 @@ export type LineFieldOrderChange = {
     id: number;
     order: number;
 }
+
+export type LineCaptureControlKind = 'number' | 'integer' | 'text' | 'textarea' | 'date' | 'time' | 'boolean' | 'select';
+
+export type LineCaptureFormValues = Record<string, string | boolean>;
+
+export type LineCaptureRecord = Record<string, string | number | boolean | null>;
