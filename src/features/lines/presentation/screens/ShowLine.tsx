@@ -1,4 +1,5 @@
 import { ErrorComponent, Loading, Title } from "@/features/shared/shared";
+import { captureTypeDescriptions, captureTypeLabels } from "@/features/capture-fields/capture-fields";
 import { LineDependenciesByLine } from "@/features/line-dependencies/line-dependencies";
 import { linesRepositoryProvider } from "@/features/lines/lines";
 import { MoonIcon, SunIcon } from "lucide-react";
@@ -39,6 +40,12 @@ export function ShowLine() {
                     <div className="p-5">
                         <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-subtle">Nombre</p>
                         <p className="mt-2 text-lg font-medium text-ink">{data.name}</p>
+                    </div>
+
+                    <div className="p-5">
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-subtle">Familia de captura</p>
+                        <p className="mt-2 text-lg font-medium text-ink">{captureTypeLabels[data.capture_type]}</p>
+                        <p className="mt-0.5 text-xs text-ink-muted">{captureTypeDescriptions[data.capture_type]}</p>
                     </div>
                 </section>
 

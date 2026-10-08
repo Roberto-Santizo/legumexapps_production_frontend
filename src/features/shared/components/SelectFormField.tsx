@@ -9,6 +9,7 @@ type Props<T extends FieldValues> = {
     errorMessage?: string;
     control: Control<T>;
     validation: RegisterOptions<T, Path<T>>;
+    disabled?: boolean;
 };
 
 export function SelectFormField<T extends FieldValues>({
@@ -17,7 +18,8 @@ export function SelectFormField<T extends FieldValues>({
     options,
     errorMessage,
     control,
-    validation
+    validation,
+    disabled = false
 }: Props<T>) {
     return (
         <div className="flex flex-col gap-2">
@@ -34,6 +36,7 @@ export function SelectFormField<T extends FieldValues>({
                         {...field}
                         options={options}
                         isSearchable
+                        isDisabled={disabled}
                         placeholder="Seleccione un opción"
                         noOptionsMessage={() => 'Sin opciones'}
                         classNamePrefix="react-select "
