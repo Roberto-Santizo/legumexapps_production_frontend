@@ -1,6 +1,6 @@
 import { getQueryParam, handleDeleteQueryParam, InformationField, Modal, queryParamExists, useNotification } from "@/features/shared/shared";
 import { lineFieldsSignature, type LineCaptureFormValues } from "@/features/line-fields/line-fields";
-import { changedRecordValues, getCaptureBlocker, getPoundsPerBox, PerformanceRecordCaptureForm, PerformanceRecordTaskNotice, performanceRecordQueryKey, toRecordFormValues, usePalletCaptureFields, useUpdateWeeklyPlanTaskPerformanceRecord, weeklyPlanTaskPerformanceRecordProvider, weeklyPlanTaskQueryKey, type PerformanceRecordFormErrors } from "@/features/weekly-plan-task-performance-records/weekly-plan-task-performance-records";
+import { changedRecordValues, getCaptureBlocker, getPoundsPerBox, PerformanceRecordCaptureForm, PerformanceRecordEstimate, PerformanceRecordTaskNotice, performanceRecordQueryKey, toRecordFormValues, usePalletCaptureFields, useUpdateWeeklyPlanTaskPerformanceRecord, weeklyPlanTaskPerformanceRecordProvider, weeklyPlanTaskQueryKey, type PerformanceRecordFormErrors } from "@/features/weekly-plan-task-performance-records/weekly-plan-task-performance-records";
 import { weeklyPlanTaskProvider } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -48,9 +48,10 @@ export function ModalUpdateWeeklyPlanTaskPerformanceRecord() {
     const loadError = error ?? taskError ?? capture.error;
 
     const blocker = task ? getCaptureBlocker({
+        captureType: 'pallet',
         status: task.status,
         lineName: task.line_name,
-        isPalletLine: capture.isPalletLine,
+        isCaptureLine: capture.isCaptureLine,
         inputFieldsCount: capture.inputFields.length
     }, 'edit') : null;
 
@@ -92,13 +93,14 @@ export function ModalUpdateWeeklyPlanTaskPerformanceRecord() {
                     <PerformanceRecordCaptureForm
                         key={`${record.id}-${record.updated_at}-${lineFieldsSignature(capture.fields)}`}
                         fields={capture.inputFields}
-                        calculatedFields={capture.calculatedFields}
-                        poundsPerBox={getPoundsPerBox(task.planned_pounds, task.boxes)}
                         defaultValues={toRecordFormValues(capture.inputFields, record)}
                         formErrors={formErrors}
                         submitLabel="Guardar cambios"
                         isPending={isUpdating}
                         onSubmit={onSubmit}
+                        renderEstimate={(control) => (
+                            <PerformanceRecordEstimate control={control} calculatedFields={capture.calculatedFields} poundsPerBox={getPoundsPerBox(task.planned_pounds, task.boxes)} />
+                        )}
                     />
                 </div>
             )}

@@ -1,21 +1,20 @@
 import { ActionsMenu } from "@/features/shared/shared";
-import { PerformanceRecordCell, type PerformanceRecordColumn, type WeeklyPlanTaskPerformanceRecord } from "@/features/weekly-plan-task-performance-records/weekly-plan-task-performance-records";
+import type { CapturedRecordMeta } from "@/features/weekly-plan-task-performance-records/weekly-plan-task-performance-records";
 import { PencilIcon, Trash2Icon } from "lucide-react";
+import type { ReactNode } from "react";
 
-type Props = {
-    record: WeeklyPlanTaskPerformanceRecord;
-    columns: PerformanceRecordColumn[];
+type Props<T extends CapturedRecordMeta> = {
+    record: T;
     editable: boolean;
-    onEdit: (record: WeeklyPlanTaskPerformanceRecord) => void;
-    onDelete: (record: WeeklyPlanTaskPerformanceRecord) => void;
+    onEdit: (record: T) => void;
+    onDelete: (record: T) => void;
+    children: ReactNode;
 }
 
-export function PerformanceRecordRow({ record, columns, editable, onEdit, onDelete }: Props) {
+export function PerformanceRecordRow<T extends CapturedRecordMeta>({ record, editable, onEdit, onDelete, children }: Props<T>) {
     return (
         <tr className="tbody-tr">
-            {columns.map(column => (
-                <PerformanceRecordCell key={column.key} column={column} record={record} />
-            ))}
+            {children}
 
             <td className="px-5 py-3.5">
                 <p className="truncate text-sm text-ink">{record.user_name}</p>

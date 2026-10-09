@@ -1,21 +1,20 @@
 import { CustomFilledButton, CustomForm } from "@/features/shared/shared";
 import { LineCaptureFieldControl, type LineCaptureFormValues, type LineField } from "@/features/line-fields/line-fields";
-import { getGeneralFormErrors, PerformanceRecordEstimate, PerformanceRecordFormAlert, type PerformanceRecordFormErrors } from "@/features/weekly-plan-task-performance-records/weekly-plan-task-performance-records";
-import { useForm } from "react-hook-form";
-import { useEffect } from "react";
+import { getGeneralFormErrors, PerformanceRecordFormAlert, type PerformanceRecordFormErrors } from "@/features/weekly-plan-task-performance-records/weekly-plan-task-performance-records";
+import { useForm, type Control } from "react-hook-form";
+import { useEffect, type ReactNode } from "react";
 
 type Props = {
     fields: LineField[];
-    calculatedFields: LineField[];
-    poundsPerBox: number | null;
     defaultValues: LineCaptureFormValues;
     formErrors: PerformanceRecordFormErrors | null;
     submitLabel: string;
     isPending: boolean;
     onSubmit: (values: LineCaptureFormValues) => void;
+    renderEstimate?: (control: Control<LineCaptureFormValues>) => ReactNode;
 }
 
-export function PerformanceRecordCaptureForm({ fields, calculatedFields, poundsPerBox, defaultValues, formErrors, submitLabel, isPending, onSubmit }: Props) {
+export function PerformanceRecordCaptureForm({ fields, defaultValues, formErrors, submitLabel, isPending, onSubmit, renderEstimate }: Props) {
     const { handleSubmit, control, setError } = useForm<LineCaptureFormValues>({ defaultValues });
 
     useEffect(() => {
@@ -36,7 +35,7 @@ export function PerformanceRecordCaptureForm({ fields, calculatedFields, poundsP
                 <p className="text-xs text-ink-muted">Los campos con * son obligatorios.</p>
             )}
 
-            <PerformanceRecordEstimate control={control} calculatedFields={calculatedFields} poundsPerBox={poundsPerBox} />
+            {renderEstimate?.(control)}
 
             <PerformanceRecordFormAlert messages={generalErrors} />
 

@@ -1,5 +1,6 @@
 import { PalletValueSchema, WeeklyPlanTaskPerformanceRecordSchema } from "@/features/weekly-plan-task-performance-records/weekly-plan-task-performance-records";
 import type { LineField } from "@/features/line-fields/line-fields";
+import type { CaptureType } from "@/features/capture-fields/capture-fields";
 import type { z } from "zod";
 
 export type PalletValue = z.infer<typeof PalletValueSchema>;
@@ -44,3 +45,13 @@ export type PerformanceRecordCaptureBlocker = {
     title: string;
     message: string;
 }
+
+export type RecordCaptureType = Exclude<CaptureType, 'product'>;
+
+export type CapturedRecordMeta = {
+    id: number;
+    user_name: string;
+    created_at: string;
+}
+
+export type RecordValueGetter = (key: string) => PalletValue;
