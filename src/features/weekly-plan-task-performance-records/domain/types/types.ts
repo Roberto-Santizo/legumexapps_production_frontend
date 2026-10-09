@@ -9,9 +9,7 @@ export type WeeklyPlanTaskPerformanceRecord = z.infer<typeof WeeklyPlanTaskPerfo
 export type PerformanceRecordColumn = Pick<LineField, 'key' | 'label' | 'data_type' | 'is_calculated'>;
 
 export type WeeklyPlanTaskPerformanceRecordForm = {
-    pallet_number: number | null;
-    boxes: number | null;
-    weighed_pounds: number;
+    values: PerformanceRecordValues;
 }
 
 export type WeeklyPlanTaskPerformanceRecordCreateForm = WeeklyPlanTaskPerformanceRecordForm & {
@@ -34,4 +32,15 @@ export type PerformanceRecordErrorResponse = {
 export type PerformanceRecordFormErrors = {
     byField: Record<string, string>;
     general: string[];
+}
+
+export type PerformanceRecordEstimateValues = {
+    net_weight: number | null;
+    ticket_weight: number | null;
+    difference: number | null;
+}
+
+export type PerformanceRecordCaptureBlocker = {
+    title: string;
+    message: string;
 }

@@ -23,6 +23,7 @@ export function usePalletCaptureFields(lineCode: string, enabled = true) {
     return {
         fields,
         inputFields: fields.filter(field => !field.is_calculated),
+        calculatedFields: fields.filter(field => field.is_calculated),
         columns: toPerformanceRecordColumns(fields),
         isPalletLine: line.data ? line.data.capture_type === 'pallet' : null,
         isLoading: line.isLoading || lineFields.isLoading,

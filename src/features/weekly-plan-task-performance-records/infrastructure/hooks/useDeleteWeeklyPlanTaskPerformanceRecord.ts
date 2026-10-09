@@ -13,7 +13,7 @@ export function useDeleteWeeklyPlanTaskPerformanceRecord(weeklyPlanTaskId: strin
             notification.success(message);
             invalidatePerformanceRecordQueries(queryClient, weeklyPlanTaskId);
         },
-        onError: (err) => handleError(err.message)
+        onError: handleError
     });
 
     const handleDeleteRecord = (recordId: string) =>

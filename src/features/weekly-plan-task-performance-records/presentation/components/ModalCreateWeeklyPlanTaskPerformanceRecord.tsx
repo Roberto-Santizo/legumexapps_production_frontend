@@ -1,84 +1,91 @@
-import { CustomFilledButton, CustomForm, getQueryParam, handleDeleteQueryParam, Modal, queryParamExists } from "@/features/shared/shared";
-import { getNextPalletNumber, getPoundsPerBox, PerformanceRecordEstimate, PerformanceRecordTaskNotice, PerformanceRecordTaskSummary, performanceRecordsQueryKey, useCreateWeeklyPlanTaskPerformanceRecord, weeklyPlanTaskPerformanceRecordProvider, weeklyPlanTaskQueryKey, WeeklyPlanTaskPerformanceRecordFormComponent, type WeeklyPlanTaskPerformanceRecordForm } from "@/features/weekly-plan-task-performance-records/weekly-plan-task-performance-records";
+import { getQueryParam, handleDeleteQueryParam, Modal, queryParamExists } from "@/features/shared/shared";
+import { lineFieldsSignature, type LineCaptureFormValues } from "@/features/line-fields/line-fields";
+import { defaultRecordFormValues, getCaptureBlocker, getNextPalletNumber, getPoundsPerBox, PerformanceRecordCaptureForm, PerformanceRecordTaskNotice, PerformanceRecordTaskSummary, performanceRecordsQueryKey, toRecordValues, useCreateWeeklyPlanTaskPerformanceRecord, usePalletCaptureFields, weeklyPlanTaskPerformanceRecordProvider, weeklyPlanTaskQueryKey, type PerformanceRecordFormErrors } from "@/features/weekly-plan-task-performance-records/weekly-plan-task-performance-records";
 import { weeklyPlanTaskProvider } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
-import { useEffect } from "react";
+import { useState } from "react";
 
 export function ModalCreateWeeklyPlanTaskPerformanceRecord() {
     const location = useLocation();
     const navigate = useNavigate();
     const taskId = getQueryParam(location, 'taskPerformance') ?? '';
     const show = queryParamExists(location, 'taskPerformance');
+    const [formErrors, setFormErrors] = useState<PerformanceRecordFormErrors | null>(null);
 
-    const closeModal = () => handleDeleteQueryParam(location, navigate, 'taskPerformance');
+    const closeModal = () => {
+        setFormErrors(null);
+        handleDeleteQueryParam(location, navigate, 'taskPerformance');
+    };
 
-    const { data: task, isLoading, isError, error } = useQuery({
+    const { data: task, isLoading, error } = useQuery({
         queryKey: weeklyPlanTaskQueryKey(taskId),
         queryFn: () => weeklyPlanTaskProvider.getWeeklyPlanTaskById(taskId),
         enabled: show,
         retry: false
     });
 
-    const { data: records } = useQuery({
+    const { data: records, isLoading: isLoadingRecords } = useQuery({
         queryKey: performanceRecordsQueryKey(taskId),
         queryFn: () => weeklyPlanTaskPerformanceRecordProvider.getWeeklyPlanTaskPerformanceRecords(taskId),
         enabled: show,
         retry: false
     });
 
-    const {
-        handleSubmit,
-        register,
-        reset,
-        control,
-        setError,
-        formState: { errors }
-    } = useForm<WeeklyPlanTaskPerformanceRecordForm>();
-
-    const nextPalletNumber = records ? getNextPalletNumber(records) : null;
-
-    useEffect(() => {
-        if (show) reset({ pallet_number: nextPalletNumber, boxes: null });
-    }, [show, nextPalletNumber, reset]);
+    const capture = usePalletCaptureFields(task?.line_code ?? '', show);
 
     const { createRecord, isCreating } = useCreateWeeklyPlanTaskPerformanceRecord({
         weeklyPlanTaskId: taskId,
         onSuccess: closeModal,
-        onDuplicatePallet: (message) => setError('pallet_number', { message })
+        onFormErrors: setFormErrors
     });
 
-    const onSubmit = (form: WeeklyPlanTaskPerformanceRecordForm) => createRecord(form);
+    const nextPalletNumber = records ? getNextPalletNumber(records) : null;
+    const hasPalletField = capture.inputFields.some(field => field.key === 'pallet_number');
+    const loading = isLoading || isLoadingRecords || capture.isLoading;
+    const loadError = error ?? capture.error;
+
+    const blocker = task ? getCaptureBlocker({
+        status: task.status,
+        lineName: task.line_name,
+        isPalletLine: capture.isPalletLine,
+        inputFieldsCount: capture.inputFields.length
+    }, 'register') : null;
+
+    const onSubmit = (values: LineCaptureFormValues) => {
+        setFormErrors(null);
+        createRecord(toRecordValues(capture.inputFields, values));
+    };
 
     return (
-        <Modal modal={show} closeModal={closeModal} title="Registrar toma de rendimiento" width="sm:max-w-lg">
-            {isLoading && (
+        <Modal modal={show} closeModal={closeModal} title="Registrar tarima" width="sm:max-w-2xl">
+            {loading && (
                 <div className="h-40 animate-pulse rounded-xl bg-canvas motion-reduce:animate-none" />
             )}
 
-            {isError && (
-                <PerformanceRecordTaskNotice title="No se pudo cargar la tarea" message={error.message} />
+            {!loading && loadError && (
+                <PerformanceRecordTaskNotice title="No se pudo cargar la captura" message={loadError.message} />
             )}
 
-            {task && task.status !== 4 && (
-                <PerformanceRecordTaskNotice
-                    title="La tarea no está en progreso"
-                    message="Solo se registran tomas de rendimiento mientras la tarea está en progreso."
-                />
+            {!loading && !loadError && task && blocker && (
+                <PerformanceRecordTaskNotice title={blocker.title} message={blocker.message} />
             )}
 
-            {task && task.status === 4 && (
+            {!loading && !loadError && task && !blocker && (
                 <div className="space-y-5">
-                    <PerformanceRecordTaskSummary task={task} nextPalletNumber={nextPalletNumber} />
+                    <PerformanceRecordTaskSummary task={task} nextPalletNumber={hasPalletField ? nextPalletNumber : undefined} />
 
-                    <CustomForm onSubmit={handleSubmit(onSubmit)} className="border-none p-0 shadow-none">
-                        <WeeklyPlanTaskPerformanceRecordFormComponent register={register} errors={errors} />
-
-                        <PerformanceRecordEstimate control={control} poundsPerBox={getPoundsPerBox(task.planned_pounds, task.boxes)} />
-
-                        <CustomFilledButton type="submit" label="Registrar toma" disabled={isCreating} fullWitdh />
-                    </CustomForm>
+                    <PerformanceRecordCaptureForm
+                        key={`${nextPalletNumber}-${lineFieldsSignature(capture.fields)}`}
+                        fields={capture.inputFields}
+                        calculatedFields={capture.calculatedFields}
+                        poundsPerBox={getPoundsPerBox(task.planned_pounds, task.boxes)}
+                        defaultValues={defaultRecordFormValues(capture.inputFields, nextPalletNumber)}
+                        formErrors={formErrors}
+                        submitLabel="Registrar tarima"
+                        isPending={isCreating}
+                        onSubmit={onSubmit}
+                    />
                 </div>
             )}
         </Modal>

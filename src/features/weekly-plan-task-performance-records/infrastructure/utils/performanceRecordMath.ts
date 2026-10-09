@@ -1,4 +1,4 @@
-import { getRecordValue, SUMMABLE_RECORD_KEYS, type WeeklyPlanTaskPerformanceRecord, type WeeklyPlanTaskPerformanceRecordsSummary } from "@/features/weekly-plan-task-performance-records/weekly-plan-task-performance-records";
+import { getRecordValue, SUMMABLE_RECORD_KEYS, type WeeklyPlanTaskPerformanceRecord, type PerformanceRecordEstimateValues, type WeeklyPlanTaskPerformanceRecordsSummary } from "@/features/weekly-plan-task-performance-records/weekly-plan-task-performance-records";
 
 export type DifferenceTone = 'under' | 'over' | 'even';
 
@@ -11,9 +11,25 @@ export function getPoundsPerBox(plannedPounds: number, plannedBoxes: number): nu
     return plannedPounds > 0 && plannedBoxes > 0 ? plannedPounds / plannedBoxes : null;
 }
 
-export function estimateTheoreticalPounds(boxes: number | null, poundsPerBox: number | null): number | null {
-    return boxes !== null && boxes > 0 && poundsPerBox !== null ? boxes * poundsPerBox : null;
+type EstimateInput = {
+    scaleWeight: number | null;
+    tare: number | null;
+    boxes: number | null;
 }
+
+export function estimatePerformanceRecordValues({ scaleWeight, tare, boxes }: EstimateInput, poundsPerBox: number | null): PerformanceRecordEstimateValues {
+    const netWeight = scaleWeight !== null && tare !== null ? scaleWeight - tare : null;
+    const ticketWeight = boxes !== null && poundsPerBox !== null ? boxes * poundsPerBox : null;
+
+    return {
+        net_weight: netWeight,
+        ticket_weight: ticketWeight,
+        difference: netWeight !== null && ticketWeight !== null ? netWeight - ticketWeight : null
+    };
+}
+
+export const getEstimateValue = (estimate: PerformanceRecordEstimateValues, key: string): number | null =>
+    key in estimate ? estimate[key as keyof PerformanceRecordEstimateValues] : null;
 
 export function getPoundsProgress(recordedPounds: number, plannedPounds: number): number | null {
     return plannedPounds > 0 ? Math.min(recordedPounds / plannedPounds, 1) : null;

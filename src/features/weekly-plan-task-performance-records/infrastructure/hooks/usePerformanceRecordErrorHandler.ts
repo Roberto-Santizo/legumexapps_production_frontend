@@ -1,19 +1,24 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useNotification } from "@/features/shared/shared";
-import { invalidatePerformanceRecordQueries, isDuplicatePalletError, isTaskNotInProgressError } from "@/features/weekly-plan-task-performance-records/weekly-plan-task-performance-records";
+import { invalidatePerformanceRecordQueries, isDuplicatePalletError, isTaskNotInProgressError, PerformanceRecordValidationError, splitPerformanceRecordErrors, type PerformanceRecordFormErrors } from "@/features/weekly-plan-task-performance-records/weekly-plan-task-performance-records";
 
-export function usePerformanceRecordErrorHandler(weeklyPlanTaskId: string, onDuplicatePallet?: (message: string) => void) {
+export function usePerformanceRecordErrorHandler(weeklyPlanTaskId: string, onFormErrors?: (errors: PerformanceRecordFormErrors) => void) {
     const notification = useNotification();
     const queryClient = useQueryClient();
 
-    return (message: string) => {
-        if (onDuplicatePallet && isDuplicatePalletError(message)) {
-            onDuplicatePallet(message);
+    return (error: Error) => {
+        if (onFormErrors && error instanceof PerformanceRecordValidationError) {
+            onFormErrors(splitPerformanceRecordErrors(error.errors));
             return;
         }
 
-        notification.error(message);
+        if (onFormErrors && isDuplicatePalletError(error.message)) {
+            onFormErrors({ byField: { pallet_number: error.message }, general: [] });
+            return;
+        }
 
-        if (isTaskNotInProgressError(message)) invalidatePerformanceRecordQueries(queryClient, weeklyPlanTaskId);
+        notification.error(error.message);
+
+        if (isTaskNotInProgressError(error.message)) invalidatePerformanceRecordQueries(queryClient, weeklyPlanTaskId);
     };
 }

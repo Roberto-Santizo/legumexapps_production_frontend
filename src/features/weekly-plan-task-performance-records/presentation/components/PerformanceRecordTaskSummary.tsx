@@ -16,7 +16,7 @@ export function PerformanceRecordTaskSummary({ task, nextPalletNumber }: Props) 
                 <dl className="mt-3 grid grid-cols-2 gap-x-8 gap-y-3">
                     <InformationField label="Código" value={task.sku_code} mono />
                     {nextPalletNumber !== undefined && (
-                        <InformationField label="Siguiente pallet" value={nextPalletNumber !== null ? String(nextPalletNumber) : '—'} mono />
+                        <InformationField label="Siguiente tarima" value={nextPalletNumber !== null ? String(nextPalletNumber) : '—'} mono />
                     )}
                 </dl>
             </div>

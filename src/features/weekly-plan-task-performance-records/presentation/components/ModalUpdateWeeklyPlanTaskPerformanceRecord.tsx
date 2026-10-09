@@ -1,20 +1,25 @@
-import { CustomFilledButton, CustomForm, getQueryParam, handleDeleteQueryParam, InformationField, Modal, queryParamExists } from "@/features/shared/shared";
-import { getPoundsPerBox, PerformanceRecordEstimate, PerformanceRecordTaskNotice, performanceRecordQueryKey, useUpdateWeeklyPlanTaskPerformanceRecord, weeklyPlanTaskPerformanceRecordProvider, weeklyPlanTaskQueryKey, WeeklyPlanTaskPerformanceRecordFormComponent, type WeeklyPlanTaskPerformanceRecordForm } from "@/features/weekly-plan-task-performance-records/weekly-plan-task-performance-records";
+import { getQueryParam, handleDeleteQueryParam, InformationField, Modal, queryParamExists, useNotification } from "@/features/shared/shared";
+import { lineFieldsSignature, type LineCaptureFormValues } from "@/features/line-fields/line-fields";
+import { changedRecordValues, getCaptureBlocker, getPoundsPerBox, PerformanceRecordCaptureForm, PerformanceRecordTaskNotice, performanceRecordQueryKey, toRecordFormValues, usePalletCaptureFields, useUpdateWeeklyPlanTaskPerformanceRecord, weeklyPlanTaskPerformanceRecordProvider, weeklyPlanTaskQueryKey, type PerformanceRecordFormErrors } from "@/features/weekly-plan-task-performance-records/weekly-plan-task-performance-records";
 import { weeklyPlanTaskProvider } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
-import { useEffect } from "react";
+import { useState } from "react";
 
 export function ModalUpdateWeeklyPlanTaskPerformanceRecord() {
     const location = useLocation();
     const navigate = useNavigate();
+    const notification = useNotification();
     const recordId = getQueryParam(location, 'editPerformanceRecord') ?? '';
     const show = queryParamExists(location, 'editPerformanceRecord');
+    const [formErrors, setFormErrors] = useState<PerformanceRecordFormErrors | null>(null);
 
-    const closeModal = () => handleDeleteQueryParam(location, navigate, 'editPerformanceRecord');
+    const closeModal = () => {
+        setFormErrors(null);
+        handleDeleteQueryParam(location, navigate, 'editPerformanceRecord');
+    };
 
-    const { data: record, isLoading, isError, error } = useQuery({
+    const { data: record, isLoading, error } = useQuery({
         queryKey: performanceRecordQueryKey(recordId),
         queryFn: () => weeklyPlanTaskPerformanceRecordProvider.getWeeklyPlanTaskPerformanceRecordById(recordId),
         enabled: show,
@@ -23,69 +28,78 @@ export function ModalUpdateWeeklyPlanTaskPerformanceRecord() {
 
     const taskId = record ? String(record.weekly_plan_task_id) : '';
 
-    const { data: task } = useQuery({
+    const { data: task, isLoading: isLoadingTask, error: taskError } = useQuery({
         queryKey: weeklyPlanTaskQueryKey(taskId),
         queryFn: () => weeklyPlanTaskProvider.getWeeklyPlanTaskById(taskId),
         enabled: show && !!record,
         retry: false
     });
 
-    const {
-        handleSubmit,
-        register,
-        reset,
-        control,
-        setError,
-        formState: { errors }
-    } = useForm<WeeklyPlanTaskPerformanceRecordForm>();
-
-    useEffect(() => {
-        if (show && record) {
-            const { pallet_number, boxes, net_weight } = record;
-            reset({ pallet_number, boxes, weighed_pounds: net_weight ?? 0 });
-        }
-    }, [show, record, reset]);
+    const capture = usePalletCaptureFields(task?.line_code ?? '', show);
 
     const { updateRecord, isUpdating } = useUpdateWeeklyPlanTaskPerformanceRecord({
         recordId,
         weeklyPlanTaskId: taskId,
         onSuccess: closeModal,
-        onDuplicatePallet: (message) => setError('pallet_number', { message })
+        onFormErrors: setFormErrors
     });
 
-    const onSubmit = (form: WeeklyPlanTaskPerformanceRecordForm) => updateRecord(form);
+    const loading = isLoading || isLoadingTask || capture.isLoading;
+    const loadError = error ?? taskError ?? capture.error;
+
+    const blocker = task ? getCaptureBlocker({
+        status: task.status,
+        lineName: task.line_name,
+        isPalletLine: capture.isPalletLine,
+        inputFieldsCount: capture.inputFields.length
+    }, 'edit') : null;
+
+    const onSubmit = (values: LineCaptureFormValues) => {
+        if (!record) return;
+
+        const changes = changedRecordValues(capture.inputFields, record, values);
+
+        if (Object.keys(changes).length === 0) {
+            notification.information('No hay cambios para guardar');
+            return;
+        }
+
+        setFormErrors(null);
+        updateRecord(changes);
+    };
 
     return (
-        <Modal modal={show} closeModal={closeModal} title="Editar toma de rendimiento" width="sm:max-w-lg">
-            {isLoading && (
+        <Modal modal={show} closeModal={closeModal} title="Editar tarima" width="sm:max-w-2xl">
+            {loading && (
                 <div className="h-40 animate-pulse rounded-xl bg-canvas motion-reduce:animate-none" />
             )}
 
-            {isError && (
-                <PerformanceRecordTaskNotice title="No se pudo cargar la toma" message={error.message} />
+            {!loading && loadError && (
+                <PerformanceRecordTaskNotice title="No se pudo cargar la tarima" message={loadError.message} />
             )}
 
-            {record && task && task.status !== 4 && (
-                <PerformanceRecordTaskNotice
-                    title="La tarea no está en progreso"
-                    message="Las tomas de rendimiento solo se corrigen mientras la tarea está en progreso."
-                />
+            {!loading && !loadError && record && task && blocker && (
+                <PerformanceRecordTaskNotice title={blocker.title} message={blocker.message} />
             )}
 
-            {record && task && task.status === 4 && (
+            {!loading && !loadError && record && task && !blocker && (
                 <div className="space-y-5">
                     <dl className="grid grid-cols-2 gap-x-8 gap-y-3 rounded-xl border border-line bg-surface px-5 py-4">
                         <InformationField label="Registró" value={record.user_name} />
                         <InformationField label="Fecha" value={record.created_at} mono />
                     </dl>
 
-                    <CustomForm onSubmit={handleSubmit(onSubmit)} className="border-none p-0 shadow-none">
-                        <WeeklyPlanTaskPerformanceRecordFormComponent register={register} errors={errors} />
-
-                        <PerformanceRecordEstimate control={control} poundsPerBox={getPoundsPerBox(task.planned_pounds, task.boxes)} />
-
-                        <CustomFilledButton type="submit" label="Guardar cambios" disabled={isUpdating} fullWitdh />
-                    </CustomForm>
+                    <PerformanceRecordCaptureForm
+                        key={`${record.id}-${record.updated_at}-${lineFieldsSignature(capture.fields)}`}
+                        fields={capture.inputFields}
+                        calculatedFields={capture.calculatedFields}
+                        poundsPerBox={getPoundsPerBox(task.planned_pounds, task.boxes)}
+                        defaultValues={toRecordFormValues(capture.inputFields, record)}
+                        formErrors={formErrors}
+                        submitLabel="Guardar cambios"
+                        isPending={isUpdating}
+                        onSubmit={onSubmit}
+                    />
                 </div>
             )}
         </Modal>

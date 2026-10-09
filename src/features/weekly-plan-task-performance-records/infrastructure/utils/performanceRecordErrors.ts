@@ -24,3 +24,13 @@ export function splitPerformanceRecordErrors(errors: Record<string, string[]>): 
 
     return { byField, general };
 }
+
+export function getGeneralFormErrors(formErrors: PerformanceRecordFormErrors | null, fieldKeys: string[]): string[] {
+    if (!formErrors) return [];
+
+    const orphanFieldErrors = Object.entries(formErrors.byField)
+        .filter(([key]) => !fieldKeys.includes(key))
+        .map(([, message]) => message);
+
+    return [...formErrors.general, ...orphanFieldErrors];
+}
