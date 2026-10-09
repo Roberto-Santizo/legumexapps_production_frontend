@@ -7,6 +7,8 @@ export * from './PerformanceRecordTaskNotice';
 export * from './PerformanceRecordTaskSummary';
 export * from './ModalCreateWeeklyPlanTaskPerformanceRecord';
 export * from './DeviationCell';
+export * from './PerformanceRecordCell';
+export * from './PerformanceRecordsTableHead';
 export * from './PerformanceRecordRow';
 export * from './PerformanceRecordsTotalsRow';
 export * from './WeeklyPlanTaskPerformanceRecordsPanel';

@@ -60,7 +60,7 @@ export function ShowWeeklyPlanTask() {
                 </div>
             </section>
 
-            <WeeklyPlanTaskPerformanceRecordsPanel weeklyPlanTaskId={id!} editable={data.status === 4} />
+            <WeeklyPlanTaskPerformanceRecordsPanel weeklyPlanTaskId={id!} lineCode={data.line_code} editable={data.status === 4} />
 
             <WeeklyPlanTaskTimeoutsPanel weeklyPlanTaskId={id!} editable={data.status === 4} />
 

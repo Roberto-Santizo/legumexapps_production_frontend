@@ -41,8 +41,8 @@ export function ModalUpdateWeeklyPlanTaskPerformanceRecord() {
 
     useEffect(() => {
         if (show && record) {
-            const { pallet_number, boxes, weighed_pounds } = record;
-            reset({ pallet_number, boxes, weighed_pounds });
+            const { pallet_number, boxes, net_weight } = record;
+            reset({ pallet_number, boxes, weighed_pounds: net_weight ?? 0 });
         }
     }, [show, record, reset]);
 

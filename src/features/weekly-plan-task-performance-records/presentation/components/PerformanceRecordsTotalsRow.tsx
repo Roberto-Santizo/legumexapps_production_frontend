@@ -1,28 +1,36 @@
-import { DeviationCell, formatPounds, type WeeklyPlanTaskPerformanceRecordsSummary } from "@/features/weekly-plan-task-performance-records/weekly-plan-task-performance-records";
+import { DeviationCell, formatRecordValue, isSummableRecordKey, type PerformanceRecordColumn, type WeeklyPlanTaskPerformanceRecordsSummary } from "@/features/weekly-plan-task-performance-records/weekly-plan-task-performance-records";
 
 type Props = {
     summary: WeeklyPlanTaskPerformanceRecordsSummary;
+    columns: PerformanceRecordColumn[];
     editable: boolean;
 }
 
-export function PerformanceRecordsTotalsRow({ summary, editable }: Props) {
+export function PerformanceRecordsTotalsRow({ summary, columns, editable }: Props) {
     return (
         <tr className="border-t border-line-strong bg-canvas/70">
-            <td className="px-5 py-3.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-subtle" colSpan={2}>
-                Total · {summary.count} {summary.count === 1 ? 'toma' : 'tomas'}
+            <td className="whitespace-nowrap px-5 py-3.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-subtle">
+                Total · {summary.count} {summary.count === 1 ? 'tarima' : 'tarimas'}
             </td>
 
-            <td className="px-5 py-3.5 text-right font-mono text-sm font-semibold tabular-nums text-ink">
-                {formatPounds(summary.weighedPounds)}
-            </td>
+            {columns.slice(1).map(column => {
+                if (column.key === 'difference') return (
+                    <td key={column.key} className="px-5 py-3.5">
+                        <DeviationCell difference={summary.totals.difference ?? null} base={summary.comparableTicketWeight} />
+                    </td>
+                );
 
-            <td className="px-5 py-3.5 text-right font-mono text-sm tabular-nums text-ink-muted">
-                {summary.hasTheoretical ? formatPounds(summary.theoreticalPounds) : '—'}
-            </td>
+                if (!isSummableRecordKey(column.key)) return <td key={column.key} />;
 
-            <td className="px-5 py-3.5">
-                <DeviationCell difference={summary.differencePounds} theoretical={summary.theoreticalPounds} />
-            </td>
+                return (
+                    <td
+                        key={column.key}
+                        className={`whitespace-nowrap px-5 py-3.5 text-right font-mono text-sm tabular-nums ${column.key === 'net_weight' ? 'font-semibold text-ink' : 'text-ink-muted'}`}
+                    >
+                        {formatRecordValue(column, summary.totals[column.key] ?? null)}
+                    </td>
+                );
+            })}
 
             <td colSpan={editable ? 2 : 1} />
         </tr>
