@@ -5,9 +5,10 @@ import type { WeeklyPlanTask } from "@/features/weekly-plan-tasks/weekly-plan-ta
 type Props = {
     task: WeeklyPlanTask;
     nextPalletNumber?: number | null;
+    progressLabel?: string;
 }
 
-export function PerformanceRecordTaskSummary({ task, nextPalletNumber }: Props) {
+export function PerformanceRecordTaskSummary({ task, nextPalletNumber, progressLabel }: Props) {
     return (
         <div className="overflow-hidden rounded-xl border border-line bg-surface">
             <div className="border-b border-line px-5 py-4">
@@ -21,7 +22,7 @@ export function PerformanceRecordTaskSummary({ task, nextPalletNumber }: Props) 
                 </dl>
             </div>
 
-            <PoundsProgressMeter recorded={task.recorded_pounds} planned={task.planned_pounds} />
+            <PoundsProgressMeter recorded={task.recorded_pounds} planned={task.planned_pounds} label={progressLabel} />
         </div>
     )
 }

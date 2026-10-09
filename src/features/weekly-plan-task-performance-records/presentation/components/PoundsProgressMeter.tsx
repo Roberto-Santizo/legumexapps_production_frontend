@@ -3,9 +3,10 @@ import { formatPounds, getPoundsProgress } from "@/features/weekly-plan-task-per
 type Props = {
     recorded: number;
     planned: number;
+    label?: string;
 }
 
-export function PoundsProgressMeter({ recorded, planned }: Props) {
+export function PoundsProgressMeter({ recorded, planned, label = 'Libras registradas' }: Props) {
     const progress = getPoundsProgress(recorded, planned);
     const percent = progress === null ? null : Math.round(progress * 100);
     const complete = progress === 1;
@@ -13,7 +14,7 @@ export function PoundsProgressMeter({ recorded, planned }: Props) {
     return (
         <div className="p-5">
             <div className="flex items-baseline justify-between gap-3">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-subtle">Libras registradas</p>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-subtle">{label}</p>
                 {percent !== null && (
                     <p className={`font-mono text-xs ${complete ? 'text-[#4d6b2f]' : 'text-ink-muted'}`}>{percent}%</p>
                 )}
@@ -30,7 +31,7 @@ export function PoundsProgressMeter({ recorded, planned }: Props) {
                 <div
                     className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-canvas"
                     role="progressbar"
-                    aria-label="Libras registradas"
+                    aria-label={label}
                     aria-valuenow={percent ?? 0}
                     aria-valuemin={0}
                     aria-valuemax={100}
