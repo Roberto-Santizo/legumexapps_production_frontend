@@ -1,8 +1,10 @@
 import { ErrorComponent, formatNumber, Loading, TimelineStep } from "@/features/shared/shared";
 import { ModalCreateWeeklyPlanTaskObservation, WeeklyPlanTaskObservationsPanel } from "@/features/weekly-plan-task-observations/weekly-plan-task-observations";
-import { ModalUpdateWeeklyPlanTaskPerformanceRecord, PoundsProgressMeter, WeeklyPlanTaskPerformanceRecordsPanel } from "@/features/weekly-plan-task-performance-records/weekly-plan-task-performance-records";
+import { ModalUpdateWeeklyPlanTaskPerformanceRecord, PoundsProgressMeter } from "@/features/weekly-plan-task-performance-records/weekly-plan-task-performance-records";
+import { ModalUpdateWeeklyPlanTaskLotRecord } from "@/features/weekly-plan-task-lot-records/weekly-plan-task-lot-records";
+import { useLineByCode } from "@/features/lines/lines";
 import { ModalEndWeeklyPlanTaskTimeout, ModalUpdateWeeklyPlanTaskTimeout, TimeoutHoursStat, WeeklyPlanTaskTimeoutsPanel } from "@/features/weekly-plan-task-timeouts/weekly-plan-task-timeouts";
-import { formatUtcDateTime, ProductionMeter, WeeklyPlanTaskHeader, weeklyPlanTaskProvider } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
+import { formatUtcDateTime, getRecordedPoundsLabel, ProductionMeter, WeeklyPlanTaskCaptureRecordsPanel, WeeklyPlanTaskHeader, weeklyPlanTaskProvider } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 
@@ -15,6 +17,8 @@ export function ShowWeeklyPlanTask() {
         retry: false
     });
 
+    const line = useLineByCode(data?.line_code ?? '');
+    const captureType = line.data?.capture_type;
 
     if (isLoading) return <Loading />
     if (isError) return <ErrorComponent message={error.message} />
@@ -28,7 +32,7 @@ export function ShowWeeklyPlanTask() {
                 <div className="grid grid-cols-1 divide-y divide-line overflow-hidden rounded-xl border border-line bg-surface lg:grid-cols-3 lg:divide-x lg:divide-y-0">
                     <ProductionMeter label="Cajas" unit="cajas" produced={data.produced_boxes} planned={data.boxes} />
                     <ProductionMeter label="Pallets" unit="pallets" produced={data.produced_pallets} planned={data.pallets} />
-                    <PoundsProgressMeter recorded={data.recorded_pounds} planned={data.planned_pounds} />
+                    <PoundsProgressMeter recorded={data.recorded_pounds} planned={data.planned_pounds} label={getRecordedPoundsLabel(captureType)} />
                 </div>
 
                 <div className="grid grid-cols-1 divide-y divide-line overflow-hidden rounded-xl border border-line bg-surface sm:grid-cols-3 sm:divide-x sm:divide-y-0">
@@ -60,7 +64,7 @@ export function ShowWeeklyPlanTask() {
                 </div>
             </section>
 
-            <WeeklyPlanTaskPerformanceRecordsPanel weeklyPlanTaskId={id!} lineCode={data.line_code} editable={data.status === 4} />
+            <WeeklyPlanTaskCaptureRecordsPanel task={data} captureType={captureType} isLoading={line.isLoading} />
 
             <WeeklyPlanTaskTimeoutsPanel weeklyPlanTaskId={id!} editable={data.status === 4} />
 
@@ -69,6 +73,8 @@ export function ShowWeeklyPlanTask() {
             <ModalCreateWeeklyPlanTaskObservation />
 
             <ModalUpdateWeeklyPlanTaskPerformanceRecord />
+
+            <ModalUpdateWeeklyPlanTaskLotRecord />
 
             <ModalEndWeeklyPlanTaskTimeout />
 

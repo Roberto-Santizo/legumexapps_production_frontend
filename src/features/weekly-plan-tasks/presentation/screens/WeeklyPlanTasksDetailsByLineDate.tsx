@@ -2,6 +2,8 @@ import { defaultWeeklyPlanTaskFilters, ModalPackingMaterialItemsByTask, weeklyPl
 import { ErrorComponent, Loading } from "@/features/shared/shared";
 import { ModalCreateWeeklyPlanTaskObservation } from "@/features/weekly-plan-task-observations/weekly-plan-task-observations";
 import { ModalCreateWeeklyPlanTaskPerformanceRecord } from "@/features/weekly-plan-task-performance-records/weekly-plan-task-performance-records";
+import { ModalCreateWeeklyPlanTaskLotRecord } from "@/features/weekly-plan-task-lot-records/weekly-plan-task-lot-records";
+import { useLineByCode } from "@/features/lines/lines";
 import { ModalEndWeeklyPlanTaskTimeout, ModalStartWeeklyPlanTaskTimeout } from "@/features/weekly-plan-task-timeouts/weekly-plan-task-timeouts";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -17,6 +19,8 @@ export function WeeklyPlanTasksDetailsByLineDate() {
         queryFn: () => weeklyPlanTaskProvider.getWeeklyPlanTasks('', '', { ...defaultWeeklyPlanTaskFilters, operationDate: date!, lineCode: lineCode! }),
         retry: false
     });
+
+    const { data: line } = useLineByCode(lineCode!);
 
     if (isLoading) return <Loading />
     if (isError) return <ErrorComponent message={error.message} />
@@ -46,7 +50,7 @@ export function WeeklyPlanTasksDetailsByLineDate() {
                 ) : (
                     <div className="divide-y divide-line overflow-hidden rounded-xl border border-line bg-surface">
                         {data.data.map(task => (
-                            <WeeklyPlanTaskRowComponent key={task.id} task={task} refetch={refetch} />
+                            <WeeklyPlanTaskRowComponent key={task.id} task={task} captureType={line?.capture_type} refetch={refetch} />
                         ))}
                     </div>
                 )}
@@ -57,6 +61,8 @@ export function WeeklyPlanTasksDetailsByLineDate() {
             <ModalCreateWeeklyPlanTaskObservation />
 
             <ModalCreateWeeklyPlanTaskPerformanceRecord />
+
+            <ModalCreateWeeklyPlanTaskLotRecord />
 
             <ModalStartWeeklyPlanTaskTimeout />
 
