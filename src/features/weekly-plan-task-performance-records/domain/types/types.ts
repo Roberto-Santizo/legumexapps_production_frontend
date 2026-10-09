@@ -23,3 +23,15 @@ export type WeeklyPlanTaskPerformanceRecordsSummary = {
     totals: Record<string, number | null>;
     comparableTicketWeight: number;
 }
+
+export type PerformanceRecordValues = Record<string, PalletValue>;
+
+export type PerformanceRecordErrorResponse = {
+    message: string;
+    errors?: Record<string, string[]>;
+}
+
+export type PerformanceRecordFormErrors = {
+    byField: Record<string, string>;
+    general: string[];
+}
