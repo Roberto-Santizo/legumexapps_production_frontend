@@ -23,7 +23,7 @@ export const NAV_SECTIONS: NavSection[] = [
         items: [
             { to: "/lineas", text: "Líneas", icon: NotebookIcon },
             { to: "/campos-captura", text: "Campos de Captura", icon: ListChecks },
-            { to: "/posiciones", text: "Posiciones", icon: UserCog },
+            // { to: "/posiciones", text: "Posiciones", icon: UserCog },
         ],
     },
     {
@@ -39,7 +39,7 @@ export const NAV_SECTIONS: NavSection[] = [
         label: "Operacion",
         items: [
             { to: "/planes-semanales", text: "Planes Semanales", icon: Book },
-            { to: "/empleados-planes-semanales", text: "Empleados Planes Semanales", icon: Users },
+            // { to: "/empleados-planes-semanales", text: "Empleados Planes Semanales", icon: Users },
             { to: "/draft-planes-semanales", text: "Draft Planes Semanales", icon: Book },
             { to: "/tiempos-muertos", text: "Tiempos Muertos", icon: Clock },
             { to: "/clientes", text: "Clientes", icon: UserStar },
