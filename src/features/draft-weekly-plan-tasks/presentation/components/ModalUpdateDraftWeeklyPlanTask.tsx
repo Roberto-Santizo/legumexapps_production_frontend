@@ -58,7 +58,7 @@ export function ModalUpdateDraftWeeklyPlanTask({ modal, closeModal, taskId, call
         <Modal modal={modal} closeModal={closeModal} title="Editar Tarea de Plan Semanal Draft">
             {data && (
                 <CustomForm onSubmit={handleSubmit(onSubmit)}>
-                    <DraftWeeklyPlanTaskFormComponent register={register} errors={errors} control={control} />
+                    <DraftWeeklyPlanTaskFormComponent register={register} errors={errors} control={control} selectedSku={{ value: data.sku_id, label: data.sku_code }} />
                     <CustomFilledButton type="submit" label="Guardar Cambios" disabled={isPending} />
                 </CustomForm>
             )}

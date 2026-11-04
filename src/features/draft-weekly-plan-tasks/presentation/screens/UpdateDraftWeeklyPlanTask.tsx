@@ -50,7 +50,7 @@ export function UpdateDraftWeeklyPlanTask() {
             <Title title="Actualizar Tarea de Plan Semanal Draft" subtitle="Actualiza la información de la tarea del plan semanal draft" />
 
             <CustomForm onSubmit={handleSubmit(onSubmit)}>
-                <DraftWeeklyPlanTaskFormComponent register={register} errors={errors} control={control} />
+                <DraftWeeklyPlanTaskFormComponent register={register} errors={errors} control={control} selectedSku={{ value: data.sku_id, label: data.sku_code }} />
                 <CustomFilledButton type="submit" label="Guardar Cambios" disabled={isPending} />
             </CustomForm>
         </div>
