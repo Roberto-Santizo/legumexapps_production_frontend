@@ -31,5 +31,8 @@ export function formatSignedPercent(ratio: number): string {
     return '0%';
 }
 
-export const toNullableNumber = (value: unknown): number | null =>
-    value === '' || value === null || value === undefined ? null : Number(value);
+export function toNullableNumber(value: unknown): number | null {
+    if (value === '' || value === null || value === undefined || typeof value === 'boolean') return null;
+    const number = Number(value);
+    return Number.isFinite(number) ? number : null;
+}

@@ -1,6 +1,6 @@
 import { ApiResponseSchema } from "@/features/shared/shared";
 import { isAxiosError, type AxiosInstance } from "axios";
-import { WeeklyPlanTaskPerformanceRecordSchema, WeeklyPlanTaskPerformanceRecordsResponseSchema, type WeeklyPlanTaskPerformanceRecord, type WeeklyPlanTaskPerformanceRecordCreateForm, type WeeklyPlanTaskPerformanceRecordDatasource, type WeeklyPlanTaskPerformanceRecordForm } from "@/features/weekly-plan-task-performance-records/weekly-plan-task-performance-records";
+import { WeeklyPlanTaskPerformanceRecordSchema, WeeklyPlanTaskPerformanceRecordsResponseSchema, type WeeklyPlanTaskPerformanceRecord, type WeeklyPlanTaskPerformanceRecordCreateForm, type WeeklyPlanTaskPerformanceRecordDatasource, type WeeklyPlanTaskPerformanceRecordForm, type PerformanceRecordErrorResponse, toPerformanceRecordError } from "@/features/weekly-plan-task-performance-records/weekly-plan-task-performance-records";
 
 export class WeeklyPlanTaskPerformanceRecordDatasourceImpl implements WeeklyPlanTaskPerformanceRecordDatasource {
     constructor(private api: AxiosInstance, private url = '/weekly-plan-task-performance-records') { }
@@ -16,7 +16,7 @@ export class WeeklyPlanTaskPerformanceRecordDatasourceImpl implements WeeklyPlan
 
             throw new Error("Información no válida");
         } catch (error) {
-            if (isAxiosError(error)) throw new Error(error.response?.data.message);
+            if (isAxiosError<PerformanceRecordErrorResponse>(error)) throw toPerformanceRecordError(error);
 
             throw new Error("Error no controlado");
         }
@@ -70,7 +70,7 @@ export class WeeklyPlanTaskPerformanceRecordDatasourceImpl implements WeeklyPlan
 
             throw new Error("Información no válida");
         } catch (error) {
-            if (isAxiosError(error)) throw new Error(error.response?.data.message);
+            if (isAxiosError<PerformanceRecordErrorResponse>(error)) throw toPerformanceRecordError(error);
 
             throw new Error("Error no controlado");
         }

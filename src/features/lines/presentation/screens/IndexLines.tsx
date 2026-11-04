@@ -1,6 +1,7 @@
 import { FiltersButton, FiltersDrawer, BulkUploadModal, type BulkUploadColumn, ActionsMenu, CustomFilledButton, ErrorComponent, LoadingData, Pagination, Table, Tbody, Td, Th, Thead, Title, Tr, usePagination } from "@/features/shared/shared";
 import { EditIcon, EyeIcon, PlusIcon, UploadIcon } from "lucide-react";
 import { linesRepositoryProvider, useLineFilters, lineFilterFields } from "@/features/lines/lines";
+import { captureTypeLabels } from "@/features/capture-fields/capture-fields";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -74,6 +75,7 @@ export function IndexLines() {
                     <Thead>
                         <Th text="Linea" />
                         <Th text="Código" />
+                        <Th text="Familia" />
                         <Th text="Acciones" />
                     </Thead>
 
@@ -82,6 +84,7 @@ export function IndexLines() {
                             <Tr>
                                 <Td>{line.name}</Td>
                                 <Td>{line.code}</Td>
+                                <Td>{captureTypeLabels[line.capture_type]}</Td>
                                 <Td className="flex gap-3">
                                     <ActionsMenu
                                         items={[

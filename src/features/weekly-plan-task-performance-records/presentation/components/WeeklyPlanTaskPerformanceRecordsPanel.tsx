@@ -1,26 +1,19 @@
 import { handleSetQueryParam } from "@/features/shared/shared";
-import { PerformanceRecordRow, PerformanceRecordsTotalsRow, performanceRecordsQueryKey, summarizePerformanceRecords, useDeleteWeeklyPlanTaskPerformanceRecord, weeklyPlanTaskPerformanceRecordProvider, type WeeklyPlanTaskPerformanceRecord } from "@/features/weekly-plan-task-performance-records/weekly-plan-task-performance-records";
+import { PerformanceRecordCell, PerformanceRecordRow, PerformanceRecordsEmptyState, PerformanceRecordsPanelHeader, PerformanceRecordsSkeleton, PerformanceRecordsTableHead, PerformanceRecordsTotalsRow, performanceRecordsQueryKey, summarizePerformanceRecords, useDeleteWeeklyPlanTaskPerformanceRecord, usePalletCaptureFields, weeklyPlanTaskPerformanceRecordProvider, type WeeklyPlanTaskPerformanceRecord } from "@/features/weekly-plan-task-performance-records/weekly-plan-task-performance-records";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const HEADERS = [
-    { label: 'Pallet', align: 'text-left' },
-    { label: 'Cajas', align: 'text-right' },
-    { label: 'Pesado (lbs)', align: 'text-right' },
-    { label: 'Teórico (lbs)', align: 'text-right' },
-    { label: 'Diferencia', align: 'text-right' },
-    { label: 'Registró', align: 'text-left' },
-];
-
 type Props = {
     weeklyPlanTaskId: string;
+    lineCode: string;
     editable: boolean;
 }
 
-export function WeeklyPlanTaskPerformanceRecordsPanel({ weeklyPlanTaskId, editable }: Props) {
+export function WeeklyPlanTaskPerformanceRecordsPanel({ weeklyPlanTaskId, lineCode, editable }: Props) {
     const navigate = useNavigate();
     const location = useLocation();
     const { handleDeleteRecord } = useDeleteWeeklyPlanTaskPerformanceRecord(weeklyPlanTaskId);
+    const { columns, isLoading: isLoadingColumns } = usePalletCaptureFields(lineCode);
 
     const { data, isLoading, isError, error } = useQuery({
         queryKey: performanceRecordsQueryKey(weeklyPlanTaskId),
@@ -33,52 +26,27 @@ export function WeeklyPlanTaskPerformanceRecordsPanel({ weeklyPlanTaskId, editab
 
     return (
         <section className="space-y-3">
-            <div className="flex items-baseline justify-between gap-4">
-                <h2 className="text-sm font-semibold text-ink">Tomas de rendimiento</h2>
-                {!editable && (
-                    <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-ink-subtle">Solo lectura</p>
-                )}
-            </div>
+            <PerformanceRecordsPanelHeader title="Tomas de rendimiento" editable={editable} />
 
-            {isLoading && (
-                <div className="space-y-px overflow-hidden rounded-xl border border-line bg-surface">
-                    {[0, 1, 2].map(index => (
-                        <div key={index} className="flex animate-pulse gap-6 px-5 py-4 motion-reduce:animate-none">
-                            <span className="h-2.5 w-10 rounded-full bg-canvas" />
-                            <span className="h-2.5 flex-1 rounded-full bg-canvas" />
-                        </div>
-                    ))}
-                </div>
-            )}
+            {(isLoading || isLoadingColumns) && <PerformanceRecordsSkeleton />}
 
             {isError && (
                 <p className="rounded-xl border border-line bg-surface px-5 py-10 text-center text-sm text-ink-muted">{error.message}</p>
             )}
 
-            {data?.length === 0 && (
-                <div className="rounded-xl border border-dashed border-line-strong bg-surface px-5 py-10 text-center">
-                    <p className="text-sm font-medium text-ink">Sin tomas de rendimiento</p>
-                    <p className="mt-1 text-sm text-ink-muted">
-                        {editable
-                            ? 'Registra las pallets pesadas desde la opción "Rendimiento" en las tareas del día.'
-                            : 'Esta tarea no tiene pallets pesadas registradas.'}
-                    </p>
-                </div>
+            {!isLoadingColumns && data?.length === 0 && (
+                <PerformanceRecordsEmptyState
+                    title="Sin tarimas registradas"
+                    message={editable
+                        ? 'Registra las tarimas desde la opción "Rendimiento" en las tareas del día.'
+                        : 'Esta tarea no tiene tarimas registradas.'}
+                />
             )}
 
-            {data && data.length > 0 && (
+            {!isLoadingColumns && data && data.length > 0 && (
                 <div className="table-wrapper">
                     <table className="table">
-                        <thead className="thead">
-                            <tr>
-                                {HEADERS.map(header => (
-                                    <th key={header.label} className={`px-5 py-3 text-xs font-semibold uppercase tracking-wider text-ink-subtle ${header.align}`}>
-                                        {header.label}
-                                    </th>
-                                ))}
-                                {editable && <th className="px-3 py-3"><span className="sr-only">Acciones</span></th>}
-                            </tr>
-                        </thead>
+                        <PerformanceRecordsTableHead columns={columns} editable={editable} />
 
                         <tbody className="tbody">
                             {data.map(record => (
@@ -88,12 +56,16 @@ export function WeeklyPlanTaskPerformanceRecordsPanel({ weeklyPlanTaskId, editab
                                     editable={editable}
                                     onEdit={handleEdit}
                                     onDelete={(item) => handleDeleteRecord(String(item.id))}
-                                />
+                                >
+                                    {columns.map(column => (
+                                        <PerformanceRecordCell key={column.key} column={column} record={record} />
+                                    ))}
+                                </PerformanceRecordRow>
                             ))}
                         </tbody>
 
                         <tfoot>
-                            <PerformanceRecordsTotalsRow summary={summarizePerformanceRecords(data)} editable={editable} />
+                            <PerformanceRecordsTotalsRow summary={summarizePerformanceRecords(data)} columns={columns} editable={editable} />
                         </tfoot>
                     </table>
                 </div>

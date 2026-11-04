@@ -1,25 +1,28 @@
 import { ActionsMenu, formatNumber, handleSetQueryParam } from "@/features/shared/shared";
 import { EyeIcon, PersonStandingIcon, PlayIcon, StopCircleIcon, TableIcon, TimerIcon, TimerOffIcon } from "lucide-react";
 import { InformationField } from "@/features/shared/shared";
-import { ModalEndWeeklyPlanTask, ModalUpdateWeeklyPlanTask, StatusMessageComponent, useStartWeeklyPlanTask, type WeeklyPlanTask } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
+import { getTaskCaptureAction, ModalEndWeeklyPlanTask, ModalUpdateWeeklyPlanTask, StatusMessageComponent, useStartWeeklyPlanTask, type WeeklyPlanTask } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
 import { RecordedPoundsLabel } from "@/features/weekly-plan-task-performance-records/weekly-plan-task-performance-records";
 import { StoppedLineTag } from "@/features/weekly-plan-task-timeouts/weekly-plan-task-timeouts";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import type { CaptureType } from "@/features/capture-fields/capture-fields";
 
 type Props = {
     task: WeeklyPlanTask;
+    captureType?: CaptureType;
     refetch: () => void;
 }
 
 
-export function WeeklyPlanTaskRowComponent({ task, refetch }: Props) {
+export function WeeklyPlanTaskRowComponent({ task, captureType, refetch }: Props) {
     const [modal, setModal] = useState(false);
     const [endModal, setEndModal] = useState(false);
     const { handleStartTask } = useStartWeeklyPlanTask(refetch);
     const navigate = useNavigate();
     const location = useLocation();
     const isStopped = task.open_timeout_id !== null;
+    const captureAction = getTaskCaptureAction(captureType);
 
     return (
         <article
@@ -80,7 +83,7 @@ export function WeeklyPlanTaskRowComponent({ task, refetch }: Props) {
                     <ActionsMenu
                         items={[
                             { label: "Ver Detalles", icon: <EyeIcon />, onClick: () => navigate(`/planes-semanales/tareas/${task.id}`) },
-                            { label: "Rendimiento", icon: <TableIcon />, onClick: () => handleSetQueryParam(location, navigate, 'taskPerformance', String(task.id)) },
+                            { label: captureAction.label, icon: <TableIcon />, onClick: () => handleSetQueryParam(location, navigate, captureAction.queryParam, String(task.id)) },
                             ...(isStopped
                                 ? [{ label: "Cerrar Tiempo Muerto", icon: <TimerOffIcon />, onClick: () => handleSetQueryParam(location, navigate, 'endTimeout', String(task.id)) }]
                                 : [

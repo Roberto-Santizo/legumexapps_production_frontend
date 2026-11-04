@@ -1,8 +1,6 @@
-import type { WeeklyPlanTaskPerformanceRecord, WeeklyPlanTaskPerformanceRecordsSummary } from "@/features/weekly-plan-task-performance-records/weekly-plan-task-performance-records";
+import { getRecordValue, SUMMABLE_RECORD_KEYS, type WeeklyPlanTaskPerformanceRecord, type PerformanceRecordEstimateValues, type WeeklyPlanTaskPerformanceRecordsSummary } from "@/features/weekly-plan-task-performance-records/weekly-plan-task-performance-records";
 
 export type DifferenceTone = 'under' | 'over' | 'even';
-
-export const hasTheoretical = (record: Pick<WeeklyPlanTaskPerformanceRecord, 'theoretical_pounds'>) => record.theoretical_pounds > 0;
 
 export function getNextPalletNumber(records: WeeklyPlanTaskPerformanceRecord[]): number {
     const pallets = records.map(record => record.pallet_number ?? 0);
@@ -13,9 +11,25 @@ export function getPoundsPerBox(plannedPounds: number, plannedBoxes: number): nu
     return plannedPounds > 0 && plannedBoxes > 0 ? plannedPounds / plannedBoxes : null;
 }
 
-export function estimateTheoreticalPounds(boxes: number | null, poundsPerBox: number | null): number | null {
-    return boxes !== null && boxes > 0 && poundsPerBox !== null ? boxes * poundsPerBox : null;
+type EstimateInput = {
+    scaleWeight: number | null;
+    tare: number | null;
+    boxes: number | null;
 }
+
+export function estimatePerformanceRecordValues({ scaleWeight, tare, boxes }: EstimateInput, poundsPerBox: number | null): PerformanceRecordEstimateValues {
+    const netWeight = scaleWeight !== null && tare !== null ? scaleWeight - tare : null;
+    const ticketWeight = boxes !== null && poundsPerBox !== null ? boxes * poundsPerBox : null;
+
+    return {
+        net_weight: netWeight,
+        ticket_weight: ticketWeight,
+        difference: netWeight !== null && ticketWeight !== null ? netWeight - ticketWeight : null
+    };
+}
+
+export const getEstimateValue = (estimate: PerformanceRecordEstimateValues, key: string): number | null =>
+    key in estimate ? estimate[key as keyof PerformanceRecordEstimateValues] : null;
 
 export function getPoundsProgress(recordedPounds: number, plannedPounds: number): number | null {
     return plannedPounds > 0 ? Math.min(recordedPounds / plannedPounds, 1) : null;
@@ -27,22 +41,28 @@ export function getDifferenceTone(difference: number): DifferenceTone {
     return 'even';
 }
 
-export function getDeviationRatio(difference: number, theoretical: number): number {
-    return theoretical > 0 ? difference / theoretical : 0;
+export function getDeviationRatio(difference: number, base: number): number {
+    return base > 0 ? difference / base : 0;
 }
 
 export function getDeviationBarWidth(ratio: number, fullScale = 0.05): number {
     return Math.min(Math.abs(ratio) / fullScale, 1) * 50;
 }
 
-export function summarizePerformanceRecords(records: WeeklyPlanTaskPerformanceRecord[]): WeeklyPlanTaskPerformanceRecordsSummary {
-    const comparable = records.filter(hasTheoretical);
+function sumRecordValues(records: WeeklyPlanTaskPerformanceRecord[], key: string): number | null {
+    const values = records
+        .map(record => getRecordValue(record, key))
+        .filter((value): value is number => typeof value === 'number');
 
+    return values.length > 0 ? values.reduce((total, value) => total + value, 0) : null;
+}
+
+export function summarizePerformanceRecords(records: WeeklyPlanTaskPerformanceRecord[]): WeeklyPlanTaskPerformanceRecordsSummary {
     return {
         count: records.length,
-        weighedPounds: records.reduce((total, record) => total + record.weighed_pounds, 0),
-        theoreticalPounds: comparable.reduce((total, record) => total + record.theoretical_pounds, 0),
-        differencePounds: comparable.reduce((total, record) => total + record.difference_pounds, 0),
-        hasTheoretical: comparable.length > 0
+        totals: Object.fromEntries(SUMMABLE_RECORD_KEYS.map(key => [key, sumRecordValues(records, key)])),
+        comparableTicketWeight: records
+            .filter(record => record.difference !== null)
+            .reduce((total, record) => total + (record.ticket_weight ?? 0), 0)
     };
 }

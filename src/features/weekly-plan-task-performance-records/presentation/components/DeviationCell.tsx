@@ -1,15 +1,17 @@
 import { DIFFERENCE_TONE_BAR, DifferenceValue, formatSignedPercent, getDeviationBarWidth, getDeviationRatio, getDifferenceTone } from "@/features/weekly-plan-task-performance-records/weekly-plan-task-performance-records";
 
 type Props = {
-    difference: number;
-    theoretical: number;
+    difference: number | null;
+    base: number | null;
 }
 
-export function DeviationCell({ difference, theoretical }: Props) {
-    if (theoretical <= 0) return <DifferenceValue difference={null} />;
+export function DeviationCell({ difference, base }: Props) {
+    if (difference === null) return <div className="text-right"><DifferenceValue difference={null} /></div>;
+
+    if (base === null || base <= 0) return <div className="text-right"><DifferenceValue difference={difference} /></div>;
 
     const tone = getDifferenceTone(difference);
-    const ratio = getDeviationRatio(difference, theoretical);
+    const ratio = getDeviationRatio(difference, base);
     const width = getDeviationBarWidth(ratio);
 
     return (
