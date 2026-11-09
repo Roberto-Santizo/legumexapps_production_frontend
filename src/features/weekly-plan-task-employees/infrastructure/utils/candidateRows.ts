@@ -1,22 +1,32 @@
-import type { CandidateRow, CandidateRowChange, ConfirmSummary, ConfirmWeeklyPlanTaskEmployeesForm, WeeklyPlanEmployee } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
+import { findEmployeeById, pickEmployeesByIds, type CandidateRow, type CandidateRowChange, type ConfirmedWeeklyPlanTaskEmployee, type ConfirmSummary, type ConfirmWeeklyPlanTaskEmployeesForm, type WeeklyPlanEmployee } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 
 const KEEP_CHANGE: CandidateRowChange = { action: 'keep' };
 
-export const buildCandidateRows = (candidates: WeeklyPlanEmployee[], changes: Record<number, CandidateRowChange>): CandidateRow[] =>
+export const buildCandidateRows = (candidates: WeeklyPlanEmployee[], changes: Record<string, CandidateRowChange>): CandidateRow[] =>
     candidates.map((candidate) => ({ candidate, ...(changes[candidate.id] ?? KEEP_CHANGE) }));
 
-export const buildConfirmBody = (rows: CandidateRow[], additions: number[]): ConfirmWeeklyPlanTaskEmployeesForm => ({
-    replacements: rows
-        .filter((row) => row.action === 'replace' && row.replacementId)
-        .map((row) => ({
-            weekly_plan_employee_id: row.candidate.id,
-            replacement_weekly_plan_employee_id: row.replacementId!,
-        })),
-    additions,
-    removals: rows.filter((row) => row.action === 'remove').map((row) => row.candidate.id),
+export const toConfirmedEmployee = (employee: WeeklyPlanEmployee, position = employee.position): ConfirmedWeeklyPlanTaskEmployee => ({
+    code: employee.code,
+    name: employee.name,
+    position,
 });
 
-export const getConfirmSummary = (rows: CandidateRow[], additions: number[]): ConfirmSummary => {
+const toConfirmedRowEmployee = (row: CandidateRow, replacementEmployees: WeeklyPlanEmployee[]): ConfirmedWeeklyPlanTaskEmployee[] => {
+    if (row.action === 'keep') return [toConfirmedEmployee(row.candidate)];
+
+    const replacement = row.action === 'replace' ? findEmployeeById(replacementEmployees, row.replacementId) : undefined;
+
+    return replacement ? [toConfirmedEmployee(replacement, row.candidate.position)] : [];
+};
+
+export const buildConfirmBody = (rows: CandidateRow[], additions: string[], replacementEmployees: WeeklyPlanEmployee[]): ConfirmWeeklyPlanTaskEmployeesForm => ({
+    employees: [
+        ...rows.flatMap((row) => toConfirmedRowEmployee(row, replacementEmployees)),
+        ...pickEmployeesByIds(replacementEmployees, additions).map((employee) => toConfirmedEmployee(employee)),
+    ],
+});
+
+export const getConfirmSummary = (rows: CandidateRow[], additions: string[]): ConfirmSummary => {
     const kept = rows.filter((row) => row.action === 'keep').length;
     const replacements = rows.filter((row) => row.action === 'replace' && row.replacementId).length;
     const pendingReplacements = rows.filter((row) => row.action === 'replace' && !row.replacementId).length;
@@ -38,8 +48,8 @@ export const getConfirmBlockReason = (summary: ConfirmSummary): string | null =>
     return null;
 };
 
-export const getTakenEmployeeIds = (rows: CandidateRow[], additions: number[], ownerId?: number): Set<number> => {
-    const taken = new Set<number>(additions);
+export const getTakenEmployeeIds = (rows: CandidateRow[], additions: string[], ownerId?: string): Set<string> => {
+    const taken = new Set<string>(additions);
 
     rows.forEach((row) => {
         if (row.action === 'keep') taken.add(row.candidate.id);

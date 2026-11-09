@@ -1,7 +1,10 @@
-import type { WeeklyPlanTaskEmployee } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
+import type { WeeklyPlanEmployee, WeeklyPlanTaskEmployee } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 
-export const getAssignedEmployeeIds = (assignments: WeeklyPlanTaskEmployee[]): Set<number> =>
-    new Set(assignments.map((assignment) => assignment.weekly_plan_employee_id));
+export const getAssignedEmployeeIds = (employees: WeeklyPlanEmployee[], assignments: WeeklyPlanTaskEmployee[]): Set<string> => {
+    const assignedCodes = new Set(assignments.map((assignment) => assignment.code));
+
+    return new Set(employees.filter((employee) => assignedCodes.has(employee.code)).map((employee) => employee.id));
+};
 
 export const findAssignmentById = (assignments: WeeklyPlanTaskEmployee[], id: string | null): WeeklyPlanTaskEmployee | undefined =>
     assignments.find((assignment) => `${assignment.id}` === id);

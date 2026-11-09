@@ -6,7 +6,7 @@ type Props = {
     replacementOptions: EmployeeOption[];
     isLoadingOptions: boolean;
     onActionChange: (action: CandidateAction) => void;
-    onReplacementChange: (replacementId?: number) => void;
+    onReplacementChange: (replacementId?: string) => void;
 }
 
 export function CandidateRowComponent({ row, replacementOptions, isLoadingOptions, onActionChange, onReplacementChange }: Props) {
@@ -21,13 +21,14 @@ export function CandidateRowComponent({ row, replacementOptions, isLoadingOption
                     code={candidate.code}
                     position={candidate.position}
                     struck={action !== 'keep'}
+                    zoomablePhoto
                 />
 
                 <CandidateActionToggle value={action} onChange={onActionChange} candidateName={candidate.name} />
             </div>
 
             {action === 'replace' && (
-                <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:pl-[108px]">
+                <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:pl-[160px]">
                     <label htmlFor={selectId} className="flex shrink-0 items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-subtle">
                         <ArrowRightIcon className="size-3.5" aria-hidden="true" />
                         Entra
@@ -46,7 +47,7 @@ export function CandidateRowComponent({ row, replacementOptions, isLoadingOption
             )}
 
             {action === 'remove' && (
-                <p className="mt-2 text-xs text-ink-muted sm:pl-[108px]">No trabajará en esta tarea.</p>
+                <p className="mt-2 text-xs text-ink-muted sm:pl-[160px]">No trabajará en esta tarea.</p>
             )}
         </article>
     )

@@ -4,19 +4,14 @@ import type { z } from "zod";
 export type WeeklyPlanEmployee = z.infer<typeof WeeklyPlanEmployeeSchema>;
 export type WeeklyPlanTaskEmployee = z.infer<typeof WeeklyPlanTaskEmployeeSchema>;
 
-export type WeeklyPlanTaskEmployeeReplacement = {
-    weekly_plan_employee_id: number;
-    replacement_weekly_plan_employee_id: number;
-}
+export type ConfirmedWeeklyPlanTaskEmployee = Pick<WeeklyPlanEmployee, 'code' | 'name' | 'position'>;
 
 export type ConfirmWeeklyPlanTaskEmployeesForm = {
-    replacements: WeeklyPlanTaskEmployeeReplacement[];
-    additions: number[];
-    removals: number[];
+    employees: ConfirmedWeeklyPlanTaskEmployee[];
 }
 
 export type WeeklyPlanTaskEmployeeForm = {
-    weekly_plan_employee_id: number;
+    weekly_plan_employee_id: string;
 }
 
 export type CandidateAction = 'keep' | 'remove' | 'replace';
@@ -24,7 +19,7 @@ export type CandidateAction = 'keep' | 'remove' | 'replace';
 export type CandidateRow = {
     candidate: WeeklyPlanEmployee;
     action: CandidateAction;
-    replacementId?: number;
+    replacementId?: string;
 }
 
 export type CandidateRowChange = Omit<CandidateRow, 'candidate'>;
@@ -32,7 +27,7 @@ export type CandidateRowChange = Omit<CandidateRow, 'candidate'>;
 export type StaffMode = 'confirm' | 'edit' | 'readonly';
 
 export type EmployeeOption = {
-    value: number;
+    value: string;
     label: string;
     name: string;
     code: string;

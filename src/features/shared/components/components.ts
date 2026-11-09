@@ -36,3 +36,5 @@ export * from './BulkUploadModal';
 
 export * from './FiltersDrawer';
 export * from './SignatureFormField';
+export * from './EmployeePhotoLightbox';
+export * from './EmployeePhoto';

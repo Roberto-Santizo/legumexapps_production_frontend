@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNotification } from "@/features/shared/shared";
-import { buildConfirmBody, CandidatesList, ConfirmAdditionsPanel, ConfirmSummaryBar, getConfirmBlockReason, getConfirmSummary, getTakenEmployeeIds, pickEmployeesByIds, splitErrorMessages, TaskEmployeeErrorList, toEmployeeOptions, useCandidateRows, weeklyPlanTaskEmployeeProvider } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
+import { biometricQueryProvider } from "@/features/biometric-queries/biometric-queries";
+import { buildConfirmBody, CandidatesList, ConfirmAdditionsPanel, ConfirmSummaryBar, getConfirmBlockReason, getConfirmSummary, getTakenEmployeeIds, pickEmployeesByIds, REPLACEMENT_LINE_CODE, splitErrorMessages, TaskEmployeeErrorList, toEmployeeOptions, useCandidateRows, weeklyPlanTaskEmployeeProvider } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 
 type Props = {
     taskId: string;
@@ -18,19 +19,19 @@ export function WeeklyPlanTaskEmployeesConfirm({ taskId }: Props) {
         retry: false
     });
 
-    const planEmployeesQuery = useQuery({
-        queryKey: ['getWeeklyPlanEmployees'],
-        queryFn: () => weeklyPlanTaskEmployeeProvider.getWeeklyPlanEmployees(),
+    const replacementEmployeesQuery = useQuery({
+        queryKey: ['getBiometricEmployeesByLineCode', REPLACEMENT_LINE_CODE],
+        queryFn: () => biometricQueryProvider.getEmployeesByLineCode(REPLACEMENT_LINE_CODE),
         retry: false
     });
 
-    const planEmployees = planEmployeesQuery.data ?? [];
+    const replacementEmployees = replacementEmployeesQuery.data ?? [];
     const { rows, additions, setAction, setReplacement, addAddition, removeAddition, reset } = useCandidateRows(candidatesQuery.data ?? []);
     const summary = getConfirmSummary(rows, additions);
     const blockReason = candidatesQuery.isLoading ? 'Cargando candidatos' : getConfirmBlockReason(summary);
 
     const { mutate, isPending } = useMutation({
-        mutationFn: () => weeklyPlanTaskEmployeeProvider.confirmEmployeesByTaskId(taskId, buildConfirmBody(rows, additions)),
+        mutationFn: () => weeklyPlanTaskEmployeeProvider.confirmEmployeesByTaskId(taskId, buildConfirmBody(rows, additions, replacementEmployees)),
         onSuccess: (message) => {
             setErrors([]);
             notification.success(message);
@@ -63,16 +64,16 @@ export function WeeklyPlanTaskEmployeesConfirm({ taskId }: Props) {
                 rows={rows}
                 isLoading={candidatesQuery.isLoading}
                 errorMessage={candidatesQuery.error?.message}
-                isLoadingOptions={planEmployeesQuery.isLoading}
-                getReplacementOptions={(candidateId) => toEmployeeOptions(planEmployees, getTakenEmployeeIds(rows, additions, candidateId))}
+                isLoadingOptions={replacementEmployeesQuery.isLoading}
+                getReplacementOptions={(candidateId) => toEmployeeOptions(replacementEmployees, getTakenEmployeeIds(rows, additions, candidateId))}
                 onActionChange={setAction}
                 onReplacementChange={setReplacement}
             />
 
             <ConfirmAdditionsPanel
-                added={pickEmployeesByIds(planEmployees, additions)}
-                options={toEmployeeOptions(planEmployees, getTakenEmployeeIds(rows, additions))}
-                isLoadingOptions={planEmployeesQuery.isLoading}
+                added={pickEmployeesByIds(replacementEmployees, additions)}
+                options={toEmployeeOptions(replacementEmployees, getTakenEmployeeIds(rows, additions))}
+                isLoadingOptions={replacementEmployeesQuery.isLoading}
                 onAdd={addAddition}
                 onRemove={removeAddition}
             />

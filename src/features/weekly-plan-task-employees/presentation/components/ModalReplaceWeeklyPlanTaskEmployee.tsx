@@ -1,7 +1,8 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getQueryParam, handleDeleteQueryParam, Modal, queryParamExists, useNotification } from "@/features/shared/shared";
-import { EmployeeIdentity, EmployeePickerForm, findAssignmentById, getAssignedEmployeeIds, toEmployeeOptions, weeklyPlanTaskEmployeeProvider, type WeeklyPlanTaskEmployeeForm } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { getQueryParam, handleDeleteQueryParam, Modal, queryParamExists } from "@/features/shared/shared";
+import { biometricQueryProvider } from "@/features/biometric-queries/biometric-queries";
+import { EmployeePickerForm, findAssignmentById, findEmployeeById, getAssignedEmployeeIds, OutgoingEmployeeCard, REPLACEMENT_LINE_CODE, toEmployeeOptions, weeklyPlanTaskEmployeeProvider, type WeeklyPlanTaskEmployeeForm } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 
 type Props = {
     taskId: string;
@@ -10,8 +11,6 @@ type Props = {
 export function ModalReplaceWeeklyPlanTaskEmployee({ taskId }: Props) {
     const location = useLocation();
     const navigate = useNavigate();
-    const notification = useNotification();
-    const queryClient = useQueryClient();
     const assignmentId = getQueryParam(location, 'replaceTaskEmployee');
     const show = queryParamExists(location, 'replaceTaskEmployee');
 
@@ -23,44 +22,28 @@ export function ModalReplaceWeeklyPlanTaskEmployee({ taskId }: Props) {
         enabled: show
     });
 
-    const { data: planEmployees = [], isLoading } = useQuery({
-        queryKey: ['getWeeklyPlanEmployees'],
-        queryFn: () => weeklyPlanTaskEmployeeProvider.getWeeklyPlanEmployees(),
+    const { data: replacementEmployees = [], isLoading } = useQuery({
+        queryKey: ['getBiometricEmployeesByLineCode', REPLACEMENT_LINE_CODE],
+        queryFn: () => biometricQueryProvider.getEmployeesByLineCode(REPLACEMENT_LINE_CODE),
         enabled: show
     });
 
     const outgoing = findAssignmentById(assignments, assignmentId);
 
     const { mutate, isPending } = useMutation({
-        mutationFn: (payload: WeeklyPlanTaskEmployeeForm) => weeklyPlanTaskEmployeeProvider.replaceWeeklyPlanTaskEmployeeById(assignmentId!, payload),
-        onSuccess: (message) => {
-            notification.success(message);
-            queryClient.invalidateQueries({ queryKey: ['getWeeklyPlanTaskEmployees', taskId] });
-            closeModal();
-        },
-        onError: (err) => {
-            notification.error(err.message);
-            queryClient.invalidateQueries({ queryKey: ['getWeeklyPlanTaskEmployees', taskId] });
-        }
+        mutationFn: async (payload: WeeklyPlanTaskEmployeeForm) => console.log(findEmployeeById(replacementEmployees, payload.weekly_plan_employee_id)),
+        onSuccess: () => closeModal()
     });
 
     return (
-        <Modal modal={show} closeModal={closeModal} title="Reemplazar empleado" width="sm:max-w-lg">
+        <Modal modal={show} closeModal={closeModal} title="Reemplazar empleado">
             <div className="space-y-5">
-                {outgoing && (
-                    <div className="space-y-2">
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-subtle">Sale</p>
-                        <div className="rounded-lg border border-line bg-canvas/60 px-4 py-3">
-                            <EmployeeIdentity name={outgoing.name} code={outgoing.code} position={outgoing.position} />
-                        </div>
-                        <p className="text-xs text-ink-muted">Quien entre ocupará la posición {outgoing.position} en esta tarea.</p>
-                    </div>
-                )}
+                {outgoing && <OutgoingEmployeeCard name={outgoing.name} code={outgoing.code} position={outgoing.position} />}
 
                 <EmployeePickerForm
                     label="Entra"
                     submitLabel="Reemplazar empleado"
-                    options={toEmployeeOptions(planEmployees, getAssignedEmployeeIds(assignments))}
+                    options={toEmployeeOptions(replacementEmployees, getAssignedEmployeeIds(replacementEmployees, assignments))}
                     isLoadingOptions={isLoading}
                     isPending={isPending}
                     onSubmit={mutate}
