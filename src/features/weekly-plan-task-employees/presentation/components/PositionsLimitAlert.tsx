@@ -17,7 +17,7 @@ export function PositionsLimitAlert({ positions, candidates }: Props) {
             </p>
 
             <p className="mt-1 pl-6 text-sm text-amber-700">
-                La tarea tiene {positions} posiciones y la línea tiene {candidates} candidatos. Solo se asignarán {positions} empleados.
+                La línea cuenta con {positions} posiciones y se tienen {candidates} candidatos.
             </p>
         </div>
     )

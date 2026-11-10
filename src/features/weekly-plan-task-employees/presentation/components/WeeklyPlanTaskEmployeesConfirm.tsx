@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNotification } from "@/features/shared/shared";
 import { biometricQueryProvider } from "@/features/biometric-queries/biometric-queries";
-import { buildConfirmBody, CandidatesList, ConfirmAdditionsPanel, ConfirmSummaryBar, getConfirmBlockReason, getConfirmSummary, getTakenEmployeeIds, pickEmployeesByIds, PositionsLimitAlert, REPLACEMENT_LINE_CODE, splitErrorMessages, TaskEmployeeErrorList, toEmployeeOptions, useCandidateRows, weeklyPlanTaskEmployeeProvider } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
+import { buildConfirmBody, CandidatesList, ConfirmAdditionsPanel, ConfirmSummaryBar, getConfirmBlockReason, getConfirmQuestion, getConfirmSummary, getTakenEmployeeIds, pickEmployeesByIds, PositionsLimitAlert, REPLACEMENT_LINE_CODE, splitErrorMessages, TaskEmployeeErrorList, toEmployeeOptions, useCandidateRows, weeklyPlanTaskEmployeeProvider } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 
 type Props = {
     taskId: string;
@@ -47,12 +47,10 @@ export function WeeklyPlanTaskEmployeesConfirm({ taskId, positions, showCandidat
         }
     });
 
-    const handleConfirm = () => notification.question(
-        '¿Desea confirmar el personal de la tarea?',
-        'Confirmar',
-        `La tarea quedará con ${summary.finalCount} empleados y pasará a lista para ejecución. La confirmación se hace una sola vez.`,
-        () => mutate()
-    );
+    const handleConfirm = () => {
+        const { title, description } = getConfirmQuestion(positions, summary.finalCount);
+        notification.question(title, 'Confirmar', description, () => mutate());
+    };
 
     const handleReset = () => {
         reset();
