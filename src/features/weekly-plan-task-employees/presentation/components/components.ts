@@ -11,6 +11,7 @@ export * from './CandidatesList';
 export * from './ConfirmAdditionsPanel';
 export * from './ConfirmSummaryBar';
 export * from './TaskEmployeeErrorList';
+export * from './PositionsLimitAlert';
 export * from './StaffListStates';
 export * from './WeeklyPlanTaskStaffHeader';
 export * from './WeeklyPlanTaskEmployeesConfirm';
