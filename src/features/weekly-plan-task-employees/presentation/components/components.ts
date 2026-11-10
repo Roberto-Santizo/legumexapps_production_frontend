@@ -1,5 +1,9 @@
 export * from './EmployeeSelect';
 export * from './EmployeeIdentity';
+export * from './EmployeePickerRow';
+export * from './EmployeePickerEmpty';
+export * from './EmployeePhotoPicker';
+export * from './OutgoingEmployeeCard';
 export * from './EmployeePickerForm';
 export * from './CandidateActionToggle';
 export * from './CandidateRowComponent';
@@ -7,6 +11,7 @@ export * from './CandidatesList';
 export * from './ConfirmAdditionsPanel';
 export * from './ConfirmSummaryBar';
 export * from './TaskEmployeeErrorList';
+export * from './PositionsLimitAlert';
 export * from './StaffListStates';
 export * from './WeeklyPlanTaskStaffHeader';
 export * from './WeeklyPlanTaskEmployeesConfirm';

@@ -40,12 +40,13 @@ export function WeeklyPlanTaskRowComponent({ task, captureType, refetch }: Props
                         <StatusMessageComponent message={task.status_message} status={task.status} />
                     </div>
                 </div>
-                
+
                 <dl className="mt-3 grid grid-cols-2 gap-x-8 gap-y-3">
                     <InformationField label="Código" value={task.sku_code} mono />
                     <InformationField label="Cajas" value={formatNumber(task.boxes)} mono />
                     <InformationField label="Cliente" value={task.sku_client} />
                     <InformationField label="Destino" value={task.destination} />
+                    <InformationField label="Posiciones Disponibles" value={`${task.positions}`} />
                 </dl>
             </div>
 
@@ -94,7 +95,7 @@ export function WeeklyPlanTaskRowComponent({ task, captureType, refetch }: Props
                     />
                 )}
 
-                 {task.status == 5 && (
+                {task.status == 5 && (
                     <ActionsMenu
                         items={[
                             { label: "Ver Detalles", icon: <EyeIcon />, onClick: () => navigate(`/planes-semanales/tareas/${task.id}`) },

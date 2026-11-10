@@ -58,7 +58,7 @@ export function ModalUpdateSkuPackingMaterial({ modal, closeModal, refetch, item
         <Modal modal={modal} closeModal={closeModal} title="Editar Item">
             {data && (
                 <CustomForm onSubmit={handleSubmit(onSubmit)}>
-                    <SkuPackingMaterialFormComponent register={register} errors={errors} control={control} />
+                    <SkuPackingMaterialFormComponent register={register} errors={errors} control={control} selectedPackingMaterial={{ value: data.packing_material_id, label: `${data.packing_material_code} - ${data.packing_material}` }} />
                     <CustomFilledButton type="submit" label="Guardar Cambios" disabled={isPending} />
                 </CustomForm>
             )}

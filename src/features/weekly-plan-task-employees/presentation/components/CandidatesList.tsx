@@ -5,9 +5,9 @@ type Props = {
     isLoading: boolean;
     errorMessage?: string;
     isLoadingOptions: boolean;
-    getReplacementOptions: (candidateId: number) => EmployeeOption[];
-    onActionChange: (candidateId: number, action: CandidateAction) => void;
-    onReplacementChange: (candidateId: number, replacementId?: number) => void;
+    getReplacementOptions: (candidateId: string) => EmployeeOption[];
+    onActionChange: (candidateId: string, action: CandidateAction) => void;
+    onReplacementChange: (candidateId: string, replacementId?: string) => void;
 }
 
 export function CandidatesList({ rows, isLoading, errorMessage, isLoadingOptions, getReplacementOptions, onActionChange, onReplacementChange }: Props) {

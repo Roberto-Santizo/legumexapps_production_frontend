@@ -2,7 +2,9 @@ import { ErrorComponent, formatNumber, Loading, TimelineStep } from "@/features/
 import { ModalCreateWeeklyPlanTaskObservation, WeeklyPlanTaskObservationsPanel } from "@/features/weekly-plan-task-observations/weekly-plan-task-observations";
 import { ModalUpdateWeeklyPlanTaskPerformanceRecord, PoundsProgressMeter } from "@/features/weekly-plan-task-performance-records/weekly-plan-task-performance-records";
 import { ModalUpdateWeeklyPlanTaskLotRecord } from "@/features/weekly-plan-task-lot-records/weekly-plan-task-lot-records";
+import { ModalUpdateWeeklyPlanTaskProductRecord } from "@/features/weekly-plan-task-product-records/weekly-plan-task-product-records";
 import { useLineByCode } from "@/features/lines/lines";
+import { WeeklyPlanTaskEmployeesRoster } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 import { ModalEndWeeklyPlanTaskTimeout, ModalUpdateWeeklyPlanTaskTimeout, TimeoutHoursStat, WeeklyPlanTaskTimeoutsPanel } from "@/features/weekly-plan-task-timeouts/weekly-plan-task-timeouts";
 import { formatUtcDateTime, getRecordedPoundsLabel, ProductionMeter, WeeklyPlanTaskCaptureRecordsPanel, WeeklyPlanTaskHeader, weeklyPlanTaskProvider } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
 import { useParams } from "react-router-dom";
@@ -66,6 +68,8 @@ export function ShowWeeklyPlanTask() {
 
             <WeeklyPlanTaskCaptureRecordsPanel task={data} captureType={captureType} isLoading={line.isLoading} />
 
+            <WeeklyPlanTaskEmployeesRoster taskId={id!} editable={false} />
+
             <WeeklyPlanTaskTimeoutsPanel weeklyPlanTaskId={id!} editable={data.status === 4} />
 
             <WeeklyPlanTaskObservationsPanel weeklyPlanTaskId={id!} />
@@ -75,6 +79,8 @@ export function ShowWeeklyPlanTask() {
             <ModalUpdateWeeklyPlanTaskPerformanceRecord />
 
             <ModalUpdateWeeklyPlanTaskLotRecord />
+
+            <ModalUpdateWeeklyPlanTaskProductRecord />
 
             <ModalEndWeeklyPlanTaskTimeout />
 

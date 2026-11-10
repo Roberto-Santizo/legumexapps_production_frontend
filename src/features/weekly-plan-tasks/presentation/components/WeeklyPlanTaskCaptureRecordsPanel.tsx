@@ -1,6 +1,7 @@
 import type { CaptureType } from "@/features/capture-fields/capture-fields";
 import { PerformanceRecordsSkeleton, WeeklyPlanTaskPerformanceRecordsPanel } from "@/features/weekly-plan-task-performance-records/weekly-plan-task-performance-records";
 import { WeeklyPlanTaskLotRecordsPanel } from "@/features/weekly-plan-task-lot-records/weekly-plan-task-lot-records";
+import { WeeklyPlanTaskProductRecordsPanel } from "@/features/weekly-plan-task-product-records/weekly-plan-task-product-records";
 import type { WeeklyPlanTask } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
 
 type Props = {
@@ -15,6 +16,8 @@ export function WeeklyPlanTaskCaptureRecordsPanel({ task, captureType, isLoading
     if (isLoading) return <PerformanceRecordsSkeleton />;
 
     if (captureType === 'lot') return <WeeklyPlanTaskLotRecordsPanel {...props} />;
+
+    if (captureType === 'product') return <WeeklyPlanTaskProductRecordsPanel {...props} />;
 
     return <WeeklyPlanTaskPerformanceRecordsPanel {...props} />;
 }

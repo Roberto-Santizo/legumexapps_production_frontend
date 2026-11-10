@@ -50,7 +50,7 @@ export function UpdateSkuPackingMaterial() {
             <Title title="Actualizar Material de Empaque por SKU" subtitle="Actualiza la información del material de empaque por SKU" />
 
             <CustomForm onSubmit={handleSubmit(onSubmit)}>
-                <SkuPackingMaterialFormComponent register={register} errors={errors} control={control} />
+                <SkuPackingMaterialFormComponent register={register} errors={errors} control={control} selectedPackingMaterial={{ value: data.packing_material_id, label: `${data.packing_material_code} - ${data.packing_material}` }} />
                 <CustomFilledButton type="submit" label="Guardar Cambios" disabled={isPending} />
             </CustomForm>
         </div>

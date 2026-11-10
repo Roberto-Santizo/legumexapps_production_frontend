@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
-import { DateFormField, SelectFormField, TextFormField } from "@/features/shared/shared";
+import { DateFormField, SelectFormField, TextFormField, type Option } from "@/features/shared/shared";
 import { linesOptions, linesRepositoryProvider } from "@/features/lines/lines";
-import { skuOptions, skuProvider } from "@/features/skus/skus";
+import { SkuSelectFormField } from "@/features/skus/skus";
 import { useQuery } from "@tanstack/react-query";
 import { useWatch, type Control, type FieldErrors, type UseFormRegister } from "react-hook-form";
 import type { DraftWeeklyPlanTaskForm } from "@/features/draft-weekly-plan-tasks/draft-weekly-plan-tasks";
@@ -10,6 +10,7 @@ type Props = {
     register: UseFormRegister<DraftWeeklyPlanTaskForm>;
     errors: FieldErrors<DraftWeeklyPlanTaskForm>;
     control: Control<DraftWeeklyPlanTaskForm>;
+    selectedSku?: Option;
 }
 
 type SectionProps = {
@@ -30,31 +31,8 @@ function FormSection({ title, description, children }: SectionProps) {
     )
 }
 
-function FormSkeleton() {
-    return (
-        <div className="space-y-6" aria-busy="true" aria-label="Cargando formulario">
-            {[0, 1, 2].map((section) => (
-                <div key={section} className="space-y-4">
-                    <div className="h-3 w-24 rounded-full bg-line" />
-                    <div className="space-y-2">
-                        <div className="h-3 w-16 rounded-full bg-line" />
-                        <div className="relative h-10 overflow-hidden rounded-lg border border-line bg-canvas">
-                            <span className="loading-sweep opacity-5" />
-                        </div>
-                    </div>
-                </div>
-            ))}
-        </div>
-    )
-}
-
-export function DraftWeeklyPlanTaskFormComponent({ register, errors, control }: Props) {
+export function DraftWeeklyPlanTaskFormComponent({ register, errors, control, selectedSku }: Props) {
     const skuId = useWatch({ control, name: 'sku_id' });
-
-    const { data: skusData, isLoading: isLoadingSkus } = useQuery({
-        queryKey: ['getSkus'],
-        queryFn: () => skuProvider.getSkus('', '')
-    });
 
     const { data: linesData, isFetching: isFetchingLines } = useQuery({
         queryKey: ['getLines', skuId],
@@ -72,21 +50,18 @@ export function DraftWeeklyPlanTaskFormComponent({ register, errors, control }: 
                 ? 'Este SKU no tiene líneas asignadas.'
                 : `${linesCount} ${linesCount === 1 ? 'línea disponible' : 'líneas disponibles'} para este SKU.`;
 
-    if (isLoadingSkus) return <FormSkeleton />;
-
-    if (skusData) return (
+    return (
         <div className="space-y-7">
             <FormSection title="Producto" description="La línea depende del SKU">
                 <div className="space-y-4">
                     <div className="relative pl-5">
-                        <span aria-hidden className={`absolute left-[3.5px] top-3.5 -bottom-[1.375rem] w-px transition-colors duration-200 ${skuId ? 'bg-ink' : 'bg-line-strong'}`} />
+                        <span aria-hidden className={`absolute left-[3.5px] top-3.5 -bottom-5.5 w-px transition-colors duration-200 ${skuId ? 'bg-ink' : 'bg-line-strong'}`} />
                         <span aria-hidden className="absolute left-0 top-1.5 size-2 rounded-full bg-ink" />
-                        <SelectFormField<DraftWeeklyPlanTaskForm>
+                        <SkuSelectFormField<DraftWeeklyPlanTaskForm>
                             name="sku_id"
-                            label="SKU"
                             control={control}
                             validation={{ required: 'Selecciona un SKU' }}
-                            options={skuOptions(skusData.data)}
+                            selectedOption={selectedSku}
                             errorMessage={errors.sku_id?.message}
                         />
                     </div>

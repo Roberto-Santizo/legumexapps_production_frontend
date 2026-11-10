@@ -13,6 +13,7 @@ export * from './Td';
 export * from './Tr';
 export * from './Pagination';
 export * from './SelectFormField';
+export * from './AsyncSelectFormField';
 export * from './InfoCard';
 export * from './SpinnerComponent';
 export * from './Modal';
@@ -35,3 +36,5 @@ export * from './BulkUploadModal';
 
 export * from './FiltersDrawer';
 export * from './SignatureFormField';
+export * from './EmployeePhotoLightbox';
+export * from './EmployeePhoto';

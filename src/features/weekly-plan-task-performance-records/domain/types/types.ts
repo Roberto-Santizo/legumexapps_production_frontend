@@ -46,7 +46,7 @@ export type PerformanceRecordCaptureBlocker = {
     message: string;
 }
 
-export type RecordCaptureType = Exclude<CaptureType, 'product'>;
+export type RecordCaptureType = CaptureType;
 
 export type CapturedRecordMeta = {
     id: number;

@@ -135,3 +135,18 @@ export const canvasToPngFile = (canvas: HTMLCanvasElement, fileName: string): Pr
             resolve(blob ? new File([blob], fileName, { type: 'image/png' }) : null);
         }, 'image/png');
     });
+
+export const getEmployeePhotoUrl = (code: string): string =>
+    `${import.meta.env.VITE_PHOTOS_URL}/${encodeURIComponent(code)}.jpg`;
+
+export const getInitials = (name: string): string =>
+    name
+        .split(/\s+/)
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((word) => word[0])
+        .join('')
+        .toUpperCase();
+
+export const normalizeSearchText = (value: string): string =>
+    value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();

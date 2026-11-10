@@ -23,7 +23,7 @@ export const NAV_SECTIONS: NavSection[] = [
         items: [
             { to: "/lineas", text: "Líneas", icon: NotebookIcon },
             { to: "/campos-captura", text: "Campos de Captura", icon: ListChecks },
-            // { to: "/posiciones", text: "Posiciones", icon: UserCog },
+            { to: "/posiciones", text: "Posiciones", icon: UserCog },
         ],
     },
     {

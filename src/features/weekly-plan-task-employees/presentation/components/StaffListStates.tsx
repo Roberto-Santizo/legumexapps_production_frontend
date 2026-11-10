@@ -8,6 +8,7 @@ export function StaffListLoading() {
         <div className="divide-y divide-line">
             {[0, 1, 2].map((index) => (
                 <div key={index} className="flex animate-pulse items-center gap-3 px-5 py-4 motion-reduce:animate-none">
+                    <span className="aspect-[3/4] w-10 shrink-0 rounded-md bg-canvas" />
                     <span className="h-6 w-24 shrink-0 rounded-md bg-canvas" />
 
                     <div className="flex-1 space-y-2">

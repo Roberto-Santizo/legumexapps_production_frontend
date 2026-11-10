@@ -1,10 +1,11 @@
 import Select, { type ClassNamesConfig } from "react-select";
+import { EmployeePhoto } from "@/features/shared/shared";
 import type { EmployeeOption } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 
 type Props = {
     options: EmployeeOption[];
-    value?: number;
-    onChange: (employeeId?: number) => void;
+    value?: string;
+    onChange: (employeeId?: string) => void;
     placeholder?: string;
     isLoading?: boolean;
     isClearable?: boolean;
@@ -31,7 +32,8 @@ const CLASS_NAMES: ClassNamesConfig<EmployeeOption, false> = {
 
 function EmployeeOptionLabel({ option }: { option: EmployeeOption }) {
     return (
-        <span className="flex min-w-0 items-baseline gap-2">
+        <span className="flex min-w-0 items-center gap-2.5">
+            <EmployeePhoto code={option.code} name={option.name} className="aspect-[3/4] w-6 shrink-0 rounded-sm border border-line" />
             <span className="truncate text-ink">{option.name}</span>
             <span className="shrink-0 font-mono text-[11px] text-ink-subtle">{option.code} · {option.position}</span>
         </span>

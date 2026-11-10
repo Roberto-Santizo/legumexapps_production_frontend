@@ -1,6 +1,6 @@
 import { Controller, useForm } from "react-hook-form";
 import { CustomFilledButton, CustomForm } from "@/features/shared/shared";
-import { EmployeeSelect, type EmployeeOption, type WeeklyPlanTaskEmployeeForm } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
+import { EmployeePhotoPicker, type EmployeeOption, type WeeklyPlanTaskEmployeeForm } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 
 type Props = {
     label: string;
@@ -20,26 +20,26 @@ export function EmployeePickerForm({ label, submitLabel, options, isLoadingOptio
 
     return (
         <CustomForm onSubmit={handleSubmit(onSubmit)} className="border-none p-0 shadow-none">
-            <div className="flex flex-col gap-2">
-                <label htmlFor="weekly_plan_employee_id" className="text-sm font-medium text-ink">{label}</label>
+            <fieldset className="flex min-w-0 flex-col gap-2">
+                <legend className="mb-2 text-sm font-medium text-ink">{label}</legend>
 
                 <Controller
                     name="weekly_plan_employee_id"
                     control={control}
                     rules={{ required: 'Selecciona un empleado' }}
                     render={({ field }) => (
-                        <EmployeeSelect
-                            inputId="weekly_plan_employee_id"
+                        <EmployeePhotoPicker
                             options={options}
                             value={field.value}
                             onChange={field.onChange}
+                            onBlur={field.onBlur}
                             isLoading={isLoadingOptions}
                         />
                     )}
                 />
 
                 <p className="text-xs text-red-400">{errors.weekly_plan_employee_id?.message}</p>
-            </div>
+            </fieldset>
 
             <CustomFilledButton type="submit" label={submitLabel} disabled={isPending} fullWitdh />
         </CustomForm>

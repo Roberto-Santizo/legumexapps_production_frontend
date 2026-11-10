@@ -5,8 +5,8 @@ type Props = {
     added: WeeklyPlanEmployee[];
     options: EmployeeOption[];
     isLoadingOptions: boolean;
-    onAdd: (employeeId: number) => void;
-    onRemove: (employeeId: number) => void;
+    onAdd: (employeeId: string) => void;
+    onRemove: (employeeId: string) => void;
 }
 
 export function ConfirmAdditionsPanel({ added, options, isLoadingOptions, onAdd, onRemove }: Props) {

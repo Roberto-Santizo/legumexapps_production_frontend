@@ -17,10 +17,10 @@ export function WeeklyPlanTaskEmployeeRow({ assignment, editable, canRemove, onR
     return (
         <article className="flex flex-col gap-3 border-l-[3px] border-transparent px-5 py-4 transition-colors hover:border-ink hover:bg-canvas/60 motion-reduce:transition-none sm:flex-row sm:items-center sm:justify-between">
             <div className="min-w-0 space-y-1.5">
-                <EmployeeIdentity name={assignment.name} code={assignment.code} position={assignment.position} />
+                <EmployeeIdentity name={assignment.name} code={assignment.code} position={assignment.position} zoomablePhoto />
 
                 {replacedLabel && (
-                    <p className="flex items-center gap-1.5 text-xs text-ink-muted sm:pl-[108px]">
+                    <p className="flex items-center gap-1.5 text-xs text-ink-muted sm:pl-[160px]">
                         <RepeatIcon className="size-3.5 text-ink-subtle" aria-hidden="true" />
                         {replacedLabel}
                     </p>
