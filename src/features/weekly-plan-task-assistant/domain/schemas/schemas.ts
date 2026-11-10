@@ -27,3 +27,10 @@ export const AssistantConversationMessagesResponseSchema = ApiResponseSchema.ext
 export const AssistantErrorResponseSchema = z.object({
     message: z.string()
 });
+
+export const AssistantAudioSummarySchema = z.object({
+    audio_id: z.number(),
+    audio_url: z.string(),
+    mime_type: z.string(),
+    characters: z.number()
+});

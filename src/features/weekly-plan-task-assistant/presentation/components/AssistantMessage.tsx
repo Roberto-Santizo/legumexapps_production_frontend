@@ -1,5 +1,5 @@
 import type { UIMessage } from "ai";
-import { AssistantMarkdown, AssistantToolTrail, getMessageText, getToolActivities } from "@/features/weekly-plan-task-assistant/weekly-plan-task-assistant";
+import { AssistantAudioList, AssistantMarkdown, AssistantToolTrail, getMessageAudios, getMessageText, getToolActivities } from "@/features/weekly-plan-task-assistant/weekly-plan-task-assistant";
 
 type Props = {
     message: UIMessage;
@@ -17,10 +17,12 @@ export function AssistantMessage({ message }: Props) {
     )
 
     const activities = getToolActivities(message);
+    const audios = getMessageAudios(message, text);
 
     return (
         <article className="space-y-2">
             <AssistantToolTrail activities={activities} />
+            <AssistantAudioList audios={audios} />
             {text && <AssistantMarkdown text={text} />}
         </article>
     )
