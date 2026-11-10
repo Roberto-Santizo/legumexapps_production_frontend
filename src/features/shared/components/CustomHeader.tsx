@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout } from "@/features/auth/auth";
 import { getBreadcrumb } from "@/features/shared/shared";
 import type { AppDispatch, RootState } from "@/config/config";
+import { useQueryClient } from "@tanstack/react-query";
+import { clearAssistantCache } from "@/features/weekly-plan-task-assistant/infrastructure/utils/assistantConversations";
 
 type Props = {
     onToggleSidebar: () => void;
@@ -15,10 +17,12 @@ export function CustomHeader({ onToggleSidebar }: Props) {
     const { pathname } = useLocation();
     const user = useSelector((state: RootState) => state.auth.user);
     const dispatch = useDispatch<AppDispatch>();
+    const queryClient = useQueryClient();
 
     const crumbs = getBreadcrumb(pathname);
 
     const onLogout = () => {
+        clearAssistantCache(queryClient);
         dispatch(logout());
     }
 
