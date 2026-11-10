@@ -62,7 +62,7 @@ export function WeeklyPlanTaskEmployeesRoster({ taskId, editable }: Props) {
                 )}
             </div>
 
-            <div className="divide-y divide-line overflow-hidden rounded-xl border border-line bg-surface">
+            <div className="max-h-[28rem] divide-y divide-line overflow-y-auto overscroll-contain rounded-xl border border-line bg-surface">
                 {isLoading && <StaffListLoading />}
 
                 {isError && <StaffListError message={error.message} />}
