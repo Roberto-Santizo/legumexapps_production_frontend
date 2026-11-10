@@ -17,9 +17,9 @@ export class WeeklyPlanTaskAssistantDatasourceImpl implements WeeklyPlanTaskAssi
 
             throw new Error("Información no válida");
         } catch (error) {
-            if (isAxiosError(error)) throw new Error(error.response?.data.message);
+            if (isAxiosError(error)) throw new Error(error.response?.data.message, { cause: error });
 
-            throw new Error("Error no controlado");
+            throw new Error("Error no controlado", { cause: error });
         }
     }
 
@@ -34,9 +34,9 @@ export class WeeklyPlanTaskAssistantDatasourceImpl implements WeeklyPlanTaskAssi
 
             throw new Error("Información no válida");
         } catch (error) {
-            if (isAxiosError(error)) throw new Error(error.response?.data.message);
+            if (isAxiosError(error)) throw new Error(error.response?.data.message, { cause: error });
 
-            throw new Error("Error no controlado");
+            throw new Error("Error no controlado", { cause: error });
         }
     }
 
@@ -51,9 +51,9 @@ export class WeeklyPlanTaskAssistantDatasourceImpl implements WeeklyPlanTaskAssi
 
             throw new Error("Información no válida");
         } catch (error) {
-            if (isAxiosError(error)) throw new Error(error.response?.data.message);
+            if (isAxiosError(error)) throw new Error(error.response?.data.message, { cause: error });
 
-            throw new Error("Error no controlado");
+            throw new Error("Error no controlado", { cause: error });
         }
     }
 }
