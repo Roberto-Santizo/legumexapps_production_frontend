@@ -7,7 +7,7 @@ import { logout } from "@/features/auth/auth";
 import { getBreadcrumb } from "@/features/shared/shared";
 import type { AppDispatch, RootState } from "@/config/config";
 import { useQueryClient } from "@tanstack/react-query";
-import { clearAssistantCache } from "@/features/weekly-plan-task-assistant/weekly-plan-task-assistant";
+import { clearAssistantCache } from "@/features/weekly-plan-task-assistant/infrastructure/utils/assistantConversations";
 
 type Props = {
     onToggleSidebar: () => void;
