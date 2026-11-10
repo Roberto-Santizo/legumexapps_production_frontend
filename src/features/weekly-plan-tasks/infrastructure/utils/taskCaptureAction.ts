@@ -5,10 +5,14 @@ type TaskCaptureAction = {
     queryParam: string;
 }
 
+const TASK_CAPTURE_ACTIONS: Record<CaptureType, TaskCaptureAction> = {
+    pallet: { label: 'Rendimiento', queryParam: 'taskPerformance' },
+    lot: { label: 'Registrar Lote', queryParam: 'taskLots' },
+    product: { label: 'Registrar Producto', queryParam: 'taskProducts' }
+};
+
 export const getTaskCaptureAction = (captureType: CaptureType | undefined): TaskCaptureAction =>
-    captureType === 'lot'
-        ? { label: 'Registrar Lote', queryParam: 'taskLots' }
-        : { label: 'Rendimiento', queryParam: 'taskPerformance' };
+    TASK_CAPTURE_ACTIONS[captureType ?? 'pallet'];
 
 export const getRecordedPoundsLabel = (captureType: CaptureType | undefined): string =>
-    captureType === 'lot' ? 'Libras recortadas' : 'Libras registradas';
+    captureType === 'lot' || captureType === 'product' ? 'Libras recortadas' : 'Libras registradas';

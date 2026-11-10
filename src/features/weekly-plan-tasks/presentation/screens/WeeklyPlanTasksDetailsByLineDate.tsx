@@ -3,6 +3,7 @@ import { ErrorComponent, Loading } from "@/features/shared/shared";
 import { ModalCreateWeeklyPlanTaskObservation } from "@/features/weekly-plan-task-observations/weekly-plan-task-observations";
 import { ModalCreateWeeklyPlanTaskPerformanceRecord } from "@/features/weekly-plan-task-performance-records/weekly-plan-task-performance-records";
 import { ModalCreateWeeklyPlanTaskLotRecord } from "@/features/weekly-plan-task-lot-records/weekly-plan-task-lot-records";
+import { ModalCreateWeeklyPlanTaskProductRecord } from "@/features/weekly-plan-task-product-records/weekly-plan-task-product-records";
 import { useLineByCode } from "@/features/lines/lines";
 import { ModalEndWeeklyPlanTaskTimeout, ModalStartWeeklyPlanTaskTimeout } from "@/features/weekly-plan-task-timeouts/weekly-plan-task-timeouts";
 import { useNavigate, useParams } from "react-router-dom";
@@ -63,6 +64,8 @@ export function WeeklyPlanTasksDetailsByLineDate() {
             <ModalCreateWeeklyPlanTaskPerformanceRecord />
 
             <ModalCreateWeeklyPlanTaskLotRecord />
+
+            <ModalCreateWeeklyPlanTaskProductRecord />
 
             <ModalStartWeeklyPlanTaskTimeout />
 

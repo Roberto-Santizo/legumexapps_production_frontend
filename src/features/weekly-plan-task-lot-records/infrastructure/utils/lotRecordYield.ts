@@ -1,5 +1,5 @@
 export type LotYieldSegment = {
-    key: 'trimmed' | 'overripe' | 'waste';
+    key: 'trimmed' | 'overripe' | 'rejected' | 'waste';
     label: string;
     percent: number;
 }
@@ -20,11 +20,13 @@ export function getLotYieldSegments(appliedRawLbs: number | null, trimmedLbs: nu
 export const LOT_YIELD_SEGMENT_BG: Record<LotYieldSegment['key'], string> = {
     trimmed: 'bg-ink',
     overripe: 'bg-[#a3402f]',
+    rejected: 'bg-[#a3402f]',
     waste: 'bg-transparent'
 };
 
 export const LOT_YIELD_SEGMENT_DOT: Record<LotYieldSegment['key'], string> = {
     trimmed: 'bg-ink',
     overripe: 'bg-[#a3402f]',
+    rejected: 'bg-[#a3402f]',
     waste: 'border border-line-strong bg-canvas'
 };

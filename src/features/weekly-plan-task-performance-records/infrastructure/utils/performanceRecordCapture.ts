@@ -10,7 +10,8 @@ type CaptureState = {
 
 const CAPTURE_WORDING: Record<RecordCaptureType, { plural: string; article: string; family: string }> = {
     pallet: { plural: 'tarimas', article: 'Las', family: 'por tarima' },
-    lot: { plural: 'lotes', article: 'Los', family: 'por lote' }
+    lot: { plural: 'lotes', article: 'Los', family: 'por lote' },
+    product: { plural: 'productos', article: 'Los', family: 'por producto' }
 };
 
 export function getCaptureBlocker({ captureType, status, lineName, isCaptureLine, inputFieldsCount }: CaptureState, action: 'register' | 'edit'): PerformanceRecordCaptureBlocker | null {
