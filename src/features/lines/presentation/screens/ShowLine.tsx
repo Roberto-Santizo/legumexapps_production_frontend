@@ -1,5 +1,6 @@
 import { ErrorComponent, Loading, Title } from "@/features/shared/shared";
 import { captureTypeDescriptions, captureTypeLabels } from "@/features/capture-fields/capture-fields";
+import { LineActivitiesConfigurator } from "@/features/line-activities/line-activities";
 import { LineDependenciesByLine } from "@/features/line-dependencies/line-dependencies";
 import { LineFieldsConfigurator } from "@/features/line-fields/line-fields";
 import { linesRepositoryProvider } from "@/features/lines/lines";
@@ -51,6 +52,7 @@ export function ShowLine() {
                 </section>
 
                 <LineFieldsConfigurator lineCode={data.code} captureType={data.capture_type} />
+                <LineActivitiesConfigurator lineCode={data.code} />
                 <PositionsByLine code={data.code} />
                 <LineDependenciesByLine id={data.id} />
             </div>
