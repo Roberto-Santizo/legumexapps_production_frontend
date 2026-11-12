@@ -1,10 +1,18 @@
-import type { UIMessage } from "ai";
+import { getToolName, isToolUIPart, type UIMessage } from "ai";
+import { isAudioSummaryTool } from "@/features/weekly-plan-task-assistant/weekly-plan-task-assistant";
 
 export type AssistantToolActivity = {
     id: string;
     label: string;
     done: boolean;
     failed: boolean;
+};
+
+export type AssistantToolPart = {
+    id: string;
+    name: string;
+    state: string;
+    output: unknown;
 };
 
 const ASSISTANT_TOOL_LABELS: Record<string, string> = {
@@ -25,7 +33,7 @@ const ASSISTANT_TOOL_LABELS: Record<string, string> = {
 
 const DEFAULT_TOOL_LABEL = 'Consulta de datos';
 
-const normalizeToolName = (name: string): string => {
+export const normalizeToolName = (name: string): string => {
     const pascal = name.replace(/(^|[_-])(\w)/g, (_, __, letter: string) => letter.toUpperCase());
 
     return pascal.replace(/Tool$/, '');
@@ -35,27 +43,32 @@ export const getToolLabel = (name: string): string => {
     return ASSISTANT_TOOL_LABELS[name] ?? ASSISTANT_TOOL_LABELS[normalizeToolName(name)] ?? DEFAULT_TOOL_LABEL;
 }
 
-export const getToolActivities = (message: UIMessage): AssistantToolActivity[] => {
-    const activities: AssistantToolActivity[] = [];
+export const getToolParts = (message: UIMessage): AssistantToolPart[] => {
+    const tools: AssistantToolPart[] = [];
 
     message.parts.forEach((part, index) => {
-        const isDynamic = part.type === 'dynamic-tool';
-        const isStatic = part.type.startsWith('tool-');
+        if (!isToolUIPart(part)) return;
 
-        if (!isDynamic && !isStatic) return;
-
-        const tool = part as { toolCallId?: string; toolName?: string; state?: string };
-        const name = isDynamic ? tool.toolName ?? '' : part.type.slice('tool-'.length);
-
-        activities.push({
-            id: tool.toolCallId ?? `${message.id}-${index}`,
-            label: getToolLabel(name),
-            done: tool.state === 'output-available' || tool.state === 'output-error',
-            failed: tool.state === 'output-error'
+        tools.push({
+            id: part.toolCallId ?? `${message.id}-${index}`,
+            name: getToolName(part),
+            state: part.state,
+            output: 'output' in part ? part.output : undefined
         });
     });
 
-    return activities;
+    return tools;
+}
+
+export const getToolActivities = (message: UIMessage): AssistantToolActivity[] => {
+    return getToolParts(message)
+        .filter((tool) => !isAudioSummaryTool(tool.name))
+        .map((tool) => ({
+            id: tool.id,
+            label: getToolLabel(tool.name),
+            done: tool.state === 'output-available' || tool.state === 'output-error',
+            failed: tool.state === 'output-error'
+        }));
 }
 
 export const getUniqueToolLabels = (activities: AssistantToolActivity[]): string[] => {

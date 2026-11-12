@@ -1,5 +1,5 @@
 import type { ChatStatus, UIMessage } from "ai";
-import { getToolActivities, type AssistantConversationMessage } from "@/features/weekly-plan-task-assistant/weekly-plan-task-assistant";
+import { getAudioToolSummaries, getToolActivities, type AssistantConversationMessage } from "@/features/weekly-plan-task-assistant/weekly-plan-task-assistant";
 
 export const toAssistantUIMessages = (messages: AssistantConversationMessage[]): UIMessage[] => {
     return messages.map((message) => ({
@@ -20,5 +20,5 @@ export const isAwaitingAssistant = (messages: UIMessage[], status: ChatStatus): 
 
     if (!last || last.role === 'user') return true;
 
-    return getMessageText(last).length === 0 && getToolActivities(last).length === 0;
+    return getMessageText(last).length === 0 && getToolActivities(last).length === 0 && getAudioToolSummaries(last).length === 0;
 }
