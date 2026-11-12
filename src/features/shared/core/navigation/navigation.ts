@@ -1,4 +1,4 @@
-import { Box, Database, LayoutDashboard, NotebookIcon, UserCog, Clock, type LucideIcon, UserStar, ChartAreaIcon, Book, Users, ListChecks, Sparkles } from "lucide-react";
+import { Box, Database, LayoutDashboard, NotebookIcon, UserCog, Clock, type LucideIcon, UserStar, ChartAreaIcon, Book, Users, ListChecks, Sparkles, HardHat } from "lucide-react";
 
 export type NavItem = {
     to: string;
@@ -23,6 +23,7 @@ export const NAV_SECTIONS: NavSection[] = [
         items: [
             { to: "/lineas", text: "Líneas", icon: NotebookIcon },
             { to: "/campos-captura", text: "Campos de Captura", icon: ListChecks },
+            { to: "/actividades", text: "Actividades", icon: HardHat },
             { to: "/posiciones", text: "Posiciones", icon: UserCog },
         ],
     },

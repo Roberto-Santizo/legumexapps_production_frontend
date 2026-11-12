@@ -4,6 +4,7 @@ import { CreateClient, IndexClients, ShowClient, UpdateClient } from "@/features
 import { CreateDraftWeeklyPlan, IndexDraftWeeklyPlans, ShowDraftWeeklyPlan, UpdateDraftWeeklyPlan } from "@/features/draft-weekly-plans/draft-weekly-plans";
 import { CreateLine, IndexLines, ShowLine, UpdateLine } from "@/features/lines/lines";
 import { CreateCaptureField, IndexCaptureFields, ShowCaptureField, UpdateCaptureField } from "@/features/capture-fields/capture-fields";
+import { CreateActivity, IndexActivities, ShowActivity, UpdateActivity } from "@/features/activities/activities";
 import { CreatePackingMaterial, IndexPackingMaterials, ShowPackingMaterial, UpdatePackingMaterial } from "@/features/packing-materials/packing-materials";
 import { CreatePerformance, IndexPerformances, ShowPerformance, UpdatePerformance } from "@/features/performances/performances";
 import { CreatePosition, IndexPositions, ShowPosition, UpdatePosition } from "@/features/positions/positions";
@@ -47,6 +48,13 @@ export default function AppRouter() {
                     <Route path="/campos-captura/crear" element={<CreateCaptureField />} />
                     <Route path="/campos-captura/:id/editar" element={<UpdateCaptureField />} />
                     <Route path="/campos-captura/:id" element={<ShowCaptureField />} />
+                </Route>
+
+                <Route element={<ProtectedLayout />}>
+                    <Route path="/actividades" element={<IndexActivities />} />
+                    <Route path="/actividades/crear" element={<CreateActivity />} />
+                    <Route path="/actividades/:id/editar" element={<UpdateActivity />} />
+                    <Route path="/actividades/:id" element={<ShowActivity />} />
                 </Route>
 
                 <Route element={<ProtectedLayout />}>
