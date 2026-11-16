@@ -2,7 +2,7 @@ import { ErrorComponent, Loading } from "@/features/shared/shared";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { WeeklyPlanTaskHeader, weeklyPlanTaskProvider } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
-import { getStaffMode, hasTaskPositions, ModalAddWeeklyPlanTaskEmployee, ModalReplaceWeeklyPlanTaskEmployee, WeeklyPlanTaskEmployeesConfirm, WeeklyPlanTaskEmployeesRoster, WeeklyPlanTaskStaffHeader } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
+import { getStaffMode, hasTaskPositions, ModalUpdateWeeklyPlanTaskEmployeeActivity, WeeklyPlanTaskEmployeesConfirm, WeeklyPlanTaskEmployeesRoster, WeeklyPlanTaskStaffHeader } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 
 export function WeeklyPlanTaskAssignPersonel() {
   const { id } = useParams();
@@ -27,10 +27,9 @@ export function WeeklyPlanTaskAssignPersonel() {
 
         {mode === 'confirm'
           ? <WeeklyPlanTaskEmployeesConfirm taskId={id!} lineCode={data.line_code} showCandidates={showCandidates} />
-          : <WeeklyPlanTaskEmployeesRoster taskId={id!} editable={mode === 'edit'} />}
+          : <WeeklyPlanTaskEmployeesRoster taskId={id!} lineCode={data.line_code} editable={mode === 'edit'} />}
 
-        <ModalAddWeeklyPlanTaskEmployee taskId={id!} />
-        <ModalReplaceWeeklyPlanTaskEmployee taskId={id!} />
+        {mode === 'edit' && <ModalUpdateWeeklyPlanTaskEmployeeActivity taskId={id!} lineCode={data.line_code} />}
       </div>
     )
   }

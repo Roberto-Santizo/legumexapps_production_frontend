@@ -7,3 +7,5 @@ export const taskByIdQueryKey = (taskId: string) => ['getWeeklyPlanTaskById', ta
 export function invalidateTaskEmployeeQueries(queryClient: QueryClient, taskId: string) {
     queryClient.invalidateQueries({ queryKey: taskEmployeesQueryKey(taskId) });
 }
+
+export const TASK_EMPLOYEE_ACTIVITY_PARAM = 'taskEmployeeActivity';

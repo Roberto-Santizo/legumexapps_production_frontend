@@ -12,10 +12,6 @@ export type ConfirmWeeklyPlanTaskEmployeesForm = {
     employees: ConfirmedWeeklyPlanTaskEmployee[];
 }
 
-export type WeeklyPlanTaskEmployeeForm = {
-    weekly_plan_employee_id: string;
-}
-
 export type UpdateWeeklyPlanTaskEmployeeActivityForm = {
     line_activity_id: number;
 }
