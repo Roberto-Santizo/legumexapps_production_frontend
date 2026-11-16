@@ -20,3 +20,4 @@ export * from './BoardCardActionsBar';
 export * from './BoardCardReplaceField';
 export * from './RemovedCandidatesList';
 export * from './PoolAddEmployee';
+export * from './PoolSearchField';

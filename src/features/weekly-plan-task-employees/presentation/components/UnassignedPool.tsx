@@ -1,6 +1,6 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { CheckCircle2Icon } from "lucide-react";
-import { BoardCardList, BoardDropZone, canDropOnPool, EmptyPlace, type ActivityBoardControls, type BoardCard, type BoardCardActions } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
+import { BoardCardList, BoardDropZone, canDropOnPool, EmptyPlace, filterBoardCards, PoolSearchField, type ActivityBoardControls, type BoardCard, type BoardCardActions } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 
 type Props = {
     cards: BoardCard[];
@@ -18,7 +18,9 @@ type Props = {
 
 export function UnassignedPool({ cards, board, title, description, allowUnassign, readonly, pendingKey, actions, header, footer, className = '' }: Props) {
     const canDrop = !readonly && canDropOnPool(allowUnassign, board.activeCard);
+    const [query, setQuery] = useState('');
     const count = cards.length;
+    const visible = filterBoardCards(cards, query);
 
     return (
         <BoardDropZone target={null} canDrop={canDrop} board={board} className={`bg-canvas/50 ${className}`}>
@@ -32,12 +34,18 @@ export function UnassignedPool({ cards, board, title, description, allowUnassign
 
             {header}
 
+            {count > 0 && <PoolSearchField value={query} onChange={setQuery} total={count} matches={visible.length} />}
+
             <div className="space-y-1.5 overflow-y-auto overscroll-contain p-2 lg:max-h-[calc(100vh-14rem)]">
                 {canDrop && !board.isDragging && (
                     <ul><EmptyPlace onPlace={() => board.place(null)} placeLabel="Dejar sin actividad" /></ul>
                 )}
 
-                <BoardCardList cards={cards} board={board} readonly={readonly} pendingKey={pendingKey} actions={actions} />
+                <BoardCardList cards={visible} board={board} readonly={readonly} pendingKey={pendingKey} actions={actions} />
+
+                {count > 0 && visible.length === 0 && (
+                    <p className="px-3 py-6 text-center text-xs text-ink-muted">Nadie por asignar coincide con «{query.trim()}».</p>
+                )}
 
                 {count === 0 && (
                     <p className="flex flex-col items-center gap-1.5 px-3 py-6 text-center text-xs text-ink-muted">

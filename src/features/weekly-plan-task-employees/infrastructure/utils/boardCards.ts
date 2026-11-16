@@ -117,3 +117,15 @@ export const formatOccupancy = (cards: BoardCard[], slots: ActivitySlot[]): stri
 
     return `${placed} de ${capacity} lugares ocupados`;
 };
+
+const normalizeSearch = (value: string): string =>
+    value.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase().trim();
+
+export const filterBoardCards = (cards: BoardCard[], query: string): BoardCard[] => {
+    const needle = normalizeSearch(query);
+    if (needle === '') return cards;
+
+    return cards.filter((card) =>
+        [card.name, card.code, card.position ?? '', card.tag ?? ''].some((field) => normalizeSearch(field).includes(needle))
+    );
+};
