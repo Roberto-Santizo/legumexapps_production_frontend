@@ -5,6 +5,7 @@ import type { ConfirmSummary } from "@/features/weekly-plan-task-employees/weekl
 type Props = {
     summary: ConfirmSummary;
     blockReason: string | null;
+    hasChanges: boolean;
     isPending: boolean;
     onConfirm: () => void;
     onReset: () => void;
@@ -19,9 +20,7 @@ function SummaryFigure({ label, value }: { label: string; value: number }) {
     )
 }
 
-export function ConfirmSummaryBar({ summary, blockReason, isPending, onConfirm, onReset }: Props) {
-    const hasChanges = summary.replacements + summary.additions + summary.removals + summary.pendingReplacements > 0;
-
+export function ConfirmSummaryBar({ summary, blockReason, hasChanges, isPending, onConfirm, onReset }: Props) {
     return (
         <div className="sticky bottom-4 z-10 rounded-xl border border-line-strong bg-surface/95 px-5 py-4 shadow-lg backdrop-blur">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
@@ -34,6 +33,7 @@ export function ConfirmSummaryBar({ summary, blockReason, isPending, onConfirm, 
                     <SummaryFigure label="reemplazos" value={summary.replacements} />
                     <SummaryFigure label="altas" value={summary.additions} />
                     <SummaryFigure label="bajas" value={summary.removals} />
+                    <SummaryFigure label="sin actividad" value={summary.pendingActivities} />
                 </div>
 
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center">

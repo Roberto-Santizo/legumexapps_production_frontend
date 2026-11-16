@@ -26,7 +26,7 @@ export function WeeklyPlanTaskAssignPersonel() {
         <WeeklyPlanTaskStaffHeader status={data.status} />
 
         {mode === 'confirm'
-          ? <WeeklyPlanTaskEmployeesConfirm taskId={id!} positions={data.positions} showCandidates={showCandidates} />
+          ? <WeeklyPlanTaskEmployeesConfirm taskId={id!} lineCode={data.line_code} showCandidates={showCandidates} />
           : <WeeklyPlanTaskEmployeesRoster taskId={id!} editable={mode === 'edit'} />}
 
         <ModalAddWeeklyPlanTaskEmployee taskId={id!} />

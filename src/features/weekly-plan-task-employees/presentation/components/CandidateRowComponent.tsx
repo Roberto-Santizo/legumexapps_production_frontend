@@ -1,17 +1,20 @@
-import { ArrowRightIcon } from "lucide-react";
-import { CandidateActionToggle, EmployeeIdentity, EmployeeSelect, type CandidateAction, type CandidateRow, type EmployeeOption } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
+import { ArrowRightIcon, ClipboardListIcon } from "lucide-react";
+import { ActivitySelect, CandidateActionToggle, CandidateRowField, EmployeeIdentity, EmployeeSelect, type ActivityOption, type CandidateAction, type CandidateRow, type EmployeeOption } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 
 type Props = {
     row: CandidateRow;
     replacementOptions: EmployeeOption[];
+    activityOptions: ActivityOption[];
     isLoadingOptions: boolean;
     onActionChange: (action: CandidateAction) => void;
     onReplacementChange: (replacementId?: string) => void;
+    onActivityChange: (lineActivityId?: number) => void;
 }
 
-export function CandidateRowComponent({ row, replacementOptions, isLoadingOptions, onActionChange, onReplacementChange }: Props) {
-    const { candidate, action, replacementId } = row;
+export function CandidateRowComponent({ row, replacementOptions, activityOptions, isLoadingOptions, onActionChange, onReplacementChange, onActivityChange }: Props) {
+    const { candidate, action, replacementId, lineActivityId } = row;
     const selectId = `replacement-${candidate.id}`;
+    const activityId = `activity-${candidate.id}`;
 
     return (
         <article className={`border-l-[3px] px-5 py-4 transition-colors motion-reduce:transition-none ${action === 'keep' ? 'border-transparent' : 'border-ink bg-canvas/60'}`}>
@@ -28,22 +31,21 @@ export function CandidateRowComponent({ row, replacementOptions, isLoadingOption
             </div>
 
             {action === 'replace' && (
-                <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:pl-[160px]">
-                    <label htmlFor={selectId} className="flex shrink-0 items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-subtle">
-                        <ArrowRightIcon className="size-3.5" aria-hidden="true" />
-                        Entra
-                    </label>
+                <CandidateRowField htmlFor={selectId} label="Entra" icon={<ArrowRightIcon className="size-3.5" aria-hidden="true" />}>
+                    <EmployeeSelect
+                        inputId={selectId}
+                        options={replacementOptions}
+                        value={replacementId}
+                        onChange={onReplacementChange}
+                        isLoading={isLoadingOptions}
+                    />
+                </CandidateRowField>
+            )}
 
-                    <div className="min-w-0 flex-1">
-                        <EmployeeSelect
-                            inputId={selectId}
-                            options={replacementOptions}
-                            value={replacementId}
-                            onChange={onReplacementChange}
-                            isLoading={isLoadingOptions}
-                        />
-                    </div>
-                </div>
+            {action !== 'remove' && (
+                <CandidateRowField htmlFor={activityId} label="Actividad" icon={<ClipboardListIcon className="size-3.5" aria-hidden="true" />}>
+                    <ActivitySelect id={activityId} options={activityOptions} value={lineActivityId} onChange={onActivityChange} />
+                </CandidateRowField>
             )}
 
             {action === 'remove' && (

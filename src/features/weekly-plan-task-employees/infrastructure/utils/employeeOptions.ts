@@ -16,9 +16,6 @@ export const toEmployeeOptions = (employees: WeeklyPlanEmployee[], takenIds: Set
         .filter((employee) => !takenIds.has(employee.id))
         .map(toEmployeeOption);
 
-export const pickEmployeesByIds = (employees: WeeklyPlanEmployee[], ids: string[]): WeeklyPlanEmployee[] =>
-    ids.flatMap((id) => employees.filter((employee) => employee.id === id));
-
 export const findEmployeeById = (employees: WeeklyPlanEmployee[], id?: string): WeeklyPlanEmployee | undefined =>
     id === undefined ? undefined : employees.find((employee) => employee.id === id);
 

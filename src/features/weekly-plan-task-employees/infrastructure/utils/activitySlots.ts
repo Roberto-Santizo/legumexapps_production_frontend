@@ -1,5 +1,5 @@
 import type { LineActivity } from "@/features/line-activities/line-activities";
-import type { ActivityOption, ActivitySlot } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
+import type { ActivityOption, ActivitySlot, SlotMark } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 
 type ActivityId = number | null | undefined;
 
@@ -45,7 +45,16 @@ export const formatRemainingPlaces = (remaining: number): string => {
 export const formatOverbookedSlot = (slot: ActivitySlot): string =>
     `La actividad ${slot.activity} admite ${slot.quantity} ${slot.quantity === 1 ? 'persona' : 'personas'} y tiene ${slot.used}`;
 
-export const toActivityOptions = (slots: ActivitySlot[], currentId?: number | null): ActivityOption[] =>
+const markFor = (slot: ActivitySlot, index: number): SlotMark => {
+    if (index >= slot.quantity) return 'over';
+
+    return index < slot.used ? 'filled' : 'empty';
+};
+
+export const getSlotMarks = (slot: ActivitySlot): SlotMark[] =>
+    Array.from({ length: Math.max(slot.quantity, slot.used) }, (_, index) => markFor(slot, index));
+
+export const toActivityOptions =(slots: ActivitySlot[], currentId?: number | null): ActivityOption[] =>
     slots.map((slot) => ({
         value: slot.id,
         label: slot.activity,

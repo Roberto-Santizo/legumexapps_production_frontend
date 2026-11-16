@@ -1,23 +1,23 @@
 import { AlertTriangleIcon } from "lucide-react";
-import { exceedsTaskPositions } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
+import { exceedsCapacity } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 
 type Props = {
-    positions: number;
+    capacity: number;
     candidates: number;
 }
 
-export function PositionsLimitAlert({ positions, candidates }: Props) {
-    if (!exceedsTaskPositions(positions, candidates)) return null;
+export function ActivityCapacityAlert({ capacity, candidates }: Props) {
+    if (!exceedsCapacity(capacity, candidates)) return null;
 
     return (
         <div role="alert" className="rounded-xl border border-amber-200 bg-amber-50/60 px-5 py-4">
             <p className="flex items-center gap-2 text-sm font-semibold text-amber-800">
                 <AlertTriangleIcon className="size-4" aria-hidden="true" />
-                Diferencia entre posiciones
+                Más candidatos que lugares
             </p>
 
             <p className="mt-1 pl-6 text-sm text-amber-700">
-                La línea cuenta con {positions} posiciones y se tienen {candidates} candidatos.
+                La línea admite {capacity} personas entre todas sus actividades y hay {candidates} candidatos. Quita a {candidates - capacity} antes de confirmar.
             </p>
         </div>
     )
