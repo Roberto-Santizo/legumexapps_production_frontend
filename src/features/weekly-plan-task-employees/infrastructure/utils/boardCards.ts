@@ -12,6 +12,15 @@ export const parseBoardCardKey = (key: string): { kind: BoardCardKind; id: strin
     return { kind: kind as BoardCardKind, id: rest.join(KEY_SEPARATOR) };
 };
 
+export const getCardOwnerId = (key: string): string | undefined => {
+    const { kind, id } = parseBoardCardKey(key);
+
+    return kind === 'candidate' ? id : undefined;
+};
+
+export const getRemovedCandidates = (rows: CandidateRow[]): CandidateRow[] =>
+    rows.filter((row) => row.action === 'remove');
+
 const toRowCard = (row: CandidateRow, replacementEmployees: WeeklyPlanEmployee[]): BoardCard[] => {
     if (!isFinalMember(row)) return [];
 
@@ -32,6 +41,7 @@ const toRowCard = (row: CandidateRow, replacementEmployees: WeeklyPlanEmployee[]
         position: row.candidate.position,
         activityId: row.lineActivityId,
         tag: `Reemplaza a ${row.candidate.name}`,
+        replaced: true,
     }];
 };
 

@@ -1,4 +1,4 @@
-import { BoardCardList, BoardDropZone, canDropOnSlot, EmptyPlace, formatRemainingPlaces, getEmptyPlaces, type ActivityBoardControls, type ActivitySlot, type BoardCard } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
+import { BoardCardList, BoardDropZone, canDropOnSlot, EmptyPlace, formatRemainingPlaces, getEmptyPlaces, type ActivityBoardControls, type ActivitySlot, type BoardCard, type BoardCardActions } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 
 type Props = {
     slot: ActivitySlot;
@@ -6,10 +6,10 @@ type Props = {
     board: ActivityBoardControls;
     readonly: boolean;
     pendingKey?: string;
-    onRemove?: (key: string) => void;
+    actions: BoardCardActions;
 }
 
-export function ActivityStation({ slot, cards, board, readonly, pendingKey, onRemove }: Props) {
+export function ActivityStation({ slot, cards, board, readonly, pendingKey, actions }: Props) {
     const canDrop = !readonly && canDropOnSlot(slot, board.activeCard);
     const over = slot.remaining < 0;
     const { shown, hidden } = getEmptyPlaces(slot);
@@ -33,7 +33,7 @@ export function ActivityStation({ slot, cards, board, readonly, pendingKey, onRe
                 </header>
 
                 <div className="flex-1 space-y-1.5 p-2">
-                    <BoardCardList cards={cards} board={board} readonly={readonly} pendingKey={pendingKey} onRemove={onRemove} />
+                    <BoardCardList cards={cards} board={board} readonly={readonly} pendingKey={pendingKey} actions={actions} />
 
                     {shown > 0 && (
                         <ul className="space-y-1.5">

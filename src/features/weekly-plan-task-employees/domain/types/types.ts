@@ -74,6 +74,15 @@ export type BoardCard = {
     position: string | null;
     activityId?: number;
     tag?: string;
+    replaced?: boolean;
+}
+
+export type BoardCardActions = {
+    onRemove?: (key: string) => void;
+    onReplace?: (key: string, employeeId: string) => void;
+    onUndoReplace?: (key: string) => void;
+    getReplacementOptions?: (key: string) => EmployeeOption[];
+    isLoadingOptions?: boolean;
 }
 
 export type BoardCardKind = 'candidate' | 'addition';

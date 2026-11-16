@@ -1,14 +1,14 @@
-import { BoardEmployeeCard, type ActivityBoardControls, type BoardCard } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
+import { BoardEmployeeCard, type ActivityBoardControls, type BoardCard, type BoardCardActions } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 
 type Props = {
     cards: BoardCard[];
     board: ActivityBoardControls;
     readonly: boolean;
     pendingKey?: string;
-    onRemove?: (key: string) => void;
+    actions: BoardCardActions;
 }
 
-export function BoardCardList({ cards, board, readonly, pendingKey, onRemove }: Props) {
+export function BoardCardList({ cards, board, readonly, pendingKey, actions }: Props) {
     if (cards.length === 0) return null;
 
     return (
@@ -20,10 +20,10 @@ export function BoardCardList({ cards, board, readonly, pendingKey, onRemove }: 
                     selected={board.activeCard?.key === card.key}
                     readonly={readonly}
                     pending={pendingKey === card.key}
+                    actions={actions}
                     onDragStart={(event) => board.startDrag(event, card.key)}
                     onDragEnd={board.endDrag}
                     onSelect={() => board.toggleSelect(card.key)}
-                    onRemove={onRemove && (() => onRemove(card.key))}
                 />
             ))}
         </ul>

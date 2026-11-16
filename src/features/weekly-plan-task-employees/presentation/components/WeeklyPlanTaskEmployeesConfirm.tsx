@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNotification } from "@/features/shared/shared";
 import { biometricQueryProvider } from "@/features/biometric-queries/biometric-queries";
-import { ActivityCapacityAlert, buildActivitySlots, buildConfirmBoardCards, buildConfirmBody, CandidatesList, ConfirmAdditionsPanel, ConfirmSummaryBar, getConfirmBlockReason, getConfirmQuestion, getConfirmSummary, getSelectedActivityIds, getSlotsCapacity, getTakenEmployeeIds, pickAddedEmployees, REPLACEMENT_LINE_CODE, StaffActivityBoard, TaskEmployeeErrorList, toEmployeeOptions, useCandidateRows, useConfirmTaskEmployees, useTaskLineActivities, weeklyPlanTaskEmployeeProvider } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
+import { ActivityCapacityAlert, buildActivitySlots, buildConfirmBoardCards, buildConfirmBody, ConfirmSummaryBar, getCardOwnerId, getConfirmBlockReason, getConfirmQuestion, getConfirmSummary, getRemovedCandidates, getSelectedActivityIds, getSlotsCapacity, getTakenEmployeeIds, PoolAddEmployee, RemovedCandidatesList, REPLACEMENT_LINE_CODE, StaffActivityBoard, TaskEmployeeErrorList, toEmployeeOptions, useCandidateRows, useConfirmTaskEmployees, useTaskLineActivities, weeklyPlanTaskEmployeeProvider, type BoardCardActions } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 
 type Props = {
     taskId: string;
@@ -29,12 +29,20 @@ export function WeeklyPlanTaskEmployeesConfirm({ taskId, lineCode, showCandidate
     const { confirm, isPending, errors, clearErrors } = useConfirmTaskEmployees(taskId);
 
     const replacementEmployees = replacementEmployeesQuery.data ?? [];
-    const { rows, additions, hasChanges, setAction, setReplacement, addAddition, removeAddition, assignCard, removeCard, reset } = useCandidateRows(showCandidates ? candidatesQuery.data ?? [] : []);
+    const { rows, additions, hasChanges, addAddition, assignCard, replaceCard, undoReplaceCard, removeCard, restoreCandidate, reset } = useCandidateRows(showCandidates ? candidatesQuery.data ?? [] : []);
     const slots = buildActivitySlots(activitiesQuery.data ?? [], getSelectedActivityIds(rows, additions));
     const cards = buildConfirmBoardCards(rows, additions, replacementEmployees);
     const summary = getConfirmSummary(rows, additions);
     const isLoadingData = candidatesQuery.isLoading || activitiesQuery.isLoading;
     const blockReason = isLoadingData ? 'Cargando candidatos y actividades' : getConfirmBlockReason(summary, slots);
+
+    const cardActions: BoardCardActions = {
+        onRemove: removeCard,
+        onReplace: replaceCard,
+        onUndoReplace: undoReplaceCard,
+        getReplacementOptions: (key) => toEmployeeOptions(replacementEmployees, getTakenEmployeeIds(rows, additions, getCardOwnerId(key))),
+        isLoadingOptions: replacementEmployeesQuery.isLoading,
+    };
 
     const handleConfirm = () => {
         const { title, description } = getConfirmQuestion(summary.finalCount);
@@ -47,7 +55,7 @@ export function WeeklyPlanTaskEmployeesConfirm({ taskId, lineCode, showCandidate
     };
 
     return (
-        <div className="space-y-8">
+        <div className="space-y-6">
             <TaskEmployeeErrorList title="No se pudo confirmar el personal" errors={errors} />
 
             {showCandidates && <ActivityCapacityAlert capacity={getSlotsCapacity(slots)} candidates={rows.length} />}
@@ -59,31 +67,19 @@ export function WeeklyPlanTaskEmployeesConfirm({ taskId, lineCode, showCandidate
                 errorMessage={activitiesQuery.error?.message ?? candidatesQuery.error?.message}
                 description="Arrastra a cada empleado al lugar libre de la actividad que cubrirá. En pantallas táctiles, tócalo y luego toca el lugar."
                 poolTitle="Por asignar"
-                poolDescription="Personal de la tarea que aún no tiene actividad."
+                poolDescription="Candidatos de la línea y altas que aún no tienen actividad. Reemplázalos o dalos de baja desde su tarjeta."
                 showPool
                 allowUnassign
                 onMove={assignCard}
-                onRemove={removeCard}
-            />
-
-            {showCandidates && (
-                <CandidatesList
-                    rows={rows}
-                    isLoading={candidatesQuery.isLoading}
-                    errorMessage={candidatesQuery.error?.message}
-                    isLoadingOptions={replacementEmployeesQuery.isLoading}
-                    getReplacementOptions={(candidateId) => toEmployeeOptions(replacementEmployees, getTakenEmployeeIds(rows, additions, candidateId))}
-                    onActionChange={setAction}
-                    onReplacementChange={setReplacement}
-                />
-            )}
-
-            <ConfirmAdditionsPanel
-                added={pickAddedEmployees(replacementEmployees, additions)}
-                options={toEmployeeOptions(replacementEmployees, getTakenEmployeeIds(rows, additions))}
-                isLoadingOptions={replacementEmployeesQuery.isLoading}
-                onAdd={addAddition}
-                onRemove={removeAddition}
+                actions={cardActions}
+                poolHeader={
+                    <PoolAddEmployee
+                        options={toEmployeeOptions(replacementEmployees, getTakenEmployeeIds(rows, additions))}
+                        isLoading={replacementEmployeesQuery.isLoading}
+                        onAdd={addAddition}
+                    />
+                }
+                poolFooter={<RemovedCandidatesList rows={getRemovedCandidates(rows)} onRestore={restoreCandidate} />}
             />
 
             <ConfirmSummaryBar

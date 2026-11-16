@@ -1,5 +1,6 @@
+import type { ReactNode } from "react";
 import { CheckCircle2Icon } from "lucide-react";
-import { BoardCardList, BoardDropZone, canDropOnPool, EmptyPlace, type ActivityBoardControls, type BoardCard } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
+import { BoardCardList, BoardDropZone, canDropOnPool, EmptyPlace, type ActivityBoardControls, type BoardCard, type BoardCardActions } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 
 type Props = {
     cards: BoardCard[];
@@ -9,11 +10,13 @@ type Props = {
     allowUnassign: boolean;
     readonly: boolean;
     pendingKey?: string;
-    onRemove?: (key: string) => void;
+    actions: BoardCardActions;
+    header?: ReactNode;
+    footer?: ReactNode;
     className?: string;
 }
 
-export function UnassignedPool({ cards, board, title, description, allowUnassign, readonly, pendingKey, onRemove, className = '' }: Props) {
+export function UnassignedPool({ cards, board, title, description, allowUnassign, readonly, pendingKey, actions, header, footer, className = '' }: Props) {
     const canDrop = !readonly && canDropOnPool(allowUnassign, board.activeCard);
     const count = cards.length;
 
@@ -27,12 +30,14 @@ export function UnassignedPool({ cards, board, title, description, allowUnassign
                 <p className="mt-1 text-xs text-ink-muted">{description}</p>
             </header>
 
+            {header}
+
             <div className="space-y-1.5 overflow-y-auto overscroll-contain p-2 lg:max-h-[calc(100vh-14rem)]">
                 {canDrop && !board.isDragging && (
                     <ul><EmptyPlace onPlace={() => board.place(null)} placeLabel="Dejar sin actividad" /></ul>
                 )}
 
-                <BoardCardList cards={cards} board={board} readonly={readonly} pendingKey={pendingKey} onRemove={onRemove} />
+                <BoardCardList cards={cards} board={board} readonly={readonly} pendingKey={pendingKey} actions={actions} />
 
                 {count === 0 && (
                     <p className="flex flex-col items-center gap-1.5 px-3 py-6 text-center text-xs text-ink-muted">
@@ -41,6 +46,8 @@ export function UnassignedPool({ cards, board, title, description, allowUnassign
                     </p>
                 )}
             </div>
+
+            {footer}
         </BoardDropZone>
     )
 }

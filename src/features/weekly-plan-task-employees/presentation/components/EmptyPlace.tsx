@@ -5,7 +5,7 @@ type Props = {
     placeLabel?: string;
 }
 
-const BASE_CLASS = 'flex min-h-[3.125rem] w-full items-center justify-center gap-1.5 rounded-lg border border-dashed text-[11px]';
+const BASE_CLASS = 'flex min-h-[5.75rem] w-full items-center justify-center gap-1.5 rounded-lg border border-dashed text-xs';
 
 export function EmptyPlace({ onPlace, placeLabel = 'Colocar aquí' }: Props) {
     if (!onPlace) {

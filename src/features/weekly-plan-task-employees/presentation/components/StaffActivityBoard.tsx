@@ -1,5 +1,5 @@
-import type { KeyboardEvent } from "react";
-import { ActivityStation, BoardSelectionHint, formatOccupancy, getCardsAt, StaffListEmpty, StaffListError, StaffListLoading, UnassignedPool, useActivityBoard, type ActivitySlot, type BoardCard, type BoardTarget } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
+import type { KeyboardEvent, ReactNode } from "react";
+import { ActivityStation, BoardSelectionHint, formatOccupancy, getCardsAt, StaffListEmpty, StaffListError, StaffListLoading, UnassignedPool, useActivityBoard, type ActivitySlot, type BoardCard, type BoardCardActions, type BoardTarget } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 
 type Props = {
     slots: ActivitySlot[];
@@ -14,10 +14,14 @@ type Props = {
     readonly?: boolean;
     pendingKey?: string;
     onMove: (key: string, target: BoardTarget) => void;
-    onRemove?: (key: string) => void;
+    actions?: BoardCardActions;
+    poolHeader?: ReactNode;
+    poolFooter?: ReactNode;
 }
 
-export function StaffActivityBoard({ slots, cards, isLoading, errorMessage, description, poolTitle, poolDescription, showPool, allowUnassign = false, readonly = false, pendingKey, onMove, onRemove }: Props) {
+const NO_ACTIONS: BoardCardActions = {};
+
+export function StaffActivityBoard({ slots, cards, isLoading, errorMessage, description, poolTitle, poolDescription, showPool, allowUnassign = false, readonly = false, pendingKey, onMove, actions = NO_ACTIONS, poolHeader, poolFooter }: Props) {
     const board = useActivityBoard({ cards, onMove });
     const ready = !isLoading && !errorMessage;
 
@@ -55,7 +59,7 @@ export function StaffActivityBoard({ slots, cards, isLoading, errorMessage, desc
             )}
 
             {ready && slots.length > 0 && (
-                <div className={showPool ? 'grid gap-3 lg:grid-cols-[17rem_minmax(0,1fr)] lg:items-start' : ''}>
+                <div className={showPool ? 'grid gap-3 lg:grid-cols-[21rem_minmax(0,1fr)] xl:grid-cols-[24rem_minmax(0,1fr)] lg:items-start' : ''}>
                     {showPool && (
                         <UnassignedPool
                             cards={getCardsAt(cards, null)}
@@ -65,12 +69,14 @@ export function StaffActivityBoard({ slots, cards, isLoading, errorMessage, desc
                             allowUnassign={allowUnassign}
                             readonly={readonly}
                             pendingKey={pendingKey}
-                            onRemove={onRemove}
+                            actions={actions}
+                            header={poolHeader}
+                            footer={poolFooter}
                             className="lg:sticky lg:top-4"
                         />
                     )}
 
-                    <ul className="grid gap-3 sm:grid-cols-2 2xl:grid-cols-3">
+                    <ul className="grid gap-3 md:grid-cols-2 min-[1800px]:grid-cols-3">
                         {slots.map((slot) => (
                             <ActivityStation
                                 key={slot.id}
@@ -79,7 +85,7 @@ export function StaffActivityBoard({ slots, cards, isLoading, errorMessage, desc
                                 board={board}
                                 readonly={readonly}
                                 pendingKey={pendingKey}
-                                onRemove={onRemove}
+                                actions={actions}
                             />
                         ))}
                     </ul>

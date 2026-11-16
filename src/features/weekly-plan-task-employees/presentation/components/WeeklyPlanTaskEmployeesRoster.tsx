@@ -65,7 +65,7 @@ export function WeeklyPlanTaskEmployeesRoster({ taskId, lineCode, editable }: Pr
                 readonly={!editable}
                 pendingKey={findPendingKey(pendingMove)}
                 onMove={handleMove}
-                onRemove={employees.length > 1 ? handleRemoveCard : undefined}
+                actions={{ onRemove: employees.length > 1 ? handleRemoveCard : undefined }}
             />
         </div>
     )
