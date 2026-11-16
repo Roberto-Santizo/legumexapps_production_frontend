@@ -1,34 +1,50 @@
 import { useState, type DragEvent } from "react";
-import type { BoardCard, BoardTarget } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
+import { getMovingKeys, isCardAt, type BoardCard, type BoardTarget } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 
 type Options = {
     cards: BoardCard[];
-    onMove: (key: string, target: BoardTarget) => void;
+    onMove: (keys: string[], target: BoardTarget) => void;
 }
 
 const DRAG_FORMAT = 'text/plain';
 
 export function useActivityBoard({ cards, onMove }: Options) {
-    const [activeKey, setActiveKey] = useState<string | null>(null);
+    const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
+    const [draggingKeys, setDraggingKeys] = useState<string[]>([]);
     const [overTarget, setOverTarget] = useState<BoardTarget | undefined>(undefined);
-    const [isDragging, setIsDragging] = useState(false);
 
-    const activeCard = cards.find((card) => card.key === activeKey);
+    const isDragging = draggingKeys.length > 0;
+    const activeKeys = isDragging ? draggingKeys : selectedKeys;
+    const movingCards = cards.filter((card) => activeKeys.includes(card.key));
+    const selectedCards = cards.filter((card) => selectedKeys.includes(card.key));
+
+    const endDrag = () => {
+        setDraggingKeys([]);
+        setOverTarget(undefined);
+    };
 
     const clear = () => {
-        setActiveKey(null);
-        setOverTarget(undefined);
-        setIsDragging(false);
+        setSelectedKeys([]);
+        endDrag();
     };
 
     const startDrag = (event: DragEvent, key: string) => {
-        event.dataTransfer.setData(DRAG_FORMAT, key);
+        const keys = getMovingKeys(selectedKeys, key);
+        event.dataTransfer.setData(DRAG_FORMAT, keys.join(','));
         event.dataTransfer.effectAllowed = 'move';
-        setActiveKey(key);
-        setIsDragging(true);
+        setDraggingKeys(keys);
     };
 
-    const toggleSelect = (key: string) => setActiveKey((prev) => (prev === key ? null : key));
+    const isSelected = (key: string) => selectedKeys.includes(key);
+
+    const toggleSelect = (key: string) =>
+        setSelectedKeys((prev) => (prev.includes(key) ? prev.filter((item) => item !== key) : [...prev, key]));
+
+    const selectMany = (keys: string[]) =>
+        setSelectedKeys((prev) => [...prev, ...keys.filter((key) => !prev.includes(key))]);
+
+    const unselectMany = (keys: string[]) =>
+        setSelectedKeys((prev) => prev.filter((key) => !keys.includes(key)));
 
     const hover = (event: DragEvent, target: BoardTarget) => {
         event.preventDefault();
@@ -41,7 +57,8 @@ export function useActivityBoard({ cards, onMove }: Options) {
     };
 
     const place = (target: BoardTarget) => {
-        if (activeCard) onMove(activeCard.key, target);
+        const keys = movingCards.filter((card) => !isCardAt(card, target)).map((card) => card.key);
+        if (keys.length > 0) onMove(keys, target);
         clear();
     };
 
@@ -50,7 +67,7 @@ export function useActivityBoard({ cards, onMove }: Options) {
         place(target);
     };
 
-    return { activeCard, overTarget, isDragging, startDrag, endDrag: clear, toggleSelect, hover, leave, drop, place, clear };
+    return { movingCards, selectedCards, overTarget, isDragging, isSelected, startDrag, endDrag, toggleSelect, selectMany, unselectMany, hover, leave, drop, place, clear };
 }
 
 export type ActivityBoardControls = ReturnType<typeof useActivityBoard>;

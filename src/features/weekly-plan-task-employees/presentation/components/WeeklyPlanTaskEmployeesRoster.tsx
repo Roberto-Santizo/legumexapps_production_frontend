@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { buildActivitySlots, buildRosterBoardCards, countMissingActivities, findAssignmentByKey, findPendingKey, getCardActivityIds, MissingActivitiesAlert, StaffActivityBoard, StaffListEmpty, StaffListError, StaffListLoading, taskEmployeesQueryKey, useRemoveTaskEmployee, useTaskLineActivities, useUpdateTaskEmployeeActivity, weeklyPlanTaskEmployeeProvider, type BoardTarget } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
+import { buildActivitySlots, buildRosterBoardCards, countMissingActivities, findAssignmentByKey, getPendingKeys, getCardActivityIds, MissingActivitiesAlert, StaffActivityBoard, StaffListEmpty, StaffListError, StaffListLoading, taskEmployeesQueryKey, useRemoveTaskEmployee, useTaskLineActivities, useUpdateTaskEmployeeActivity, weeklyPlanTaskEmployeeProvider, type BoardTarget } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 
 type Props = {
     taskId: string;
@@ -9,7 +9,7 @@ type Props = {
 
 export function WeeklyPlanTaskEmployeesRoster({ taskId, lineCode, editable }: Props) {
     const { handleRemove } = useRemoveTaskEmployee(taskId);
-    const { updateActivity, pendingMove } = useUpdateTaskEmployeeActivity(taskId);
+    const { updateActivities, pendingMoves } = useUpdateTaskEmployeeActivity(taskId);
     const activitiesQuery = useTaskLineActivities(lineCode);
 
     const { data, isLoading, isError, error } = useQuery({
@@ -19,12 +19,12 @@ export function WeeklyPlanTaskEmployeesRoster({ taskId, lineCode, editable }: Pr
     });
 
     const employees = data ?? [];
-    const cards = buildRosterBoardCards(employees, pendingMove);
+    const cards = buildRosterBoardCards(employees, pendingMoves);
     const slots = buildActivitySlots(activitiesQuery.data ?? [], getCardActivityIds(cards));
     const missing = countMissingActivities(employees);
 
-    const handleMove = (key: string, target: BoardTarget) => {
-        if (target !== null) updateActivity(Number(key), target);
+    const handleMove = (keys: string[], target: BoardTarget) => {
+        if (target !== null) updateActivities(keys, target);
     };
 
     const handleRemoveCard = (key: string) => {
@@ -57,13 +57,13 @@ export function WeeklyPlanTaskEmployeesRoster({ taskId, lineCode, editable }: Pr
                 isLoading={activitiesQuery.isLoading}
                 errorMessage={activitiesQuery.error?.message}
                 description={editable
-                    ? 'Arrastra a un empleado a un lugar libre de otra actividad para cambiarla. En pantallas táctiles, tócalo y luego toca el lugar.'
+                    ? 'Arrastra a un empleado a un lugar libre de otra actividad para cambiarla. Para mover varios a la vez, tócalos y luego toca un lugar libre.'
                     : 'Personal de la tarea en cada actividad de la línea.'}
                 poolTitle="Sin actividad"
                 poolDescription="Asignados antes de las actividades por línea."
                 showPool={missing > 0}
                 readonly={!editable}
-                pendingKey={findPendingKey(pendingMove)}
+                pendingKeys={getPendingKeys(pendingMoves)}
                 onMove={handleMove}
                 actions={{ onRemove: employees.length > 1 ? handleRemoveCard : undefined }}
             />

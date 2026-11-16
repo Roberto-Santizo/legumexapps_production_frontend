@@ -1,6 +1,5 @@
 export * from './EmployeeSelect';
 export * from './EmployeeIdentity';
-export * from './ConfirmSummaryBar';
 export * from './TaskEmployeeErrorList';
 export * from './ActivityCapacityAlert';
 export * from './MissingActivitiesAlert';
@@ -21,3 +20,6 @@ export * from './BoardCardReplaceField';
 export * from './RemovedCandidatesList';
 export * from './StationAddEmployee';
 export * from './PoolSearchField';
+export * from './PoolSelectAll';
+export * from './SummaryFigure';
+export * from './ConfirmSummaryBubble';

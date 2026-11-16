@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNotification } from "@/features/shared/shared";
 import { biometricQueryProvider } from "@/features/biometric-queries/biometric-queries";
-import { ActivityCapacityAlert, buildActivitySlots, buildConfirmBoardCards, buildConfirmBody, ConfirmSummaryBar, getCardOwnerId, getConfirmBlockReason, getConfirmQuestion, getConfirmSummary, getRemovedCandidates, getSelectedActivityIds, getSlotsCapacity, getTakenEmployeeIds, RemovedCandidatesList, REPLACEMENT_LINE_CODE, StaffActivityBoard, TaskEmployeeErrorList, toEmployeeOptions, useCandidateRows, useConfirmTaskEmployees, useTaskLineActivities, weeklyPlanTaskEmployeeProvider, type BoardCardActions } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
+import { ActivityCapacityAlert, buildActivitySlots, buildConfirmBoardCards, buildConfirmBody, ConfirmSummaryBubble, getCardOwnerId, getConfirmBlockReason, getConfirmQuestion, getConfirmSummary, getRemovedCandidates, getSelectedActivityIds, getSlotsCapacity, getTakenEmployeeIds, RemovedCandidatesList, REPLACEMENT_LINE_CODE, StaffActivityBoard, TaskEmployeeErrorList, toEmployeeOptions, useCandidateRows, useConfirmTaskEmployees, useTaskLineActivities, weeklyPlanTaskEmployeeProvider, type BoardCardActions } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 
 type Props = {
     taskId: string;
@@ -29,7 +29,7 @@ export function WeeklyPlanTaskEmployeesConfirm({ taskId, lineCode, showCandidate
     const { confirm, isPending, errors, clearErrors } = useConfirmTaskEmployees(taskId);
 
     const replacementEmployees = replacementEmployeesQuery.data ?? [];
-    const { rows, additions, hasChanges, addAddition, assignCard, replaceCard, undoReplaceCard, removeCard, restoreCandidate, reset } = useCandidateRows(showCandidates ? candidatesQuery.data ?? [] : []);
+    const { rows, additions, hasChanges, addAddition, assignCards, replaceCard, undoReplaceCard, removeCard, restoreCandidate, reset } = useCandidateRows(showCandidates ? candidatesQuery.data ?? [] : []);
     const slots = buildActivitySlots(activitiesQuery.data ?? [], getSelectedActivityIds(rows, additions));
     const cards = buildConfirmBoardCards(rows, additions, replacementEmployees);
     const summary = getConfirmSummary(rows, additions);
@@ -55,7 +55,7 @@ export function WeeklyPlanTaskEmployeesConfirm({ taskId, lineCode, showCandidate
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 pb-20">
             <TaskEmployeeErrorList title="No se pudo confirmar el personal" errors={errors} />
 
             {showCandidates && <ActivityCapacityAlert capacity={getSlotsCapacity(slots)} candidates={rows.length} />}
@@ -65,12 +65,12 @@ export function WeeklyPlanTaskEmployeesConfirm({ taskId, lineCode, showCandidate
                 cards={cards}
                 isLoading={isLoadingData}
                 errorMessage={activitiesQuery.error?.message ?? candidatesQuery.error?.message}
-                description="Arrastra a cada empleado al lugar libre de la actividad que cubrirá (en pantallas táctiles, tócalo y luego toca el lugar). Para sumar un alta, búscala en la actividad donde trabajará."
+                description="Arrastra a cada empleado al lugar libre de la actividad que cubrirá. Para mover varios a la vez, tócalos y luego toca un lugar libre o arrastra cualquiera de ellos. Para sumar un alta, búscala en la actividad donde trabajará."
                 poolTitle="Por asignar"
                 poolDescription="Candidatos de la línea que aún no tienen actividad. Reemplázalos o dalos de baja desde su tarjeta."
                 showPool
                 allowUnassign
-                onMove={assignCard}
+                onMove={assignCards}
                 actions={cardActions}
                 addEmployee={{
                     options: toEmployeeOptions(replacementEmployees, getTakenEmployeeIds(rows, additions)),
@@ -80,7 +80,7 @@ export function WeeklyPlanTaskEmployeesConfirm({ taskId, lineCode, showCandidate
                 poolFooter={<RemovedCandidatesList rows={getRemovedCandidates(rows)} onRestore={restoreCandidate} />}
             />
 
-            <ConfirmSummaryBar
+            <ConfirmSummaryBubble
                 summary={summary}
                 blockReason={blockReason}
                 hasChanges={hasChanges}

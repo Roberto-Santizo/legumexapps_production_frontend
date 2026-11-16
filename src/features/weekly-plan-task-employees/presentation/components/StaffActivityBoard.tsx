@@ -12,8 +12,8 @@ type Props = {
     showPool: boolean;
     allowUnassign?: boolean;
     readonly?: boolean;
-    pendingKey?: string;
-    onMove: (key: string, target: BoardTarget) => void;
+    pendingKeys?: string[];
+    onMove: (keys: string[], target: BoardTarget) => void;
     actions?: BoardCardActions;
     addEmployee?: StationAddConfig;
     poolFooter?: ReactNode;
@@ -21,7 +21,7 @@ type Props = {
 
 const NO_ACTIONS: BoardCardActions = {};
 
-export function StaffActivityBoard({ slots, cards, isLoading, errorMessage, description, poolTitle, poolDescription, showPool, allowUnassign = false, readonly = false, pendingKey, onMove, actions = NO_ACTIONS, addEmployee, poolFooter }: Props) {
+export function StaffActivityBoard({ slots, cards, isLoading, errorMessage, description, poolTitle, poolDescription, showPool, allowUnassign = false, readonly = false, pendingKeys, onMove, actions = NO_ACTIONS, addEmployee, poolFooter }: Props) {
     const board = useActivityBoard({ cards, onMove });
     const ready = !isLoading && !errorMessage;
 
@@ -40,7 +40,7 @@ export function StaffActivityBoard({ slots, cards, isLoading, errorMessage, desc
                 {ready && slots.length > 0 && <span className="font-mono text-xs text-ink-subtle">{formatOccupancy(cards, slots)}</span>}
             </div>
 
-            <BoardSelectionHint card={board.activeCard} isDragging={board.isDragging} onCancel={board.clear} />
+            <BoardSelectionHint cards={board.selectedCards} isDragging={board.isDragging} onCancel={board.clear} />
 
             {!ready && (
                 <div className="overflow-hidden rounded-xl border border-line bg-surface">
@@ -68,7 +68,7 @@ export function StaffActivityBoard({ slots, cards, isLoading, errorMessage, desc
                             description={poolDescription}
                             allowUnassign={allowUnassign}
                             readonly={readonly}
-                            pendingKey={pendingKey}
+                            pendingKeys={pendingKeys}
                             actions={actions}
                             footer={poolFooter}
                             className="lg:sticky lg:top-4"
@@ -83,7 +83,7 @@ export function StaffActivityBoard({ slots, cards, isLoading, errorMessage, desc
                                 cards={getCardsAt(cards, slot.id)}
                                 board={board}
                                 readonly={readonly}
-                                pendingKey={pendingKey}
+                                pendingKeys={pendingKeys}
                                 actions={actions}
                                 addEmployee={addEmployee}
                             />

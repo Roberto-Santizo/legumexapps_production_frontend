@@ -4,11 +4,13 @@ type Props = {
     cards: BoardCard[];
     board: ActivityBoardControls;
     readonly: boolean;
-    pendingKey?: string;
+    pendingKeys?: string[];
     actions: BoardCardActions;
 }
 
-export function BoardCardList({ cards, board, readonly, pendingKey, actions }: Props) {
+const NO_KEYS: string[] = [];
+
+export function BoardCardList({ cards, board, readonly, pendingKeys = NO_KEYS, actions }: Props) {
     if (cards.length === 0) return null;
 
     return (
@@ -17,9 +19,9 @@ export function BoardCardList({ cards, board, readonly, pendingKey, actions }: P
                 <BoardEmployeeCard
                     key={card.key}
                     card={card}
-                    selected={board.activeCard?.key === card.key}
+                    selected={board.isSelected(card.key)}
                     readonly={readonly}
-                    pending={pendingKey === card.key}
+                    pending={pendingKeys.includes(card.key)}
                     actions={actions}
                     onDragStart={(event) => board.startDrag(event, card.key)}
                     onDragEnd={board.endDrag}

@@ -16,6 +16,7 @@ export function StationAddEmployee({ options, isLoading, onAdd, activityId, acti
                 onChange={(employeeId) => employeeId && onAdd(employeeId, activityId)}
                 isLoading={isLoading}
                 isClearable={false}
+                closeMenuOnSelect={false}
             />
         </div>
     )

@@ -34,6 +34,8 @@ export function useCandidateRows(candidates: WeeklyPlanEmployee[]) {
         else setAdditionActivity(id, lineActivityId);
     };
 
+    const assignCards = (keys: string[], target: BoardTarget) => keys.forEach((key) => assignCard(key, target));
+
     const replaceAddition = (employeeId: string, replacementId: string) =>
         setAdditions((prev) => prev.map((addition) => (addition.employeeId === employeeId ? { ...addition, employeeId: replacementId } : addition)));
 
@@ -64,5 +66,5 @@ export function useCandidateRows(candidates: WeeklyPlanEmployee[]) {
         setAdditions([]);
     };
 
-    return { rows, additions, hasChanges, addAddition, assignCard, replaceCard, undoReplaceCard, removeCard, restoreCandidate, reset };
+    return { rows, additions, hasChanges, addAddition, assignCards, replaceCard, undoReplaceCard, removeCard, restoreCandidate, reset };
 }

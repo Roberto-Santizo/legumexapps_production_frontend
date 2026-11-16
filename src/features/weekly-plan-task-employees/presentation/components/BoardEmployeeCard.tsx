@@ -1,5 +1,5 @@
 import { useState, type DragEvent, type KeyboardEvent } from "react";
-import { GripVerticalIcon, LoaderCircleIcon } from "lucide-react";
+import { CheckIcon, GripVerticalIcon, LoaderCircleIcon } from "lucide-react";
 import { EmployeePhoto } from "@/features/shared/shared";
 import { BoardCardActionsBar, BoardCardReplaceField, formatPosition, type BoardCard, type BoardCardActions } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 
@@ -40,7 +40,7 @@ export function BoardEmployeeCard({ card, selected, readonly, pending, actions, 
                     role={interactive ? 'button' : undefined}
                     tabIndex={interactive ? 0 : undefined}
                     aria-pressed={interactive ? selected : undefined}
-                    aria-label={interactive ? `${card.name}. ${selected ? 'Seleccionado: elige un lugar libre' : 'Arrastra o selecciona para mover'}` : undefined}
+                    aria-label={interactive ? `${card.name}. ${selected ? 'Seleccionado' : 'Arrastra o selecciona para mover'}` : undefined}
                     draggable={interactive}
                     onDragStart={interactive ? onDragStart : undefined}
                     onDragEnd={interactive ? onDragEnd : undefined}
@@ -48,9 +48,15 @@ export function BoardEmployeeCard({ card, selected, readonly, pending, actions, 
                     onKeyDown={interactive ? handleKeyDown : undefined}
                     className={`flex min-w-0 flex-1 select-none items-center gap-3 rounded-lg py-2 pl-1.5 pr-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink ${interactive ? 'cursor-grab active:cursor-grabbing' : ''}`}
                 >
-                    {interactive
-                        ? <GripVerticalIcon className="size-4 shrink-0 text-line-strong transition-colors group-hover:text-ink-subtle" aria-hidden="true" />
-                        : <span className="w-4 shrink-0" aria-hidden="true" />}
+                    {interactive && selected && (
+                        <span className="flex size-4 shrink-0 items-center justify-center rounded bg-ink text-surface" aria-hidden="true">
+                            <CheckIcon className="size-3" strokeWidth={3} />
+                        </span>
+                    )}
+
+                    {interactive && !selected && <GripVerticalIcon className="size-4 shrink-0 text-line-strong transition-colors group-hover:text-ink-subtle" aria-hidden="true" />}
+
+                    {!interactive && <span className="w-4 shrink-0" aria-hidden="true" />}
 
                     <EmployeePhoto code={card.code} name={card.name} className="pointer-events-none aspect-[3/4] w-14 shrink-0 rounded-md border border-line" />
 

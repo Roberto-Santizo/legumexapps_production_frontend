@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from "react";
 import { CheckCircle2Icon } from "lucide-react";
-import { BoardCardList, BoardDropZone, canDropOnPool, EmptyPlace, filterBoardCards, PoolSearchField, type ActivityBoardControls, type BoardCard, type BoardCardActions } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
+import { BoardCardList, BoardDropZone, canDropOnPool, EmptyPlace, filterBoardCards, PoolSearchField, PoolSelectAll, type ActivityBoardControls, type BoardCard, type BoardCardActions } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 
 type Props = {
     cards: BoardCard[];
@@ -9,14 +9,14 @@ type Props = {
     description: string;
     allowUnassign: boolean;
     readonly: boolean;
-    pendingKey?: string;
+    pendingKeys?: string[];
     actions: BoardCardActions;
     footer?: ReactNode;
     className?: string;
 }
 
-export function UnassignedPool({ cards, board, title, description, allowUnassign, readonly, pendingKey, actions, footer, className = '' }: Props) {
-    const canDrop = !readonly && canDropOnPool(allowUnassign, board.activeCard);
+export function UnassignedPool({ cards, board, title, description, allowUnassign, readonly, pendingKeys, actions, footer, className = '' }: Props) {
+    const canDrop = !readonly && canDropOnPool(allowUnassign, board.movingCards);
     const [query, setQuery] = useState('');
     const count = cards.length;
     const visible = filterBoardCards(cards, query);
@@ -33,12 +33,14 @@ export function UnassignedPool({ cards, board, title, description, allowUnassign
 
             {count > 0 && <PoolSearchField value={query} onChange={setQuery} total={count} matches={visible.length} />}
 
+            {!readonly && <PoolSelectAll cards={visible} board={board} />}
+
             <div className="space-y-1.5 overflow-y-auto overscroll-contain p-2 lg:max-h-[calc(100vh-14rem)]">
                 {canDrop && !board.isDragging && (
                     <ul><EmptyPlace onPlace={() => board.place(null)} placeLabel="Dejar sin actividad" /></ul>
                 )}
 
-                <BoardCardList cards={visible} board={board} readonly={readonly} pendingKey={pendingKey} actions={actions} />
+                <BoardCardList cards={visible} board={board} readonly={readonly} pendingKeys={pendingKeys} actions={actions} />
 
                 {count > 0 && visible.length === 0 && (
                     <p className="px-3 py-6 text-center text-xs text-ink-muted">Nadie por asignar coincide con «{query.trim()}».</p>

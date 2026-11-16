@@ -1,3 +1,5 @@
+import type { ConfirmSummary } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
+
 export const hasTaskPositions = (positions: number): boolean => positions > 0;
 
 export const exceedsCapacity = (capacity: number, candidates: number): boolean =>
@@ -7,3 +9,10 @@ export const getConfirmQuestion = (finalCount: number) => ({
     title: '¿Desea confirmar el personal de la tarea?',
     description: `La tarea quedará con ${finalCount} ${finalCount === 1 ? 'empleado' : 'empleados'} y pasará a lista para ejecución. La confirmación se hace una sola vez.`,
 });
+
+export const getSummaryStatusLabel = (summary: ConfirmSummary, ready: boolean): string => {
+    if (ready) return 'Listo para confirmar';
+    if (summary.pendingActivities > 0) return `${summary.pendingActivities} sin actividad`;
+
+    return 'Revisar';
+};

@@ -1,17 +1,18 @@
-import { BoardCardList, BoardDropZone, canDropOnSlot, EmptyPlace, formatRemainingPlaces, getEmptyPlaces, StationAddEmployee, type ActivityBoardControls, type ActivitySlot, type BoardCard, type BoardCardActions, type StationAddConfig } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
+import { BoardCardList, BoardDropZone, canDropOnSlot, EmptyPlace, formatRemainingPlaces, getEmptyPlaces, getMissingPlaces, StationAddEmployee, type ActivityBoardControls, type ActivitySlot, type BoardCard, type BoardCardActions, type StationAddConfig } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 
 type Props = {
     slot: ActivitySlot;
     cards: BoardCard[];
     board: ActivityBoardControls;
     readonly: boolean;
-    pendingKey?: string;
+    pendingKeys?: string[];
     actions: BoardCardActions;
     addEmployee?: StationAddConfig;
 }
 
-export function ActivityStation({ slot, cards, board, readonly, pendingKey, actions, addEmployee }: Props) {
-    const canDrop = !readonly && canDropOnSlot(slot, board.activeCard);
+export function ActivityStation({ slot, cards, board, readonly, pendingKeys, actions, addEmployee }: Props) {
+    const canDrop = !readonly && canDropOnSlot(slot, board.movingCards);
+    const missing = readonly ? 0 : getMissingPlaces(slot, board.movingCards);
     const over = slot.remaining < 0;
     const { shown, hidden } = getEmptyPlaces(slot);
     const onPlace = canDrop && !board.isDragging ? () => board.place(slot.id) : undefined;
@@ -37,8 +38,14 @@ export function ActivityStation({ slot, cards, board, readonly, pendingKey, acti
                     <StationAddEmployee {...addEmployee} activityId={slot.id} activity={slot.activity} />
                 )}
 
+                {missing > 0 && (
+                    <p className="border-b border-line bg-canvas px-3.5 py-1.5 text-[11px] font-medium text-ink-muted">
+                        Faltan {missing} {missing === 1 ? 'lugar' : 'lugares'} para la selección
+                    </p>
+                )}
+
                 <div className="flex-1 space-y-1.5 p-2">
-                    <BoardCardList cards={cards} board={board} readonly={readonly} pendingKey={pendingKey} actions={actions} />
+                    <BoardCardList cards={cards} board={board} readonly={readonly} pendingKeys={pendingKeys} actions={actions} />
 
                     {shown > 0 && (
                         <ul className="space-y-1.5">

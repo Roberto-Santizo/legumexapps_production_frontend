@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { getZoneTone, isCardAt, type ActivityBoardControls, type BoardTarget, type ZoneTone } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
+import { areAllAt, getZoneTone, type ActivityBoardControls, type BoardTarget, type ZoneTone } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 
 type Props = {
     target: BoardTarget;
@@ -18,9 +18,8 @@ const TONE_CLASS: Record<ZoneTone, string> = {
 };
 
 export function BoardDropZone({ target, canDrop, board, alert = false, className = '', children }: Props) {
-    const { activeCard } = board;
-    const isOrigin = activeCard !== undefined && isCardAt(activeCard, target);
-    const tone = getZoneTone(activeCard !== undefined, canDrop, board.overTarget === target, isOrigin);
+    const { movingCards } = board;
+    const tone = getZoneTone(movingCards.length > 0, canDrop, board.overTarget === target, areAllAt(movingCards, target));
 
     return (
         <div

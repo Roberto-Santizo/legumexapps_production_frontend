@@ -69,13 +69,16 @@ const toPositionTag = (assignment: WeeklyPlanTaskEmployee): string | undefined =
         ? `Puesto: ${assignment.position_activity}`
         : undefined;
 
-export const buildRosterBoardCards = (assignments: WeeklyPlanTaskEmployee[], pendingMove?: PendingActivityMove): BoardCard[] =>
+const findPendingMove = (pendingMoves: PendingActivityMove[], id: number): PendingActivityMove | undefined =>
+    pendingMoves.find((move) => move.id === id);
+
+export const buildRosterBoardCards = (assignments: WeeklyPlanTaskEmployee[], pendingMoves: PendingActivityMove[]): BoardCard[] =>
     assignments.map((assignment) => ({
         key: `${assignment.id}`,
         name: assignment.name,
         code: assignment.code,
         position: assignment.position,
-        activityId: pendingMove?.id === assignment.id ? pendingMove.lineActivityId : assignment.line_activity_id ?? undefined,
+        activityId: findPendingMove(pendingMoves, assignment.id)?.lineActivityId ?? assignment.line_activity_id ?? undefined,
         tag: toPositionTag(assignment),
     }));
 
@@ -88,11 +91,29 @@ export const getCardActivityIds = (cards: BoardCard[]): (number | undefined)[] =
 export const isCardAt = (card: BoardCard, target: BoardTarget): boolean =>
     (card.activityId ?? null) === target;
 
-export const canDropOnSlot = (slot: ActivitySlot, card?: BoardCard): boolean =>
-    card !== undefined && !isCardAt(card, slot.id) && slot.remaining > 0;
+export const getMovingKeys = (selectedKeys: string[], key: string): string[] =>
+    selectedKeys.includes(key) ? selectedKeys : [key];
 
-export const canDropOnPool = (allowUnassign: boolean, card?: BoardCard): boolean =>
-    allowUnassign && card !== undefined && !isCardAt(card, null);
+export const countIncoming = (cards: BoardCard[], target: BoardTarget): number =>
+    cards.filter((card) => !isCardAt(card, target)).length;
+
+export const areAllAt = (cards: BoardCard[], target: BoardTarget): boolean =>
+    cards.length > 0 && countIncoming(cards, target) === 0;
+
+export const canDropOnSlot = (slot: ActivitySlot, cards: BoardCard[]): boolean => {
+    const incoming = countIncoming(cards, slot.id);
+
+    return incoming > 0 && incoming <= slot.remaining;
+};
+
+export const getMissingPlaces = (slot: ActivitySlot, cards: BoardCard[]): number =>
+    Math.max(countIncoming(cards, slot.id) - Math.max(slot.remaining, 0), 0);
+
+export const canDropOnPool = (allowUnassign: boolean, cards: BoardCard[]): boolean =>
+    allowUnassign && countIncoming(cards, null) > 0;
+
+export const formatSelectionCount = (count: number): string =>
+    `${count} ${count === 1 ? 'seleccionado' : 'seleccionados'}`;
 
 export const getEmptyPlaces = (slot: ActivitySlot): { shown: number; hidden: number } => {
     const free = Math.max(slot.remaining, 0);
@@ -101,8 +122,11 @@ export const getEmptyPlaces = (slot: ActivitySlot): { shown: number; hidden: num
     return { shown, hidden: free - shown };
 };
 
-export const findPendingKey = (pendingMove?: PendingActivityMove): string | undefined =>
-    pendingMove ? `${pendingMove.id}` : undefined;
+export const getPendingKeys = (pendingMoves: PendingActivityMove[]): string[] =>
+    pendingMoves.map((move) => `${move.id}`);
+
+export const toPendingMoves = (keys: string[], lineActivityId: number): PendingActivityMove[] =>
+    keys.map((key) => ({ id: Number(key), lineActivityId }));
 
 export const getZoneTone = (hasActive: boolean, canDrop: boolean, isOver: boolean, isOrigin: boolean): ZoneTone => {
     if (!hasActive || isOrigin) return 'idle';
@@ -129,3 +153,6 @@ export const filterBoardCards = (cards: BoardCard[], query: string): BoardCard[]
         [card.name, card.code, card.position ?? '', card.tag ?? ''].some((field) => normalizeSearch(field).includes(needle))
     );
 };
+
+export const formatBulkActivityMessage = (messages: string[]): string =>
+    messages.length === 1 ? messages[0] : `Se cambió la actividad de ${messages.length} empleados`;
