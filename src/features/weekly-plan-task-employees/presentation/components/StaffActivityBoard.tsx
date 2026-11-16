@@ -1,5 +1,5 @@
 import type { KeyboardEvent, ReactNode } from "react";
-import { ActivityStation, BoardSelectionHint, formatOccupancy, getCardsAt, StaffListEmpty, StaffListError, StaffListLoading, UnassignedPool, useActivityBoard, type ActivitySlot, type BoardCard, type BoardCardActions, type BoardTarget } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
+import { ActivityStation, BoardSelectionHint, formatOccupancy, getCardsAt, StaffListEmpty, StaffListError, StaffListLoading, UnassignedPool, useActivityBoard, type ActivitySlot, type BoardCard, type BoardCardActions, type BoardTarget, type StationAddConfig } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 
 type Props = {
     slots: ActivitySlot[];
@@ -15,13 +15,13 @@ type Props = {
     pendingKey?: string;
     onMove: (key: string, target: BoardTarget) => void;
     actions?: BoardCardActions;
-    poolHeader?: ReactNode;
+    addEmployee?: StationAddConfig;
     poolFooter?: ReactNode;
 }
 
 const NO_ACTIONS: BoardCardActions = {};
 
-export function StaffActivityBoard({ slots, cards, isLoading, errorMessage, description, poolTitle, poolDescription, showPool, allowUnassign = false, readonly = false, pendingKey, onMove, actions = NO_ACTIONS, poolHeader, poolFooter }: Props) {
+export function StaffActivityBoard({ slots, cards, isLoading, errorMessage, description, poolTitle, poolDescription, showPool, allowUnassign = false, readonly = false, pendingKey, onMove, actions = NO_ACTIONS, addEmployee, poolFooter }: Props) {
     const board = useActivityBoard({ cards, onMove });
     const ready = !isLoading && !errorMessage;
 
@@ -70,7 +70,6 @@ export function StaffActivityBoard({ slots, cards, isLoading, errorMessage, desc
                             readonly={readonly}
                             pendingKey={pendingKey}
                             actions={actions}
-                            header={poolHeader}
                             footer={poolFooter}
                             className="lg:sticky lg:top-4"
                         />
@@ -86,6 +85,7 @@ export function StaffActivityBoard({ slots, cards, isLoading, errorMessage, desc
                                 readonly={readonly}
                                 pendingKey={pendingKey}
                                 actions={actions}
+                                addEmployee={addEmployee}
                             />
                         ))}
                     </ul>

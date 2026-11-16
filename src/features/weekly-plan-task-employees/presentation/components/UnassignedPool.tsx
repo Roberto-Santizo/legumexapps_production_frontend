@@ -11,12 +11,11 @@ type Props = {
     readonly: boolean;
     pendingKey?: string;
     actions: BoardCardActions;
-    header?: ReactNode;
     footer?: ReactNode;
     className?: string;
 }
 
-export function UnassignedPool({ cards, board, title, description, allowUnassign, readonly, pendingKey, actions, header, footer, className = '' }: Props) {
+export function UnassignedPool({ cards, board, title, description, allowUnassign, readonly, pendingKey, actions, footer, className = '' }: Props) {
     const canDrop = !readonly && canDropOnPool(allowUnassign, board.activeCard);
     const [query, setQuery] = useState('');
     const count = cards.length;
@@ -31,8 +30,6 @@ export function UnassignedPool({ cards, board, title, description, allowUnassign
                 </div>
                 <p className="mt-1 text-xs text-ink-muted">{description}</p>
             </header>
-
-            {header}
 
             {count > 0 && <PoolSearchField value={query} onChange={setQuery} total={count} matches={visible.length} />}
 

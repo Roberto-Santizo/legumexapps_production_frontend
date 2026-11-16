@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNotification } from "@/features/shared/shared";
 import { biometricQueryProvider } from "@/features/biometric-queries/biometric-queries";
-import { ActivityCapacityAlert, buildActivitySlots, buildConfirmBoardCards, buildConfirmBody, ConfirmSummaryBar, getCardOwnerId, getConfirmBlockReason, getConfirmQuestion, getConfirmSummary, getRemovedCandidates, getSelectedActivityIds, getSlotsCapacity, getTakenEmployeeIds, PoolAddEmployee, RemovedCandidatesList, REPLACEMENT_LINE_CODE, StaffActivityBoard, TaskEmployeeErrorList, toEmployeeOptions, useCandidateRows, useConfirmTaskEmployees, useTaskLineActivities, weeklyPlanTaskEmployeeProvider, type BoardCardActions } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
+import { ActivityCapacityAlert, buildActivitySlots, buildConfirmBoardCards, buildConfirmBody, ConfirmSummaryBar, getCardOwnerId, getConfirmBlockReason, getConfirmQuestion, getConfirmSummary, getRemovedCandidates, getSelectedActivityIds, getSlotsCapacity, getTakenEmployeeIds, RemovedCandidatesList, REPLACEMENT_LINE_CODE, StaffActivityBoard, TaskEmployeeErrorList, toEmployeeOptions, useCandidateRows, useConfirmTaskEmployees, useTaskLineActivities, weeklyPlanTaskEmployeeProvider, type BoardCardActions } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 
 type Props = {
     taskId: string;
@@ -65,20 +65,18 @@ export function WeeklyPlanTaskEmployeesConfirm({ taskId, lineCode, showCandidate
                 cards={cards}
                 isLoading={isLoadingData}
                 errorMessage={activitiesQuery.error?.message ?? candidatesQuery.error?.message}
-                description="Arrastra a cada empleado al lugar libre de la actividad que cubrirá. En pantallas táctiles, tócalo y luego toca el lugar."
+                description="Arrastra a cada empleado al lugar libre de la actividad que cubrirá (en pantallas táctiles, tócalo y luego toca el lugar). Para sumar un alta, búscala en la actividad donde trabajará."
                 poolTitle="Por asignar"
-                poolDescription="Candidatos de la línea y altas que aún no tienen actividad. Reemplázalos o dalos de baja desde su tarjeta."
+                poolDescription="Candidatos de la línea que aún no tienen actividad. Reemplázalos o dalos de baja desde su tarjeta."
                 showPool
                 allowUnassign
                 onMove={assignCard}
                 actions={cardActions}
-                poolHeader={
-                    <PoolAddEmployee
-                        options={toEmployeeOptions(replacementEmployees, getTakenEmployeeIds(rows, additions))}
-                        isLoading={replacementEmployeesQuery.isLoading}
-                        onAdd={addAddition}
-                    />
-                }
+                addEmployee={{
+                    options: toEmployeeOptions(replacementEmployees, getTakenEmployeeIds(rows, additions)),
+                    isLoading: replacementEmployeesQuery.isLoading,
+                    onAdd: addAddition,
+                }}
                 poolFooter={<RemovedCandidatesList rows={getRemovedCandidates(rows)} onRestore={restoreCandidate} />}
             />
 

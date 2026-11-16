@@ -19,5 +19,5 @@ export * from './StaffActivityBoard';
 export * from './BoardCardActionsBar';
 export * from './BoardCardReplaceField';
 export * from './RemovedCandidatesList';
-export * from './PoolAddEmployee';
+export * from './StationAddEmployee';
 export * from './PoolSearchField';

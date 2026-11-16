@@ -17,8 +17,8 @@ export function useCandidateRows(candidates: WeeklyPlanEmployee[]) {
     const setRowActivity = (candidateId: string, lineActivityId?: number) =>
         setChanges((prev) => ({ ...prev, [candidateId]: { ...(prev[candidateId] ?? { action: 'keep' }), lineActivityId } }));
 
-    const addAddition = (employeeId: string) =>
-        setAdditions((prev) => (prev.some((addition) => addition.employeeId === employeeId) ? prev : [...prev, { employeeId }]));
+    const addAddition = (employeeId: string, lineActivityId?: number) =>
+        setAdditions((prev) => (prev.some((addition) => addition.employeeId === employeeId) ? prev : [...prev, { employeeId, lineActivityId }]));
 
     const removeAddition = (employeeId: string) =>
         setAdditions((prev) => prev.filter((addition) => addition.employeeId !== employeeId));

@@ -77,6 +77,12 @@ export type BoardCard = {
     replaced?: boolean;
 }
 
+export type StationAddConfig = {
+    options: EmployeeOption[];
+    isLoading: boolean;
+    onAdd: (employeeId: string, lineActivityId: number) => void;
+}
+
 export type BoardCardActions = {
     onRemove?: (key: string) => void;
     onReplace?: (key: string, employeeId: string) => void;

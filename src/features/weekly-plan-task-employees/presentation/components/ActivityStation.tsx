@@ -1,4 +1,4 @@
-import { BoardCardList, BoardDropZone, canDropOnSlot, EmptyPlace, formatRemainingPlaces, getEmptyPlaces, type ActivityBoardControls, type ActivitySlot, type BoardCard, type BoardCardActions } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
+import { BoardCardList, BoardDropZone, canDropOnSlot, EmptyPlace, formatRemainingPlaces, getEmptyPlaces, StationAddEmployee, type ActivityBoardControls, type ActivitySlot, type BoardCard, type BoardCardActions, type StationAddConfig } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 
 type Props = {
     slot: ActivitySlot;
@@ -7,9 +7,10 @@ type Props = {
     readonly: boolean;
     pendingKey?: string;
     actions: BoardCardActions;
+    addEmployee?: StationAddConfig;
 }
 
-export function ActivityStation({ slot, cards, board, readonly, pendingKey, actions }: Props) {
+export function ActivityStation({ slot, cards, board, readonly, pendingKey, actions, addEmployee }: Props) {
     const canDrop = !readonly && canDropOnSlot(slot, board.activeCard);
     const over = slot.remaining < 0;
     const { shown, hidden } = getEmptyPlaces(slot);
@@ -31,6 +32,10 @@ export function ActivityStation({ slot, cards, board, readonly, pendingKey, acti
                         <p className={`text-[11px] ${over ? 'font-medium text-red-700' : 'text-ink-muted'}`}>{formatRemainingPlaces(slot.remaining)}</p>
                     </div>
                 </header>
+
+                {addEmployee && !readonly && slot.remaining > 0 && (
+                    <StationAddEmployee {...addEmployee} activityId={slot.id} activity={slot.activity} />
+                )}
 
                 <div className="flex-1 space-y-1.5 p-2">
                     <BoardCardList cards={cards} board={board} readonly={readonly} pendingKey={pendingKey} actions={actions} />
