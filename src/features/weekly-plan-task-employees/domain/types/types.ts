@@ -14,6 +14,10 @@ export type WeeklyPlanTaskEmployeeForm = {
     weekly_plan_employee_id: string;
 }
 
+export type UpdateWeeklyPlanTaskEmployeeActivityForm = {
+    line_activity_id: number;
+}
+
 export type CandidateAction = 'keep' | 'remove' | 'replace';
 
 export type CandidateRow = {
@@ -40,4 +44,20 @@ export type ConfirmSummary = {
     additions: number;
     removals: number;
     pendingReplacements: number;
+}
+
+export type ActivitySlot = {
+    id: number;
+    activity: string;
+    unit: string;
+    quantity: number;
+    used: number;
+    remaining: number;
+}
+
+export type ActivityOption = {
+    value: number;
+    label: string;
+    detail: string;
+    disabled: boolean;
 }

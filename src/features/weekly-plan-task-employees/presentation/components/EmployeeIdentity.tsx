@@ -1,9 +1,10 @@
 import { EmployeePhoto } from "@/features/shared/shared";
+import { formatPosition } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 
 type TextProps = {
     name: string;
     code: string;
-    position: string;
+    position: string | null;
     struck?: boolean;
 }
 
@@ -15,7 +16,7 @@ export function EmployeeIdentityText({ name, code, position, struck = false }: T
     return (
         <span className="flex min-w-0 items-center gap-3">
             <span className="w-24 shrink-0 rounded-md border border-line bg-canvas px-2 py-1 text-center font-mono text-[11px] tracking-wide text-ink-muted">
-                {position}
+                {formatPosition(position)}
             </span>
 
             <span className="block min-w-0">
@@ -33,7 +34,7 @@ export function EmployeeIdentity({ name, code, position, struck = false, zoomabl
                 code={code}
                 name={name}
                 zoomable={zoomablePhoto}
-                detail={`${code} · ${position}`}
+                detail={`${code} · ${formatPosition(position)}`}
                 className={`aspect-[3/4] w-10 shrink-0 rounded-md border border-line motion-safe:transition-[filter,opacity] ${struck ? 'opacity-60 grayscale' : ''}`}
             />
 

@@ -1,4 +1,4 @@
-import { type ConfirmWeeklyPlanTaskEmployeesForm, type WeeklyPlanEmployee, type WeeklyPlanTaskEmployee, type WeeklyPlanTaskEmployeeForm, type WeeklyPlanTaskEmployeeRepository } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
+import { type ConfirmWeeklyPlanTaskEmployeesForm, type UpdateWeeklyPlanTaskEmployeeActivityForm, type WeeklyPlanEmployee, type WeeklyPlanTaskEmployee, type WeeklyPlanTaskEmployeeRepository } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 import { WeeklyPlanTaskEmployeeDatasourceImpl, WeeklyPlanTaskEmployeeRepositoryImpl } from "@/features/weekly-plan-task-employees/infrastructure/infrastructure";
 import api from "@/config/http/axios";
 
@@ -13,20 +13,12 @@ export class WeeklyPlanTaskEmployeeProvider {
         return this.repository.getEmployeesByTaskId(taskId);
     }
 
-    getWeeklyPlanEmployees(): Promise<WeeklyPlanEmployee[]> {
-        return this.repository.getWeeklyPlanEmployees();
-    }
-
     confirmEmployeesByTaskId(taskId: string, payload: ConfirmWeeklyPlanTaskEmployeesForm): Promise<string> {
         return this.repository.confirmEmployeesByTaskId(taskId, payload);
     }
 
-    addEmployeeByTaskId(taskId: string, payload: WeeklyPlanTaskEmployeeForm): Promise<string> {
-        return this.repository.addEmployeeByTaskId(taskId, payload);
-    }
-
-    replaceWeeklyPlanTaskEmployeeById(id: string, payload: WeeklyPlanTaskEmployeeForm): Promise<string> {
-        return this.repository.replaceWeeklyPlanTaskEmployeeById(id, payload);
+    updateWeeklyPlanTaskEmployeeActivityById(id: string, payload: UpdateWeeklyPlanTaskEmployeeActivityForm): Promise<string> {
+        return this.repository.updateWeeklyPlanTaskEmployeeActivityById(id, payload);
     }
 
     deleteWeeklyPlanTaskEmployeeById(id: string): Promise<string> {

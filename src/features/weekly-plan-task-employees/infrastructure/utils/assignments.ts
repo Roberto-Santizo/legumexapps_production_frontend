@@ -9,5 +9,4 @@ export const getAssignedEmployeeIds = (employees: WeeklyPlanEmployee[], assignme
 export const findAssignmentById = (assignments: WeeklyPlanTaskEmployee[], id: string | null): WeeklyPlanTaskEmployee | undefined =>
     assignments.find((assignment) => `${assignment.id}` === id);
 
-export const formatReplacedEmployee = (assignment: WeeklyPlanTaskEmployee): string | null =>
-    assignment.replaced_name ? `Reemplaza a ${assignment.replaced_name} (${assignment.replaced_code})` : null;
+export const formatPosition = (position: string | null): string => position ?? 'Sin posición';

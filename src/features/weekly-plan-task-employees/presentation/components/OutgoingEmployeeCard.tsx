@@ -3,7 +3,7 @@ import { EmployeeIdentity } from "@/features/weekly-plan-task-employees/weekly-p
 type Props = {
     name: string;
     code: string;
-    position: string;
+    position: string | null;
 }
 
 export function OutgoingEmployeeCard({ name, code, position }: Props) {
