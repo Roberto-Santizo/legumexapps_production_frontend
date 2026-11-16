@@ -17,7 +17,7 @@ export function MissingActivitiesAlert({ count, editable }: Props) {
 
             <p className="mt-1 pl-6 text-sm text-amber-700">
                 {editable
-                    ? 'Fueron asignados antes de las actividades por línea. Usa "Asignar actividad" en cada uno.'
+                    ? 'Fueron asignados antes de las actividades por línea. Arrástralos a una actividad del tablero.'
                     : 'Fueron asignados antes de las actividades por línea.'}
             </p>
         </div>

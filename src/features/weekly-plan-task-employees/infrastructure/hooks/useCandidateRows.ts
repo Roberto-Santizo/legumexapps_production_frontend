@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { buildCandidateRows, type AdditionRow, type CandidateAction, type CandidateRowChange, type WeeklyPlanEmployee } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
+import { buildCandidateRows, parseBoardCardKey, type AdditionRow, type BoardTarget, type CandidateAction, type CandidateRowChange, type WeeklyPlanEmployee } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 
 export function useCandidateRows(candidates: WeeklyPlanEmployee[]) {
     const [changes, setChanges] = useState<Record<string, CandidateRowChange>>({});
@@ -26,10 +26,25 @@ export function useCandidateRows(candidates: WeeklyPlanEmployee[]) {
     const setAdditionActivity = (employeeId: string, lineActivityId?: number) =>
         setAdditions((prev) => prev.map((addition) => (addition.employeeId === employeeId ? { ...addition, lineActivityId } : addition)));
 
+    const assignCard = (key: string, target: BoardTarget) => {
+        const { kind, id } = parseBoardCardKey(key);
+        const lineActivityId = target ?? undefined;
+
+        if (kind === 'candidate') setRowActivity(id, lineActivityId);
+        else setAdditionActivity(id, lineActivityId);
+    };
+
+    const removeCard = (key: string) => {
+        const { kind, id } = parseBoardCardKey(key);
+
+        if (kind === 'candidate') setAction(id, 'remove');
+        else removeAddition(id);
+    };
+
     const reset = () => {
         setChanges({});
         setAdditions([]);
     };
 
-    return { rows, additions, hasChanges, setAction, setReplacement, setRowActivity, addAddition, removeAddition, setAdditionActivity, reset };
+    return { rows, additions, hasChanges, setAction, setReplacement, addAddition, removeAddition, assignCard, removeCard, reset };
 }

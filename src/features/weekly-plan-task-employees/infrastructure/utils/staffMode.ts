@@ -2,9 +2,9 @@ import type { StaffMode } from "@/features/weekly-plan-task-employees/weekly-pla
 
 const STAFF_MODE_DESCRIPTIONS: Record<number, string> = {
     1: 'El personal se podrá confirmar cuando se entregue el material de empaque.',
-    2: 'Revisa a los candidatos de la línea, marca reemplazos, bajas o altas, asigna a cada empleado la actividad que cubre y confirma. La confirmación se hace una sola vez.',
-    3: 'Cambia la actividad de cada empleado o retíralo mientras la tarea esté lista para ejecución.',
-    4: 'Cambia la actividad de cada empleado o retíralo mientras la tarea esté en progreso.',
+    2: 'Revisa a los candidatos de la línea, marca reemplazos, bajas o altas y arrastra a cada empleado a la actividad que cubrirá. La confirmación se hace una sola vez.',
+    3: 'Arrastra a un empleado a otra actividad para cambiarla, o retíralo, mientras la tarea esté lista para ejecución.',
+    4: 'Arrastra a un empleado a otra actividad para cambiarla, o retíralo, mientras la tarea esté en progreso.',
     5: 'La tarea finalizó. El personal queda solo para consulta.',
 };
 

@@ -1,7 +1,5 @@
-import { useLocation, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { handleSetQueryParam } from "@/features/shared/shared";
-import { ActivitySlotsBoard, buildActivitySlots, countMissingActivities, getAssignmentActivityIds, MissingActivitiesAlert, StaffListEmpty, StaffListError, StaffListLoading, TASK_EMPLOYEE_ACTIVITY_PARAM, taskEmployeesQueryKey, useRemoveTaskEmployee, useTaskLineActivities, WeeklyPlanTaskEmployeeRow, weeklyPlanTaskEmployeeProvider } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
+import { buildActivitySlots, buildRosterBoardCards, countMissingActivities, findAssignmentByKey, findPendingKey, getCardActivityIds, MissingActivitiesAlert, StaffActivityBoard, StaffListEmpty, StaffListError, StaffListLoading, taskEmployeesQueryKey, useRemoveTaskEmployee, useTaskLineActivities, useUpdateTaskEmployeeActivity, weeklyPlanTaskEmployeeProvider, type BoardTarget } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 
 type Props = {
     taskId: string;
@@ -10,9 +8,8 @@ type Props = {
 }
 
 export function WeeklyPlanTaskEmployeesRoster({ taskId, lineCode, editable }: Props) {
-    const navigate = useNavigate();
-    const location = useLocation();
     const { handleRemove } = useRemoveTaskEmployee(taskId);
+    const { updateActivity, pendingMove } = useUpdateTaskEmployeeActivity(taskId);
     const activitiesQuery = useTaskLineActivities(lineCode);
 
     const { data, isLoading, isError, error } = useQuery({
@@ -22,51 +19,54 @@ export function WeeklyPlanTaskEmployeesRoster({ taskId, lineCode, editable }: Pr
     });
 
     const employees = data ?? [];
-    const slots = buildActivitySlots(activitiesQuery.data ?? [], getAssignmentActivityIds(employees));
+    const cards = buildRosterBoardCards(employees, pendingMove);
+    const slots = buildActivitySlots(activitiesQuery.data ?? [], getCardActivityIds(cards));
+    const missing = countMissingActivities(employees);
+
+    const handleMove = (key: string, target: BoardTarget) => {
+        if (target !== null) updateActivity(Number(key), target);
+    };
+
+    const handleRemoveCard = (key: string) => {
+        const assignment = findAssignmentByKey(employees, key);
+        if (assignment) handleRemove(assignment);
+    };
+
+    if (isLoading || isError || employees.length === 0) {
+        return (
+            <div className="overflow-hidden rounded-xl border border-line bg-surface">
+                {isLoading && <StaffListLoading />}
+                {isError && <StaffListError message={error.message} />}
+                {data && (
+                    <StaffListEmpty
+                        title="Sin personal asignado"
+                        description="El personal aparecerá aquí cuando se confirme la asignación de la tarea."
+                    />
+                )}
+            </div>
+        )
+    }
 
     return (
         <div className="space-y-6">
-            {data && employees.length > 0 && (
-                <ActivitySlotsBoard
-                    slots={slots}
-                    isLoading={activitiesQuery.isLoading}
-                    errorMessage={activitiesQuery.error?.message}
-                    description="Personal activo de la tarea en cada actividad de la línea."
-                />
-            )}
+            <MissingActivitiesAlert count={missing} editable={editable} />
 
-            <MissingActivitiesAlert count={countMissingActivities(employees)} editable={editable} />
-
-            <section className="space-y-3">
-                <div className="flex items-baseline gap-3">
-                    <h3 className="text-sm font-semibold text-ink">Personal asignado</h3>
-                    {data && <span className="font-mono text-xs text-ink-subtle">{employees.length} empleados</span>}
-                </div>
-
-                <div className="max-h-[28rem] divide-y divide-line overflow-y-auto overscroll-contain rounded-xl border border-line bg-surface">
-                    {isLoading && <StaffListLoading />}
-
-                    {isError && <StaffListError message={error.message} />}
-
-                    {data && employees.length === 0 && (
-                        <StaffListEmpty
-                            title="Sin personal asignado"
-                            description="El personal aparecerá aquí cuando se confirme la asignación de la tarea."
-                        />
-                    )}
-
-                    {employees.map((assignment) => (
-                        <WeeklyPlanTaskEmployeeRow
-                            key={assignment.id}
-                            assignment={assignment}
-                            editable={editable}
-                            canRemove={employees.length > 1}
-                            onChangeActivity={() => handleSetQueryParam(location, navigate, TASK_EMPLOYEE_ACTIVITY_PARAM, `${assignment.id}`)}
-                            onRemove={() => handleRemove(assignment)}
-                        />
-                    ))}
-                </div>
-            </section>
+            <StaffActivityBoard
+                slots={slots}
+                cards={cards}
+                isLoading={activitiesQuery.isLoading}
+                errorMessage={activitiesQuery.error?.message}
+                description={editable
+                    ? 'Arrastra a un empleado a un lugar libre de otra actividad para cambiarla. En pantallas táctiles, tócalo y luego toca el lugar.'
+                    : 'Personal de la tarea en cada actividad de la línea.'}
+                poolTitle="Sin actividad"
+                poolDescription="Asignados antes de las actividades por línea."
+                showPool={missing > 0}
+                readonly={!editable}
+                pendingKey={findPendingKey(pendingMove)}
+                onMove={handleMove}
+                onRemove={employees.length > 1 ? handleRemoveCard : undefined}
+            />
         </div>
     )
 }

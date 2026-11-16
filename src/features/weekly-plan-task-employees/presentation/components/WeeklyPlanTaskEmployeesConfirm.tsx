@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNotification } from "@/features/shared/shared";
 import { biometricQueryProvider } from "@/features/biometric-queries/biometric-queries";
-import { ActivityCapacityAlert, ActivitySlotsBoard, buildActivitySlots, buildConfirmBody, CandidatesList, ConfirmAdditionsPanel, ConfirmSummaryBar, getConfirmBlockReason, getConfirmQuestion, getConfirmSummary, getSelectedActivityIds, getSlotsCapacity, getTakenEmployeeIds, pickAddedEmployees, REPLACEMENT_LINE_CODE, TaskEmployeeErrorList, toActivityOptions, toEmployeeOptions, useCandidateRows, useConfirmTaskEmployees, useTaskLineActivities, weeklyPlanTaskEmployeeProvider } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
+import { ActivityCapacityAlert, buildActivitySlots, buildConfirmBoardCards, buildConfirmBody, CandidatesList, ConfirmAdditionsPanel, ConfirmSummaryBar, getConfirmBlockReason, getConfirmQuestion, getConfirmSummary, getSelectedActivityIds, getSlotsCapacity, getTakenEmployeeIds, pickAddedEmployees, REPLACEMENT_LINE_CODE, StaffActivityBoard, TaskEmployeeErrorList, toEmployeeOptions, useCandidateRows, useConfirmTaskEmployees, useTaskLineActivities, weeklyPlanTaskEmployeeProvider } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 
 type Props = {
     taskId: string;
@@ -29,12 +29,12 @@ export function WeeklyPlanTaskEmployeesConfirm({ taskId, lineCode, showCandidate
     const { confirm, isPending, errors, clearErrors } = useConfirmTaskEmployees(taskId);
 
     const replacementEmployees = replacementEmployeesQuery.data ?? [];
-    const { rows, additions, hasChanges, setAction, setReplacement, setRowActivity, addAddition, removeAddition, setAdditionActivity, reset } = useCandidateRows(showCandidates ? candidatesQuery.data ?? [] : []);
+    const { rows, additions, hasChanges, setAction, setReplacement, addAddition, removeAddition, assignCard, removeCard, reset } = useCandidateRows(showCandidates ? candidatesQuery.data ?? [] : []);
     const slots = buildActivitySlots(activitiesQuery.data ?? [], getSelectedActivityIds(rows, additions));
+    const cards = buildConfirmBoardCards(rows, additions, replacementEmployees);
     const summary = getConfirmSummary(rows, additions);
     const isLoadingData = candidatesQuery.isLoading || activitiesQuery.isLoading;
     const blockReason = isLoadingData ? 'Cargando candidatos y actividades' : getConfirmBlockReason(summary, slots);
-    const getActivityOptions = (lineActivityId?: number) => toActivityOptions(slots, lineActivityId);
 
     const handleConfirm = () => {
         const { title, description } = getConfirmQuestion(summary.finalCount);
@@ -47,42 +47,43 @@ export function WeeklyPlanTaskEmployeesConfirm({ taskId, lineCode, showCandidate
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-8">
             <TaskEmployeeErrorList title="No se pudo confirmar el personal" errors={errors} />
 
-            <ActivitySlotsBoard
+            {showCandidates && <ActivityCapacityAlert capacity={getSlotsCapacity(slots)} candidates={rows.length} />}
+
+            <StaffActivityBoard
                 slots={slots}
-                isLoading={activitiesQuery.isLoading}
-                errorMessage={activitiesQuery.error?.message}
-                description="Cada empleado ocupa un lugar en la actividad que se le asigne."
+                cards={cards}
+                isLoading={isLoadingData}
+                errorMessage={activitiesQuery.error?.message ?? candidatesQuery.error?.message}
+                description="Arrastra a cada empleado al lugar libre de la actividad que cubrirá. En pantallas táctiles, tócalo y luego toca el lugar."
+                poolTitle="Por asignar"
+                poolDescription="Personal de la tarea que aún no tiene actividad."
+                showPool
+                allowUnassign
+                onMove={assignCard}
+                onRemove={removeCard}
             />
 
             {showCandidates && (
-                <>
-                    <ActivityCapacityAlert capacity={getSlotsCapacity(slots)} candidates={rows.length} />
-
-                    <CandidatesList
-                        rows={rows}
-                        isLoading={candidatesQuery.isLoading}
-                        errorMessage={candidatesQuery.error?.message}
-                        isLoadingOptions={replacementEmployeesQuery.isLoading}
-                        getReplacementOptions={(candidateId) => toEmployeeOptions(replacementEmployees, getTakenEmployeeIds(rows, additions, candidateId))}
-                        getActivityOptions={getActivityOptions}
-                        onActionChange={setAction}
-                        onReplacementChange={setReplacement}
-                        onActivityChange={setRowActivity}
-                    />
-                </>
+                <CandidatesList
+                    rows={rows}
+                    isLoading={candidatesQuery.isLoading}
+                    errorMessage={candidatesQuery.error?.message}
+                    isLoadingOptions={replacementEmployeesQuery.isLoading}
+                    getReplacementOptions={(candidateId) => toEmployeeOptions(replacementEmployees, getTakenEmployeeIds(rows, additions, candidateId))}
+                    onActionChange={setAction}
+                    onReplacementChange={setReplacement}
+                />
             )}
 
             <ConfirmAdditionsPanel
                 added={pickAddedEmployees(replacementEmployees, additions)}
                 options={toEmployeeOptions(replacementEmployees, getTakenEmployeeIds(rows, additions))}
                 isLoadingOptions={replacementEmployeesQuery.isLoading}
-                getActivityOptions={getActivityOptions}
                 onAdd={addAddition}
                 onRemove={removeAddition}
-                onActivityChange={setAdditionActivity}
             />
 
             <ConfirmSummaryBar

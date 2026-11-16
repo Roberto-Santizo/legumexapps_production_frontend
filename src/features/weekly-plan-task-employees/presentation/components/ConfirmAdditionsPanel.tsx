@@ -1,22 +1,20 @@
 import { XIcon } from "lucide-react";
-import { ActivitySelect, EmployeeIdentity, EmployeeSelect, type ActivityOption, type AddedEmployee, type EmployeeOption } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
+import { EmployeeIdentity, EmployeeSelect, type AddedEmployee, type EmployeeOption } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 
 type Props = {
     added: AddedEmployee[];
     options: EmployeeOption[];
     isLoadingOptions: boolean;
-    getActivityOptions: (lineActivityId?: number) => ActivityOption[];
     onAdd: (employeeId: string) => void;
     onRemove: (employeeId: string) => void;
-    onActivityChange: (employeeId: string, lineActivityId?: number) => void;
 }
 
-export function ConfirmAdditionsPanel({ added, options, isLoadingOptions, getActivityOptions, onAdd, onRemove, onActivityChange }: Props) {
+export function ConfirmAdditionsPanel({ added, options, isLoadingOptions, onAdd, onRemove }: Props) {
     return (
         <section className="space-y-3">
             <div>
                 <h3 className="text-sm font-semibold text-ink">Altas sin reemplazo</h3>
-                <p className="mt-0.5 text-xs text-ink-muted">Empleados que se suman a la tarea sin ocupar el lugar de un candidato. Cada alta necesita una actividad.</p>
+                <p className="mt-0.5 text-xs text-ink-muted">Empleados que se suman a la tarea sin ocupar el lugar de un candidato. Aparecen en el tablero para asignarles actividad.</p>
             </div>
 
             <div className="overflow-hidden rounded-xl border border-line bg-surface">
@@ -36,27 +34,18 @@ export function ConfirmAdditionsPanel({ added, options, isLoadingOptions, getAct
                 )}
 
                 <ul className="divide-y divide-line">
-                    {added.map(({ employee, lineActivityId }) => (
-                        <li key={employee.id} className="flex flex-col gap-3 px-5 py-3 lg:flex-row lg:items-center lg:justify-between">
+                    {added.map(({ employee }) => (
+                        <li key={employee.id} className="flex items-center justify-between gap-3 px-5 py-3">
                             <EmployeeIdentity name={employee.name} code={employee.code} position={employee.position} />
 
-                            <div className="flex items-center gap-2 lg:w-96 lg:shrink-0">
-                                <ActivitySelect
-                                    id={`addition-activity-${employee.id}`}
-                                    options={getActivityOptions(lineActivityId)}
-                                    value={lineActivityId}
-                                    onChange={(id) => onActivityChange(employee.id, id)}
-                                />
-
-                                <button
-                                    type="button"
-                                    onClick={() => onRemove(employee.id)}
-                                    aria-label={`Quitar alta de ${employee.name}`}
-                                    className="cursor-pointer rounded-md p-1.5 text-ink-subtle transition-colors hover:bg-canvas hover:text-ink focus-visible:outline-2 focus-visible:outline-ink"
-                                >
-                                    <XIcon className="size-4" />
-                                </button>
-                            </div>
+                            <button
+                                type="button"
+                                onClick={() => onRemove(employee.id)}
+                                aria-label={`Quitar alta de ${employee.name}`}
+                                className="cursor-pointer rounded-md p-1.5 text-ink-subtle transition-colors hover:bg-canvas hover:text-ink focus-visible:outline-2 focus-visible:outline-ink"
+                            >
+                                <XIcon className="size-4" />
+                            </button>
                         </li>
                     ))}
                 </ul>

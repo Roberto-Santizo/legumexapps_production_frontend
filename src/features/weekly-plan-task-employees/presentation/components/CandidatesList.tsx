@@ -1,4 +1,4 @@
-import { CandidateRowComponent, StaffListEmpty, StaffListError, StaffListLoading, type ActivityOption, type CandidateAction, type CandidateRow, type EmployeeOption } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
+import { CandidateRowComponent, StaffListEmpty, StaffListError, StaffListLoading, type CandidateAction, type CandidateRow, type EmployeeOption } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 
 type Props = {
     rows: CandidateRow[];
@@ -6,19 +6,17 @@ type Props = {
     errorMessage?: string;
     isLoadingOptions: boolean;
     getReplacementOptions: (candidateId: string) => EmployeeOption[];
-    getActivityOptions: (lineActivityId?: number) => ActivityOption[];
     onActionChange: (candidateId: string, action: CandidateAction) => void;
     onReplacementChange: (candidateId: string, replacementId?: string) => void;
-    onActivityChange: (candidateId: string, lineActivityId?: number) => void;
 }
 
-export function CandidatesList({ rows, isLoading, errorMessage, isLoadingOptions, getReplacementOptions, getActivityOptions, onActionChange, onReplacementChange, onActivityChange }: Props) {
+export function CandidatesList({ rows, isLoading, errorMessage, isLoadingOptions, getReplacementOptions, onActionChange, onReplacementChange }: Props) {
     return (
         <section className="space-y-3">
             <div className="flex items-baseline justify-between gap-3">
                 <div>
                     <h3 className="text-sm font-semibold text-ink">Candidatos de la línea</h3>
-                    <p className="mt-0.5 text-xs text-ink-muted">Empleados que el biométrico reporta en la línea de la tarea.</p>
+                    <p className="mt-0.5 text-xs text-ink-muted">Empleados que el biométrico reporta en la línea. Decide quién se queda, quién sale y quién entra en su lugar.</p>
                 </div>
 
                 {!isLoading && <span className="font-mono text-xs text-ink-subtle">{rows.length} candidatos</span>}
@@ -41,11 +39,9 @@ export function CandidatesList({ rows, isLoading, errorMessage, isLoadingOptions
                         key={row.candidate.id}
                         row={row}
                         replacementOptions={getReplacementOptions(row.candidate.id)}
-                        activityOptions={getActivityOptions(row.lineActivityId)}
                         isLoadingOptions={isLoadingOptions}
                         onActionChange={(action) => onActionChange(row.candidate.id, action)}
                         onReplacementChange={(replacementId) => onReplacementChange(row.candidate.id, replacementId)}
-                        onActivityChange={(lineActivityId) => onActivityChange(row.candidate.id, lineActivityId)}
                     />
                 ))}
             </div>

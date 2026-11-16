@@ -65,11 +65,22 @@ export type ActivitySlot = {
     remaining: number;
 }
 
-export type SlotMark = 'filled' | 'empty' | 'over';
+export type BoardTarget = number | null;
 
-export type ActivityOption = {
-    value: number;
-    label: string;
-    detail: string;
-    disabled: boolean;
+export type BoardCard = {
+    key: string;
+    name: string;
+    code: string;
+    position: string | null;
+    activityId?: number;
+    tag?: string;
+}
+
+export type BoardCardKind = 'candidate' | 'addition';
+
+export type ZoneTone = 'idle' | 'eligible' | 'over' | 'blocked';
+
+export type PendingActivityMove = {
+    id: number;
+    lineActivityId: number;
 }
