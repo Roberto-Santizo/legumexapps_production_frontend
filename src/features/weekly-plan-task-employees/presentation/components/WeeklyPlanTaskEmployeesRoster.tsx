@@ -47,7 +47,7 @@ export function WeeklyPlanTaskEmployeesRoster({ taskId, lineCode, editable }: Pr
                         isLoading={activitiesQuery.isLoading}
                         errorMessage={activitiesQuery.error?.message}
                         description={editable
-                            ? 'Arrastra a un empleado a un lugar libre de otra actividad para cambiarla. Para mover varios a la vez, tócalos y luego toca un lugar libre.'
+                            ? 'Para cambiar de actividad, toca a una o varias personas y pulsa «Colocar aquí» en la nueva actividad, o arrástralas.'
                             : 'Personal de la tarea en cada actividad de la línea.'}
                         poolTitle="Sin actividad"
                         poolDescription="Asignados antes de las actividades por línea."

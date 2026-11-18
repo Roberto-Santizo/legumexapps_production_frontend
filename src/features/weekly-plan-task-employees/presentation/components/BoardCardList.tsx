@@ -6,15 +6,16 @@ type Props = {
     readonly: boolean;
     pendingKeys?: string[];
     actions: BoardCardActions;
+    className?: string;
 }
 
 const NO_KEYS: string[] = [];
 
-export function BoardCardList({ cards, board, readonly, pendingKeys = NO_KEYS, actions }: Props) {
+export function BoardCardList({ cards, board, readonly, pendingKeys = NO_KEYS, actions, className = 'space-y-1.5' }: Props) {
     if (cards.length === 0) return null;
 
     return (
-        <ul className="space-y-1.5">
+        <ul className={className}>
             {cards.map((card) => (
                 <BoardEmployeeCard
                     key={card.key}

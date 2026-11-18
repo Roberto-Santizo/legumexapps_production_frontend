@@ -1,5 +1,5 @@
 import { Collapse } from "@/features/shared/shared";
-import { BoardCardList, BoardDropZone, canDropOnSlot, EmptyPlace, formatRemainingPlaces, getEmptyPlaces, getMissingPlaces, StationAddEmployee, type ActivityBoardControls, type ActivitySlot, type BoardCard, type BoardCardActions, type StationAddConfig } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
+import { BoardCardList, BoardDropZone, canDropOnSlot, getMissingPlaces, SlotMeter, StationAddEmployee, StationPlaceButton, type ActivityBoardControls, type ActivitySlot, type BoardCard, type BoardCardActions, type StationAddConfig } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 
 type Props = {
     slot: ActivitySlot;
@@ -15,49 +15,42 @@ export function ActivityStation({ slot, cards, board, readonly, pendingKeys, act
     const canDrop = !readonly && canDropOnSlot(slot, board.movingCards);
     const missing = readonly ? 0 : getMissingPlaces(slot, board.movingCards);
     const over = slot.remaining < 0;
-    const { shown, hidden } = getEmptyPlaces(slot);
-    const onPlace = canDrop && !board.isDragging ? () => board.place(slot.id) : undefined;
 
     return (
         <li>
-            <BoardDropZone target={slot.id} canDrop={canDrop} board={board} alert={over} className="h-full bg-surface">
-                <header className="flex items-start justify-between gap-3 border-b border-line px-3.5 py-3">
-                    <div className="min-w-0">
-                        <h4 className="truncate text-sm font-semibold tracking-wide text-ink">{slot.activity}</h4>
-                        <p className="mt-0.5 font-mono text-[11px] text-ink-subtle">{slot.unit}</p>
+            <BoardDropZone target={slot.id} canDrop={canDrop} board={board} alert={over} className="bg-surface">
+                <header className="flex flex-wrap items-center gap-x-4 gap-y-2 px-3.5 py-3">
+                    <div className="min-w-0 flex-1">
+                        <div className="flex items-baseline gap-2">
+                            <h4 className="truncate text-sm font-semibold text-ink">{slot.activity}</h4>
+                            <span className="font-mono text-[11px] text-ink-subtle">{slot.unit}</span>
+                        </div>
+                        <SlotMeter slot={slot} className="mt-2" />
                     </div>
 
-                    <div className="shrink-0 text-right">
-                        <p className={`font-mono text-sm tabular-nums ${over ? 'text-red-700' : 'text-ink'}`}>
-                            {slot.used}<span className={over ? 'text-red-400' : 'text-ink-subtle'}>/{slot.quantity}</span>
-                        </p>
-                        <p className={`text-[11px] ${over ? 'font-medium text-red-700' : 'text-ink-muted'}`}>{formatRemainingPlaces(slot.remaining)}</p>
-                    </div>
+                    {!board.isDragging && <StationPlaceButton canPlace={canDrop} missing={missing} onPlace={() => board.place(slot.id)} />}
                 </header>
 
                 <Collapse show={!readonly && slot.remaining > 0}>
-                    {addEmployee && <StationAddEmployee {...addEmployee} activityId={slot.id} activity={slot.activity} />}
+                    {addEmployee && (
+                        <div className="border-t border-line">
+                            <StationAddEmployee {...addEmployee} activityId={slot.id} activity={slot.activity} />
+                        </div>
+                    )}
                 </Collapse>
 
-                <Collapse show={missing > 0}>
-                    <p className="border-b border-line bg-canvas px-3.5 py-1.5 text-[11px] font-medium text-ink-muted">
-                        Faltan {missing} {missing === 1 ? 'lugar' : 'lugares'} para la selección
-                    </p>
-                </Collapse>
-
-                <div className="flex-1 space-y-1.5 p-2">
-                    <BoardCardList cards={cards} board={board} readonly={readonly} pendingKeys={pendingKeys} actions={actions} />
-
-                    {shown > 0 && (
-                        <ul className="space-y-1.5">
-                            {Array.from({ length: shown }, (_, index) => <EmptyPlace key={index} onPlace={onPlace} />)}
-                        </ul>
-                    )}
-
-                    {hidden > 0 && (
-                        <p className="px-1 pt-0.5 text-center font-mono text-[11px] text-ink-subtle">+{hidden} {hidden === 1 ? 'lugar libre' : 'lugares libres'}</p>
-                    )}
-                </div>
+                {cards.length > 0 && (
+                    <div className="border-t border-line p-2">
+                        <BoardCardList
+                            cards={cards}
+                            board={board}
+                            readonly={readonly}
+                            pendingKeys={pendingKeys}
+                            actions={actions}
+                            className="grid gap-1.5 xl:grid-cols-2"
+                        />
+                    </div>
+                )}
             </BoardDropZone>
         </li>
     )

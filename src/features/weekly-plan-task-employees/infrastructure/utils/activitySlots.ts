@@ -44,3 +44,6 @@ export const formatRemainingPlaces = (remaining: number): string => {
 
 export const formatOverbookedSlot = (slot: ActivitySlot): string =>
     `La actividad ${slot.activity} admite ${slot.quantity} ${slot.quantity === 1 ? 'persona' : 'personas'} y tiene ${slot.used}`;
+
+export const getSlotFillPercent = (slot: ActivitySlot): number =>
+    Math.min(100, (slot.used / Math.max(slot.quantity, 1)) * 100);

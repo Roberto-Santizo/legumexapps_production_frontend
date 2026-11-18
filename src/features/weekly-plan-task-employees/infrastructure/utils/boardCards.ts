@@ -2,8 +2,6 @@ import { findEmployeeById, isFinalMember, type ActivitySlot, type AdditionRow, t
 
 const KEY_SEPARATOR = ':';
 
-export const MAX_EMPTY_PLACES = 4;
-
 export const toBoardCardKey = (kind: BoardCardKind, id: string): string => `${kind}${KEY_SEPARATOR}${id}`;
 
 export const parseBoardCardKey = (key: string): { kind: BoardCardKind; id: string } => {
@@ -115,13 +113,6 @@ export const canDropOnPool = (allowUnassign: boolean, cards: BoardCard[]): boole
 export const formatSelectionCount = (count: number): string =>
     `${count} ${count === 1 ? 'seleccionado' : 'seleccionados'}`;
 
-export const getEmptyPlaces = (slot: ActivitySlot): { shown: number; hidden: number } => {
-    const free = Math.max(slot.remaining, 0);
-    const shown = Math.min(free, MAX_EMPTY_PLACES);
-
-    return { shown, hidden: free - shown };
-};
-
 export const getPendingKeys = (pendingMoves: PendingActivityMove[]): string[] =>
     pendingMoves.map((move) => `${move.id}`);
 
@@ -156,3 +147,6 @@ export const filterBoardCards = (cards: BoardCard[], query: string): BoardCard[]
 
 export const formatBulkActivityMessage = (messages: string[]): string =>
     messages.length === 1 ? messages[0] : `Se cambió la actividad de ${messages.length} empleados`;
+
+export const formatMissingPlaces = (missing: number): string =>
+    `Faltan ${missing} ${missing === 1 ? 'lugar' : 'lugares'}`;

@@ -78,7 +78,7 @@ export function StaffActivityBoard({ slots, cards, isLoading, errorMessage, desc
                             />
                         )}
 
-                        <ul className="grid gap-3 md:grid-cols-2 min-[1800px]:grid-cols-3">
+                        <ul className="space-y-2">
                             {slots.map((slot) => (
                                 <ActivityStation
                                     key={slot.id}

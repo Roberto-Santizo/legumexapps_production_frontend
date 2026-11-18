@@ -12,6 +12,8 @@ export * from './BoardCardList';
 export * from './BoardDropZone';
 export * from './EmptyPlace';
 export * from './ActivityStation';
+export * from './SlotMeter';
+export * from './StationPlaceButton';
 export * from './UnassignedPool';
 export * from './BoardSelectionHint';
 export * from './StaffActivityBoard';

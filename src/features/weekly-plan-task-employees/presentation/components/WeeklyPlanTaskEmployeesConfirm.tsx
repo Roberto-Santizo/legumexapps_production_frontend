@@ -65,7 +65,7 @@ export function WeeklyPlanTaskEmployeesConfirm({ taskId, lineCode, showCandidate
                 cards={cards}
                 isLoading={isLoadingData}
                 errorMessage={activitiesQuery.error?.message ?? candidatesQuery.error?.message}
-                description="Arrastra a cada empleado al lugar libre de la actividad que cubrirá. Para mover varios a la vez, tócalos y luego toca un lugar libre o arrastra cualquiera de ellos. Para sumar un alta, búscala en la actividad donde trabajará."
+                description="Toca a una o varias personas y pulsa «Colocar aquí» en su actividad, o arrástralas. Para sumar un alta, búscala en la actividad donde trabajará."
                 poolTitle="Por asignar"
                 poolDescription="Candidatos de la línea que aún no tienen actividad. Reemplázalos o dalos de baja desde su tarjeta."
                 showPool
