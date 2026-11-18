@@ -6,3 +6,5 @@ export * from './positions';
 export * from './activitySlots';
 export * from './taskEmployeeQueries';
 export * from './boardCards';
+export * from './boardView';
+export * from './boardMotion';

@@ -1,5 +1,7 @@
 import { useState, type ReactNode } from "react";
+import { motion } from "framer-motion";
 import { CheckCircle2Icon } from "lucide-react";
+import { Collapse } from "@/features/shared/shared";
 import { BoardCardList, BoardDropZone, canDropOnPool, EmptyPlace, filterBoardCards, PoolSearchField, PoolSelectAll, type ActivityBoardControls, type BoardCard, type BoardCardActions } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 
 type Props = {
@@ -31,14 +33,16 @@ export function UnassignedPool({ cards, board, title, description, allowUnassign
                 <p className="mt-1 text-xs text-ink-muted">{description}</p>
             </header>
 
-            {count > 0 && <PoolSearchField value={query} onChange={setQuery} total={count} matches={visible.length} />}
+            <Collapse show={count > 0}>
+                <PoolSearchField value={query} onChange={setQuery} total={count} matches={visible.length} />
+            </Collapse>
 
             {!readonly && <PoolSelectAll cards={visible} board={board} />}
 
-            <div className="space-y-1.5 overflow-y-auto overscroll-contain p-2 lg:max-h-[calc(100vh-14rem)]">
-                {canDrop && !board.isDragging && (
+            <motion.div layoutScroll className="space-y-1.5 overflow-y-auto overscroll-contain p-2 lg:max-h-[calc(100vh-14rem)]">
+                <Collapse show={canDrop && !board.isDragging}>
                     <ul><EmptyPlace onPlace={() => board.place(null)} placeLabel="Dejar sin actividad" /></ul>
-                )}
+                </Collapse>
 
                 <BoardCardList cards={visible} board={board} readonly={readonly} pendingKeys={pendingKeys} actions={actions} />
 
@@ -52,7 +56,7 @@ export function UnassignedPool({ cards, board, title, description, allowUnassign
                         Todos tienen actividad
                     </p>
                 )}
-            </div>
+            </motion.div>
 
             {footer}
         </BoardDropZone>

@@ -1,3 +1,4 @@
+import { Collapse } from "@/features/shared/shared";
 import { BoardCardList, BoardDropZone, canDropOnSlot, EmptyPlace, formatRemainingPlaces, getEmptyPlaces, getMissingPlaces, StationAddEmployee, type ActivityBoardControls, type ActivitySlot, type BoardCard, type BoardCardActions, type StationAddConfig } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 
 type Props = {
@@ -34,15 +35,15 @@ export function ActivityStation({ slot, cards, board, readonly, pendingKeys, act
                     </div>
                 </header>
 
-                {addEmployee && !readonly && slot.remaining > 0 && (
-                    <StationAddEmployee {...addEmployee} activityId={slot.id} activity={slot.activity} />
-                )}
+                <Collapse show={!readonly && slot.remaining > 0}>
+                    {addEmployee && <StationAddEmployee {...addEmployee} activityId={slot.id} activity={slot.activity} />}
+                </Collapse>
 
-                {missing > 0 && (
+                <Collapse show={missing > 0}>
                     <p className="border-b border-line bg-canvas px-3.5 py-1.5 text-[11px] font-medium text-ink-muted">
                         Faltan {missing} {missing === 1 ? 'lugar' : 'lugares'} para la selección
                     </p>
-                )}
+                </Collapse>
 
                 <div className="flex-1 space-y-1.5 p-2">
                     <BoardCardList cards={cards} board={board} readonly={readonly} pendingKeys={pendingKeys} actions={actions} />

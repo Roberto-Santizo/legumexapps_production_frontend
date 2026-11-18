@@ -10,3 +10,5 @@ export * from './BlurIn';
 export * from './RotateIn';
 export * from './StaggerContainer';
 export * from './StaggerItem';
+export * from './FadeSwitch';
+export * from './Collapse';

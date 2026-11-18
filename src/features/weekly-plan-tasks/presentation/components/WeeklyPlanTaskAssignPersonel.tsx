@@ -1,4 +1,5 @@
-import { ErrorComponent, Loading } from "@/features/shared/shared";
+import { MotionConfig } from "framer-motion";
+import { ErrorComponent, FadeSwitch, Loading } from "@/features/shared/shared";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { WeeklyPlanTaskHeader, weeklyPlanTaskProvider } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
@@ -20,15 +21,19 @@ export function WeeklyPlanTaskAssignPersonel() {
     const showCandidates = hasTaskPositions(data.positions);
 
     return (
-      <div className="space-y-6">
-        <WeeklyPlanTaskHeader task={data} />
+      <MotionConfig reducedMotion="user">
+        <div className="space-y-6">
+          <WeeklyPlanTaskHeader task={data} />
 
-        <WeeklyPlanTaskStaffHeader status={data.status} />
+          <FadeSwitch switchKey={mode} className="space-y-6">
+            <WeeklyPlanTaskStaffHeader status={data.status} />
 
-        {mode === 'confirm'
-          ? <WeeklyPlanTaskEmployeesConfirm taskId={id!} lineCode={data.line_code} showCandidates={showCandidates} />
-          : <WeeklyPlanTaskEmployeesRoster taskId={id!} lineCode={data.line_code} editable={mode === 'edit'} />}
-      </div>
+            {mode === 'confirm'
+              ? <WeeklyPlanTaskEmployeesConfirm taskId={id!} lineCode={data.line_code} showCandidates={showCandidates} />
+              : <WeeklyPlanTaskEmployeesRoster taskId={id!} lineCode={data.line_code} editable={mode === 'edit'} />}
+          </FadeSwitch>
+        </div>
+      </MotionConfig>
     )
   }
 }

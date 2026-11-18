@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { buildActivitySlots, buildRosterBoardCards, countMissingActivities, findAssignmentByKey, getPendingKeys, getCardActivityIds, MissingActivitiesAlert, StaffActivityBoard, StaffListEmpty, StaffListError, StaffListLoading, taskEmployeesQueryKey, useRemoveTaskEmployee, useTaskLineActivities, useUpdateTaskEmployeeActivity, weeklyPlanTaskEmployeeProvider, type BoardTarget } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
+import { FadeSwitch } from "@/features/shared/shared";
+import { buildActivitySlots, buildRosterBoardCards, countMissingActivities, findAssignmentByKey, getPendingKeys, getCardActivityIds, getRosterView, MissingActivitiesAlert, StaffActivityBoard, StaffListEmpty, StaffListError, StaffListLoading, taskEmployeesQueryKey, useRemoveTaskEmployee, useTaskLineActivities, useUpdateTaskEmployeeActivity, weeklyPlanTaskEmployeeProvider, type BoardTarget } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 
 type Props = {
     taskId: string;
@@ -32,41 +33,43 @@ export function WeeklyPlanTaskEmployeesRoster({ taskId, lineCode, editable }: Pr
         if (assignment) handleRemove(assignment);
     };
 
-    if (isLoading || isError || employees.length === 0) {
-        return (
-            <div className="overflow-hidden rounded-xl border border-line bg-surface">
-                {isLoading && <StaffListLoading />}
-                {isError && <StaffListError message={error.message} />}
-                {data && (
-                    <StaffListEmpty
-                        title="Sin personal asignado"
-                        description="El personal aparecerá aquí cuando se confirme la asignación de la tarea."
-                    />
-                )}
-            </div>
-        )
-    }
+    const view = getRosterView(isLoading, isError, employees.length);
 
     return (
-        <div className="space-y-6">
-            <MissingActivitiesAlert count={missing} editable={editable} />
+        <FadeSwitch switchKey={view}>
+            {view === 'board' ? (
+                <div className="space-y-6">
+                    <MissingActivitiesAlert count={missing} editable={editable} />
 
-            <StaffActivityBoard
-                slots={slots}
-                cards={cards}
-                isLoading={activitiesQuery.isLoading}
-                errorMessage={activitiesQuery.error?.message}
-                description={editable
-                    ? 'Arrastra a un empleado a un lugar libre de otra actividad para cambiarla. Para mover varios a la vez, tócalos y luego toca un lugar libre.'
-                    : 'Personal de la tarea en cada actividad de la línea.'}
-                poolTitle="Sin actividad"
-                poolDescription="Asignados antes de las actividades por línea."
-                showPool={missing > 0}
-                readonly={!editable}
-                pendingKeys={getPendingKeys(pendingMoves)}
-                onMove={handleMove}
-                actions={{ onRemove: employees.length > 1 ? handleRemoveCard : undefined }}
-            />
-        </div>
+                    <StaffActivityBoard
+                        slots={slots}
+                        cards={cards}
+                        isLoading={activitiesQuery.isLoading}
+                        errorMessage={activitiesQuery.error?.message}
+                        description={editable
+                            ? 'Arrastra a un empleado a un lugar libre de otra actividad para cambiarla. Para mover varios a la vez, tócalos y luego toca un lugar libre.'
+                            : 'Personal de la tarea en cada actividad de la línea.'}
+                        poolTitle="Sin actividad"
+                        poolDescription="Asignados antes de las actividades por línea."
+                        showPool={missing > 0}
+                        readonly={!editable}
+                        pendingKeys={getPendingKeys(pendingMoves)}
+                        onMove={handleMove}
+                        actions={{ onRemove: employees.length > 1 ? handleRemoveCard : undefined }}
+                    />
+                </div>
+            ) : (
+                <div className="overflow-hidden rounded-xl border border-line bg-surface">
+                    {view === 'loading' && <StaffListLoading />}
+                    {view === 'error' && <StaffListError message={error?.message ?? ''} />}
+                    {view === 'empty' && (
+                        <StaffListEmpty
+                            title="Sin personal asignado"
+                            description="El personal aparecerá aquí cuando se confirme la asignación de la tarea."
+                        />
+                    )}
+                </div>
+            )}
+        </FadeSwitch>
     )
 }

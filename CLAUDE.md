@@ -123,3 +123,7 @@ UI copy, notification messages, validation messages, and commit messages are in 
 ## Comments
 
 **NUNCA** agregar comentarios en el código (ni `//`, ni `/* */`, ni JSDoc, ni `{/* */}` en JSX), en ningún archivo nuevo o modificado.
+
+## Verification
+
+**NUNCA** verificar los cambios en el navegador (ni preview/dev server, ni screenshots, ni browser tools) después de realizar cambios.

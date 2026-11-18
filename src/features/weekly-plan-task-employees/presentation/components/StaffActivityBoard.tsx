@@ -1,5 +1,6 @@
 import type { KeyboardEvent, ReactNode } from "react";
-import { ActivityStation, BoardSelectionHint, formatOccupancy, getCardsAt, StaffListEmpty, StaffListError, StaffListLoading, UnassignedPool, useActivityBoard, type ActivitySlot, type BoardCard, type BoardCardActions, type BoardTarget, type StationAddConfig } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
+import { FadeSwitch } from "@/features/shared/shared";
+import { ActivityStation, BoardSelectionHint, formatOccupancy, getBoardView, getCardsAt, StaffListEmpty, StaffListError, StaffListLoading, UnassignedPool, useActivityBoard, type ActivitySlot, type BoardCard, type BoardCardActions, type BoardTarget, type StationAddConfig } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 
 type Props = {
     slots: ActivitySlot[];
@@ -23,7 +24,8 @@ const NO_ACTIONS: BoardCardActions = {};
 
 export function StaffActivityBoard({ slots, cards, isLoading, errorMessage, description, poolTitle, poolDescription, showPool, allowUnassign = false, readonly = false, pendingKeys, onMove, actions = NO_ACTIONS, addEmployee, poolFooter }: Props) {
     const board = useActivityBoard({ cards, onMove });
-    const ready = !isLoading && !errorMessage;
+    const view = getBoardView(isLoading, errorMessage, slots.length, showPool);
+    const ready = view === 'board' || view === 'board-pool';
 
     const handleKeyDown = (event: KeyboardEvent) => {
         if (event.key === 'Escape') board.clear();
@@ -42,55 +44,57 @@ export function StaffActivityBoard({ slots, cards, isLoading, errorMessage, desc
 
             <BoardSelectionHint cards={board.selectedCards} isDragging={board.isDragging} onCancel={board.clear} />
 
-            {!ready && (
-                <div className="overflow-hidden rounded-xl border border-line bg-surface">
-                    {isLoading && <StaffListLoading />}
-                    {errorMessage && <StaffListError message={errorMessage} />}
-                </div>
-            )}
+            <FadeSwitch switchKey={view}>
+                {(view === 'loading' || view === 'error') && (
+                    <div className="overflow-hidden rounded-xl border border-line bg-surface">
+                        {view === 'loading' && <StaffListLoading />}
+                        {view === 'error' && <StaffListError message={errorMessage ?? ''} />}
+                    </div>
+                )}
 
-            {ready && slots.length === 0 && (
-                <div className="rounded-xl border border-line bg-surface">
-                    <StaffListEmpty
-                        title="La línea no tiene actividades"
-                        description="Configura las actividades y sus lugares en el detalle de la línea para poder asignar personal."
-                    />
-                </div>
-            )}
-
-            {ready && slots.length > 0 && (
-                <div className={showPool ? 'grid gap-3 lg:grid-cols-[21rem_minmax(0,1fr)] xl:grid-cols-[24rem_minmax(0,1fr)] lg:items-start' : ''}>
-                    {showPool && (
-                        <UnassignedPool
-                            cards={getCardsAt(cards, null)}
-                            board={board}
-                            title={poolTitle}
-                            description={poolDescription}
-                            allowUnassign={allowUnassign}
-                            readonly={readonly}
-                            pendingKeys={pendingKeys}
-                            actions={actions}
-                            footer={poolFooter}
-                            className="lg:sticky lg:top-4"
+                {view === 'empty' && (
+                    <div className="rounded-xl border border-line bg-surface">
+                        <StaffListEmpty
+                            title="La línea no tiene actividades"
+                            description="Configura las actividades y sus lugares en el detalle de la línea para poder asignar personal."
                         />
-                    )}
+                    </div>
+                )}
 
-                    <ul className="grid gap-3 md:grid-cols-2 min-[1800px]:grid-cols-3">
-                        {slots.map((slot) => (
-                            <ActivityStation
-                                key={slot.id}
-                                slot={slot}
-                                cards={getCardsAt(cards, slot.id)}
+                {ready && slots.length > 0 && (
+                    <div className={showPool ? 'grid gap-3 lg:grid-cols-[21rem_minmax(0,1fr)] xl:grid-cols-[24rem_minmax(0,1fr)] lg:items-start' : ''}>
+                        {showPool && (
+                            <UnassignedPool
+                                cards={getCardsAt(cards, null)}
                                 board={board}
+                                title={poolTitle}
+                                description={poolDescription}
+                                allowUnassign={allowUnassign}
                                 readonly={readonly}
                                 pendingKeys={pendingKeys}
                                 actions={actions}
-                                addEmployee={addEmployee}
+                                footer={poolFooter}
+                                className="lg:sticky lg:top-4"
                             />
-                        ))}
-                    </ul>
-                </div>
-            )}
+                        )}
+
+                        <ul className="grid gap-3 md:grid-cols-2 min-[1800px]:grid-cols-3">
+                            {slots.map((slot) => (
+                                <ActivityStation
+                                    key={slot.id}
+                                    slot={slot}
+                                    cards={getCardsAt(cards, slot.id)}
+                                    board={board}
+                                    readonly={readonly}
+                                    pendingKeys={pendingKeys}
+                                    actions={actions}
+                                    addEmployee={addEmployee}
+                                />
+                            ))}
+                        </ul>
+                    </div>
+                )}
+            </FadeSwitch>
         </section>
     )
 }

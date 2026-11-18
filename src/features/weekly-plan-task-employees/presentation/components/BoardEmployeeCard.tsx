@@ -1,7 +1,8 @@
 import { useState, type DragEvent, type KeyboardEvent } from "react";
+import { motion } from "framer-motion";
 import { CheckIcon, GripVerticalIcon, LoaderCircleIcon } from "lucide-react";
-import { EmployeePhoto } from "@/features/shared/shared";
-import { BoardCardActionsBar, BoardCardReplaceField, formatPosition, type BoardCard, type BoardCardActions } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
+import { Collapse, EmployeePhoto } from "@/features/shared/shared";
+import { BoardCardActionsBar, BoardCardReplaceField, CARD_LAYOUT_TRANSITION, formatPosition, getCardOpacity, type BoardCard, type BoardCardActions } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 
 type Props = {
     card: BoardCard;
@@ -34,7 +35,14 @@ export function BoardEmployeeCard({ card, selected, readonly, pending, actions, 
     };
 
     return (
-        <li className={`group overflow-hidden rounded-lg border bg-surface transition-[border-color,box-shadow,opacity] motion-reduce:transition-none ${selected || replacing ? 'border-ink shadow-md ring-2 ring-ink/10' : 'border-line hover:border-line-strong hover:shadow-sm'} ${pending ? 'opacity-60' : ''}`}>
+        <motion.li
+            layout="position"
+            layoutId={card.key}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: getCardOpacity(pending) }}
+            transition={CARD_LAYOUT_TRANSITION}
+            className={`group overflow-hidden rounded-lg border bg-surface transition-[border-color,box-shadow] motion-reduce:transition-none ${selected || replacing ? 'border-ink shadow-md ring-2 ring-ink/10' : 'border-line hover:border-line-strong hover:shadow-sm'}`}
+        >
             <div className="flex items-center">
                 <div
                     role={interactive ? 'button' : undefined}
@@ -83,7 +91,7 @@ export function BoardEmployeeCard({ card, selected, readonly, pending, actions, 
                 )}
             </div>
 
-            {replacing && (
+            <Collapse show={replacing}>
                 <BoardCardReplaceField
                     name={card.name}
                     options={getReplacementOptions?.(card.key) ?? []}
@@ -91,7 +99,7 @@ export function BoardEmployeeCard({ card, selected, readonly, pending, actions, 
                     onPick={handlePick}
                     onCancel={() => setReplacing(false)}
                 />
-            )}
-        </li>
+            </Collapse>
+        </motion.li>
     )
 }
