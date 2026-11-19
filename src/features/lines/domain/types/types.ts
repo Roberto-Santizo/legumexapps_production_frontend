@@ -11,4 +11,5 @@ export type LineForm = {
     shift: number;
     capture_type: CaptureType;
     is_wildcard: boolean;
+    supervisor_code: string | null;
 }

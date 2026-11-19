@@ -13,7 +13,7 @@ export function CreateLine() {
         register,
         control,
         formState: { errors }
-    } = useForm<LineForm>({ defaultValues: { capture_type: 'pallet', is_wildcard: false } });
+    } = useForm<LineForm>({ defaultValues: { capture_type: 'pallet', is_wildcard: false, supervisor_code: '' } });
 
     const { mutate, isPending } = useMutation({
         mutationFn: (payload: LineForm) => linesRepositoryProvider.createLine(payload),

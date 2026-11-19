@@ -33,6 +33,16 @@ export function LineFormComponent({ register, errors, control, captureTypeLocked
                 errorMessage={errors.code?.message}
             />
 
+            <TextFormField<LineForm>
+                name="supervisor_code"
+                label="Código de supervisor"
+                placeholder="Código del supervisor (opcional)"
+                register={register}
+                validation={{}}
+                type="text"
+                errorMessage={errors.supervisor_code?.message}
+            />
+
             <SelectFormField<LineForm>
                 name="shift"
                 label="Turno"
