@@ -7,7 +7,6 @@ import { CreateCaptureField, IndexCaptureFields, ShowCaptureField, UpdateCapture
 import { CreateActivity, IndexActivities, ShowActivity, UpdateActivity } from "@/features/activities/activities";
 import { CreatePackingMaterial, IndexPackingMaterials, ShowPackingMaterial, UpdatePackingMaterial } from "@/features/packing-materials/packing-materials";
 import { CreatePerformance, IndexPerformances, ShowPerformance, UpdatePerformance } from "@/features/performances/performances";
-import { CreatePosition, IndexPositions, ShowPosition, UpdatePosition } from "@/features/positions/positions";
 import { CreateRawMaterial, IndexRawMaterials, ShowRawMaterial, UpdateRawMaterial } from "@/features/raw-materials/raw-materials";
 import { CreateSku, IndexSkus, ShowSku, UpdateSku } from "@/features/skus/skus";
 import { CreateTimeout, IndexTimeouts, ShowTimeout, UpdateTimeout } from "@/features/timeouts/timeouts";
@@ -58,10 +57,6 @@ export default function AppRouter() {
                 </Route>
 
                 <Route element={<ProtectedLayout />}>
-                    <Route path="/posiciones" element={<IndexPositions />} />
-                    <Route path="/posiciones/crear" element={<CreatePosition />} />
-                    <Route path="/posiciones/:id/editar" element={<UpdatePosition />} />
-                    <Route path="/posiciones/:id" element={<ShowPosition />} />
                 </Route>
 
                 <Route element={<ProtectedLayout />}>

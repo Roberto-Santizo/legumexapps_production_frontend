@@ -7,7 +7,9 @@ export const LineSchema = z.object({
     name: z.string(),
     code: z.string(),
     shift: z.number(),
-    capture_type: CaptureTypeSchema
+    capture_type: CaptureTypeSchema,
+    activities: z.number(),
+    positions: z.number()
 });
 
 export const PaginatedLinesSchema = ApiPaginatedResponseSchema.extend({

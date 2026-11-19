@@ -11,5 +11,10 @@ export const WeeklyPlanTaskEmployeeSchema = z.object({
     id: z.number(),
     name: z.string(),
     code: z.string(),
-    position: z.string(),
+    position_id: z.number().nullable(),
+    position: z.string().nullable(),
+    position_activity: z.string().nullable(),
+    line_activity_id: z.number().nullable(),
+    activity: z.string().nullable(),
+    unit: z.string().nullable(),
 });

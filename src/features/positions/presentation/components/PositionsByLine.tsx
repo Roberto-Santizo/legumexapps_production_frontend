@@ -1,49 +1,73 @@
-import { positionProvider } from "@/features/positions/positions";
-import { useQuery } from "@tanstack/react-query";
-import { WorkflowIcon } from "lucide-react";
+import { BulkUploadModal } from "@/features/shared/shared";
+import { countActivePositions, invalidatePositionQueries, ModalCreatePosition, ModalEditPosition, ModalShowPosition, positionBulkUploadColumns, positionProvider, PositionsEmptyState, PositionsHeader, PositionsTable, useDeletePosition, usePositionModals, usePositionsByLine } from "@/features/positions/positions";
+import { useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import type { Line } from "@/features/lines/lines";
 
 type Props = {
-    code: Line['code']
+    lineId: Line['id'];
+    lineCode: Line['code'];
 }
 
-export function PositionsByLine({ code }: Props) {
-    const { data: positions } = useQuery({
-        queryKey: ['getPositionsByLineCode', code],
-        queryFn: () => positionProvider.getPositions('', '', code),
-    });
+export function PositionsByLine({ lineId, lineCode }: Props) {
+    const queryClient = useQueryClient();
+    const [create, setCreate] = useState(false);
+    const [bulkUpload, setBulkUpload] = useState(false);
 
-    if (positions) return (
-        <div>
-            {positions.data.length ? (
-                <div className="relative overflow-hidden rounded-xl border border-line bg-surface">
-                    <div className="absolute inset-y-5 left-[1.6rem] w-px bg-line" aria-hidden="true" />
+    const { showId, editId, openShow, openEdit, close } = usePositionModals();
+    const { data, isLoading, isError, error } = usePositionsByLine(lineCode);
+    const { handleDeletePosition, isDeleting } = useDeletePosition({ lineCode, onSuccess: close });
 
-                    <ul className="divide-y divide-line">
-                        {positions.data.map(position => (
-                            <li key={position.id} className="relative flex items-center gap-4 px-5 py-4">
-                                <span
-                                    className={`z-10 size-2.5 shrink-0 rounded-full ring-4 ring-surface ${position.status ? 'bg-[#4d6b2f] ' : 'bg-line-strong'}`}
-                                    aria-hidden="true"
-                                />
+    const positions = data?.data ?? [];
 
-                                <span className="w-24 shrink-0 font-mono text-sm text-ink-muted">{position.code}</span>
+    return (
+        <section className="overflow-hidden rounded-2xl border border-line bg-surface">
+            <PositionsHeader
+                count={positions.length}
+                active={countActivePositions(positions)}
+                onAdd={() => setCreate(true)}
+                onBulkUpload={() => setBulkUpload(true)}
+            />
 
-                                <span className="flex-1 text-sm text-ink">{position.activity}</span>
-
-                                <span className={`text-xs font-medium ${position.status ? 'text-ink-subtle' : 'text-[#4d6b2f]'}`}>
-                                    {position.status ? 'Activo' : 'Inactivo'}
-                                </span>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            ) : (
-                <div className="flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-line bg-surface py-10 text-center">
-                    <WorkflowIcon className="size-6 text-ink-subtle" />
-                    <p className="text-sm text-ink-muted">Esta línea no tiene posiciones registradas</p>
+            {isLoading && (
+                <div className="space-y-px">
+                    {[0, 1, 2].map(index => (
+                        <div key={index} className="flex animate-pulse gap-6 px-5 py-4 motion-reduce:animate-none">
+                            <span className="h-2.5 w-16 rounded-full bg-canvas" />
+                            <span className="h-2.5 flex-1 rounded-full bg-canvas" />
+                        </div>
+                    ))}
                 </div>
             )}
-        </div>
+
+            {isError && <p className="px-5 py-10 text-center text-sm text-ink-muted">{error.message}</p>}
+
+            {data && positions.length === 0 && (
+                <div className="p-5">
+                    <PositionsEmptyState onAdd={() => setCreate(true)} />
+                </div>
+            )}
+
+            {positions.length > 0 && (
+                <PositionsTable positions={positions} onShow={openShow} onEdit={openEdit} onRemove={handleDeletePosition} />
+            )}
+
+            <ModalCreatePosition open={create} close={() => setCreate(false)} lineId={lineId} lineCode={lineCode} />
+
+            <ModalShowPosition id={showId} close={close} onEdit={openEdit} onRemove={handleDeletePosition} busy={isDeleting} />
+
+            <ModalEditPosition id={editId} close={close} lineId={lineId} lineCode={lineCode} />
+
+            <BulkUploadModal
+                modal={bulkUpload}
+                closeModal={() => setBulkUpload(false)}
+                title="Carga masiva de posiciones"
+                templateName="posiciones"
+                columns={positionBulkUploadColumns}
+                upload={(file) => positionProvider.uploadFile(file)}
+                onSuccess={() => invalidatePositionQueries(queryClient, lineCode)}
+                note={`Usa el código ${lineCode} en la columna Línea. Las actividades deben estar asignadas a la línea antes de cargar las posiciones.`}
+            />
+        </section>
     )
 }

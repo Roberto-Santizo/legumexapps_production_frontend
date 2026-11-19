@@ -1,0 +1,134 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-18T00:00:00Z",
+  "title": "Design System: Legumexapps Producción",
+  "extensions": {
+    "colorMeta": {
+      "ink": { "role": "primary", "displayName": "Tinta de Turno", "canonical": "#1a1a19", "tonalRamp": ["#0d0d0c", "#1a1a19", "#33322f", "#4f4d49", "#6b6862", "#9a968e", "#c9c6bf", "#efede9"] },
+      "canvas": { "role": "neutral", "displayName": "Lienzo Cálido", "canonical": "#f4f3f0", "tonalRamp": ["#2b2a27", "#4a4844", "#6b6862", "#9a968e", "#c9c6bf", "#dcd9d3", "#e7e5e0", "#f4f3f0"] },
+      "surface": { "role": "neutral", "displayName": "Hoja", "canonical": "#ffffff", "tonalRamp": ["#262626", "#4d4d4d", "#737373", "#999999", "#bfbfbf", "#e0e0e0", "#f5f5f5", "#ffffff"] },
+      "line": { "role": "neutral", "displayName": "Línea", "canonical": "#e7e5e0" },
+      "line-strong": { "role": "neutral", "displayName": "Línea Marcada", "canonical": "#dcd9d3" },
+      "ink-muted": { "role": "neutral", "displayName": "Tinta Media", "canonical": "#6b6862" },
+      "ink-subtle": { "role": "neutral", "displayName": "Tinta Tenue", "canonical": "#9a968e" },
+      "status-active": { "role": "status", "displayName": "Verde Activo", "canonical": "#10b981", "tonalRamp": ["#022c22", "#064e3b", "#065f46", "#047857", "#10b981", "#6ee7b7", "#a7f3d0", "#ecfdf5"] },
+      "status-danger": { "role": "status", "displayName": "Rojo Alerta", "canonical": "#ef4444", "tonalRamp": ["#450a0a", "#7f1d1d", "#b91c1c", "#dc2626", "#ef4444", "#fca5a5", "#fecaca", "#fef2f2"] },
+      "status-warning": { "role": "status", "displayName": "Ámbar Aviso", "canonical": "#f59e0b", "tonalRamp": ["#451a03", "#78350f", "#b45309", "#d97706", "#f59e0b", "#fcd34d", "#fde68a", "#fffbeb"] }
+    },
+    "typographyMeta": {
+      "page-title": { "displayName": "Page title", "purpose": "Título de pantalla." },
+      "section-title": { "displayName": "Section title", "purpose": "Bloques dentro de una pantalla." },
+      "title": { "displayName": "Title", "purpose": "Nombres en tarjetas, estaciones, botones." },
+      "body": { "displayName": "Body", "purpose": "Celdas de tabla y contenido." },
+      "nav": { "displayName": "Nav", "purpose": "Enlaces del sidebar." },
+      "label": { "displayName": "Label", "purpose": "Encabezados de columna en mayúsculas." },
+      "figure": { "displayName": "Figure", "purpose": "Cantidades comparables, mono tabular." },
+      "meta": { "displayName": "Meta", "purpose": "Unidades, claves, metadatos." }
+    },
+    "shadows": [
+      { "name": "hairline-lift", "value": "0 1px 2px rgba(0,0,0,0.04)", "purpose": "Enlace de navegación activo." },
+      { "name": "rest", "value": "0 1px 2px 0 rgba(0,0,0,0.05)", "purpose": "Campos y botón primario en reposo." },
+      { "name": "hover-lift", "value": "0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1)", "purpose": "Botón primario en hover." },
+      { "name": "overlay", "value": "0 25px 50px -12px rgba(0,0,0,0.25)", "purpose": "Paneles de diálogo." }
+    ],
+    "motion": [
+      { "name": "ease-sweep", "value": "cubic-bezier(0.65, 0, 0.35, 1)", "purpose": "Barra de carga, 1.5s infinito." },
+      { "name": "duration-field", "value": "150ms", "purpose": "Transiciones de campos." },
+      { "name": "duration-button", "value": "200ms", "purpose": "Botones, modal, sidebar." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Acción principal de formularios y pantallas.",
+      "html": "<button class=\"ds-btn-primary\">Guardar</button>",
+      "css": ".ds-btn-primary { background: #1a1a19; color: #fff; padding: 8px 16px; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05); cursor: pointer; transition: all 200ms; } .ds-btn-primary:hover { background: rgba(26,26,25,0.9); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1); } .ds-btn-primary:focus-visible { outline: none; box-shadow: 0 0 0 2px #fff, 0 0 0 4px rgba(26,26,25,0.2); } .ds-btn-primary:active { transform: scale(0.98); } .ds-btn-primary:disabled { background: rgba(26,26,25,0.4); box-shadow: none; cursor: not-allowed; }"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Campo de formulario estándar.",
+      "html": "<input class=\"ds-input\" placeholder=\"Nombre de la línea\" />",
+      "css": ".ds-input { width: 100%; padding: 8px 12px; border: 1px solid var(--color-line, #e7e5e0); border-radius: 8px; background: var(--color-surface, #fff); color: var(--color-ink, #1a1a19); box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05); outline: none; transition: all 150ms ease-in-out; } .ds-input::placeholder { color: var(--color-ink-subtle, #9a968e); } .ds-input:hover { border-color: var(--color-line-strong, #dcd9d3); } .ds-input:focus { border-color: var(--color-ink, #1a1a19); box-shadow: 0 0 0 2px rgba(26,26,25,0.1); }"
+    },
+    {
+      "name": "Search Filter",
+      "kind": "input",
+      "refersTo": "input-filter",
+      "description": "Búsqueda en índices.",
+      "html": "<label class=\"ds-filter\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"m21 21-4.3-4.3\"/></svg><input placeholder=\"Buscar...\" /></label>",
+      "css": ".ds-filter { position: relative; display: inline-block; width: 320px; } .ds-filter svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--color-ink-subtle, #9a968e); } .ds-filter input { width: 100%; padding: 8px 16px 8px 40px; border: 1px solid var(--color-line, #e7e5e0); border-radius: 12px; background: var(--color-canvas, #f4f3f0); font-size: 14px; transition: all 150ms; } .ds-filter input:focus { outline: none; border-color: var(--color-ink, #1a1a19); background: var(--color-surface, #fff); box-shadow: 0 0 0 2px rgba(26,26,25,0.1); }"
+    },
+    {
+      "name": "Nav Link",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "Enlace del sidebar, inactivo y activo.",
+      "html": "<ul class=\"ds-nav\"><li><a class=\"ds-nav-link is-active\" href=\"#\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><rect x=\"3\" y=\"3\" width=\"7\" height=\"9\"/><rect x=\"14\" y=\"3\" width=\"7\" height=\"5\"/><rect x=\"14\" y=\"12\" width=\"7\" height=\"9\"/><rect x=\"3\" y=\"16\" width=\"7\" height=\"5\"/></svg>Dashboard</a></li><li><a class=\"ds-nav-link\" href=\"#\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20\"/></svg>Planes Semanales</a></li></ul>",
+      "css": ".ds-nav { list-style: none; margin: 0; padding: 12px; width: 232px; background: var(--color-canvas, #f4f3f0); display: flex; flex-direction: column; gap: 2px; } .ds-nav-link { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border: 1px solid transparent; border-radius: 8px; font-size: 13px; font-weight: 500; color: var(--color-ink-muted, #6b6862); text-decoration: none; transition: background-color 150ms, color 150ms; } .ds-nav-link:hover { background: rgba(0,0,0,0.04); color: var(--color-ink, #1a1a19); } .ds-nav-link:focus-visible { outline: 2px solid var(--color-ink, #1a1a19); outline-offset: 2px; } .ds-nav-link.is-active { background: var(--color-surface, #fff); border-color: var(--color-line, #e7e5e0); color: var(--color-ink, #1a1a19); box-shadow: 0 1px 2px rgba(0,0,0,0.04); }"
+    },
+    {
+      "name": "Status Tag",
+      "kind": "chip",
+      "refersTo": "status-tag-active",
+      "description": "Pastilla Activo/Inactivo.",
+      "html": "<span class=\"ds-tag ds-tag-on\"><i></i>Activo</span> <span class=\"ds-tag ds-tag-off\"><i></i>Inactivo</span>",
+      "css": ".ds-tag { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 9999px; font-size: 12px; font-weight: 500; letter-spacing: 0.025em; white-space: nowrap; } .ds-tag i { width: 6px; height: 6px; border-radius: 9999px; } .ds-tag-on { background: #ecfdf5; color: #065f46; box-shadow: inset 0 0 0 1px #a7f3d0; } .ds-tag-on i { background: #10b981; } .ds-tag-off { background: var(--color-canvas, #f4f3f0); color: var(--color-ink-muted, #6b6862); box-shadow: inset 0 0 0 1px var(--color-line-strong, #dcd9d3); } .ds-tag-off i { background: var(--color-ink-subtle, #9a968e); }"
+    },
+    {
+      "name": "Data Table",
+      "kind": "card",
+      "refersTo": "table-wrapper",
+      "description": "Tabla de índices con encabezado en lienzo.",
+      "html": "<div class=\"ds-table\"><table><thead><tr><th>Código</th><th>Línea</th><th>Estado</th></tr></thead><tbody><tr><td class=\"ds-mono\">L-01</td><td>Brócoli</td><td>Activo</td></tr><tr><td class=\"ds-mono\">L-02</td><td>Ejote</td><td>Inactivo</td></tr></tbody></table></div>",
+      "css": ".ds-table { overflow: auto; border: 1px solid var(--color-line, #e7e5e0); border-radius: 12px; background: var(--color-surface, #fff); } .ds-table table { width: 100%; border-collapse: collapse; } .ds-table thead { background: var(--color-canvas, #f4f3f0); } .ds-table th { padding: 16px 24px; text-align: left; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-ink-subtle, #9a968e); } .ds-table td { padding: 16px 24px; color: var(--color-ink, #1a1a19); border-top: 1px solid var(--color-line, #e7e5e0); font-size: 14px; } .ds-table tbody tr { transition: background-color 150ms; } .ds-table tbody tr:hover { background: var(--color-canvas, #f4f3f0); } .ds-mono { font-family: ui-monospace, monospace; font-variant-numeric: tabular-nums; }"
+    },
+    {
+      "name": "Activity Station",
+      "kind": "custom",
+      "description": "Estación por actividad en el tablero de personal, con conteo usado/cupo y lugares vacíos.",
+      "html": "<div class=\"ds-station\"><header><div><h4>Empaque</h4><p>cajas</p></div><div class=\"ds-count\"><b>3<span>/5</span></b><small>2 lugares libres</small></div></header><ul><li class=\"ds-card\">Juan Pérez</li><li class=\"ds-card\">María López</li><li class=\"ds-card\">Ana García</li><li class=\"ds-empty\">Lugar libre</li></ul></div>",
+      "css": ".ds-station { width: 280px; border: 1px solid var(--color-line, #e7e5e0); border-radius: 12px; background: var(--color-surface, #fff); overflow: hidden; } .ds-station header { display: flex; justify-content: space-between; gap: 12px; padding: 12px 14px; border-bottom: 1px solid var(--color-line, #e7e5e0); } .ds-station h4 { margin: 0; font-size: 14px; font-weight: 600; letter-spacing: 0.025em; color: var(--color-ink, #1a1a19); } .ds-station header p { margin: 2px 0 0; font-family: ui-monospace, monospace; font-size: 11px; color: var(--color-ink-subtle, #9a968e); } .ds-count { text-align: right; } .ds-count b { font-family: ui-monospace, monospace; font-variant-numeric: tabular-nums; font-size: 14px; font-weight: 400; color: var(--color-ink, #1a1a19); } .ds-count b span { color: var(--color-ink-subtle, #9a968e); } .ds-count small { display: block; font-size: 11px; color: var(--color-ink-muted, #6b6862); } .ds-station ul { list-style: none; margin: 0; padding: 8px; display: flex; flex-direction: column; gap: 6px; } .ds-card { padding: 8px 12px; border: 1px solid var(--color-line, #e7e5e0); border-radius: 8px; font-size: 14px; color: var(--color-ink, #1a1a19); cursor: grab; transition: border-color 150ms; } .ds-card:hover { border-color: var(--color-line-strong, #dcd9d3); } .ds-empty { padding: 8px 12px; border: 1px dashed var(--color-line-strong, #dcd9d3); border-radius: 8px; font-size: 12px; color: var(--color-ink-subtle, #9a968e); text-align: center; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "El Tablero de Turno",
+    "overview": "La interfaz es el tablero que un supervisor consulta durante el turno: denso, legible de un vistazo, con el estado de cada cosa claro antes que cualquier adorno. Un lienzo neutro cálido envuelve una hoja blanca enmarcada donde vive el trabajo; la tinta casi negra carga la jerarquía y las cifras van en monoespaciada tabular para que cuadren en columna.\n\nEl sistema es plano y lineal: bordes finos en lugar de sombras, esquinas suaves, tipografía del sistema. El color no decora; hoy aparece solo para comunicar estado (activo, error, sobrecupo, advertencia). Queda abierta la puerta a un acento de marca futuro, sin definir todavía.\n\nFunciona igual con mouse en oficina que con el dedo en tablet en planta: lo táctil (arrastrar o tocar para seleccionar y luego tocar un lugar) es ciudadano de primera clase.",
+    "keyCharacteristics": [
+      "Lienzo cálido + hoja blanca enmarcada (shell con `rounded-2xl` y borde fino).",
+      "Tinta neutra, sin acento de marca (pendiente, no prohibido).",
+      "Cifras, códigos y unidades en mono tabular.",
+      "Plano: profundidad por borde y tono, no por sombra.",
+      "Color reservado para estado."
+    ],
+    "rules": [
+      { "name": "The Color Is Meaning Rule", "body": "Todo color saturado en pantalla significa un estado. Un acento de marca puede llegar después, pero debe definirse como token en `@theme`, no como clase ad-hoc.", "section": "colors" },
+      { "name": "The Token First Rule", "body": "Usar `canvas` / `surface` / `line` / `ink*` antes que `gray-*` o `slate-*`. Ambas paletas conviven en código legado (Modal, InfoCard) y se aceptan, pero lo nuevo nace en tokens.", "section": "colors" },
+      { "name": "The Figures Align Rule", "body": "Toda cantidad comparable va en mono con `tabular-nums`; el denominador o unidad baja a tinta tenue.", "section": "typography" },
+      { "name": "The Border Before Shadow Rule", "body": "Si algo necesita separarse, primero borde `line` y cambio de tono; sombra solo para responder a estado u overlays.", "section": "elevation" }
+    ],
+    "dos": [
+      "**Do** usar los tokens `canvas` / `surface` / `line` / `line-strong` / `ink` / `ink-muted` / `ink-subtle` para todo neutral nuevo.",
+      "**Do** poner cantidades, códigos y unidades en mono con `tabular-nums`.",
+      "**Do** separar con borde de 1px `line` y cambio de tono antes que con sombra.",
+      "**Do** reutilizar las clases `.text_form_field`, `.form`, `.table-*`, `.input-filter` y los componentes de `shared`.",
+      "**Do** mantener objetivos táctiles amplios y que tocar-y-colocar funcione igual que arrastrar.",
+      "**Do** respetar `prefers-reduced-motion` en toda animación (ver loading sweep y punto de estado)."
+    ],
+    "donts": [
+      "**Don't** usar color saturado sin significado de estado; un acento de marca futuro entra como token en `@theme`.",
+      "**Don't** introducir hex ad-hoc cuando existe un token equivalente.",
+      "**Don't** añadir sombras a tarjetas en reposo.",
+      "**Don't** mostrar barras de scroll (ocultas globalmente)."
+    ]
+  }
+}

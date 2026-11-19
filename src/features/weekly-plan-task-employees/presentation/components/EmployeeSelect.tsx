@@ -11,6 +11,8 @@ type Props = {
     isClearable?: boolean;
     inputId?: string;
     ariaLabel?: string;
+    autoFocus?: boolean;
+    closeMenuOnSelect?: boolean;
 }
 
 const CLASS_NAMES: ClassNamesConfig<EmployeeOption, false> = {
@@ -40,13 +42,16 @@ function EmployeeOptionLabel({ option }: { option: EmployeeOption }) {
     )
 }
 
-export function EmployeeSelect({ options, value, onChange, placeholder = 'Buscar por nombre, código o posición', isLoading = false, isClearable = true, inputId, ariaLabel }: Props) {
+export function EmployeeSelect({ options, value, onChange, placeholder = 'Buscar por nombre, código o posición', isLoading = false, isClearable = true, inputId, ariaLabel, autoFocus = false, closeMenuOnSelect = true }: Props) {
     const selected = options.find((option) => option.value === value) ?? null;
 
     return (
         <Select<EmployeeOption, false>
             unstyled
             inputId={inputId}
+            autoFocus={autoFocus}
+            openMenuOnFocus={autoFocus}
+            closeMenuOnSelect={closeMenuOnSelect}
             aria-label={ariaLabel}
             options={options}
             value={selected}

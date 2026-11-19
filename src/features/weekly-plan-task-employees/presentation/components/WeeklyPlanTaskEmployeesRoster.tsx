@@ -1,90 +1,75 @@
-import { useLocation, useNavigate } from "react-router-dom";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { UserPlusIcon } from "lucide-react";
-import { CustomFilledButton, handleSetQueryParam, useNotification } from "@/features/shared/shared";
-import { StaffListEmpty, StaffListError, StaffListLoading, WeeklyPlanTaskEmployeeRow, weeklyPlanTaskEmployeeProvider, type WeeklyPlanTaskEmployee } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
+import { useQuery } from "@tanstack/react-query";
+import { FadeSwitch } from "@/features/shared/shared";
+import { buildActivitySlots, buildRosterBoardCards, countMissingActivities, findAssignmentByKey, getPendingKeys, getCardActivityIds, getRosterView, MissingActivitiesAlert, StaffActivityBoard, StaffListEmpty, StaffListError, StaffListLoading, taskEmployeesQueryKey, useRemoveTaskEmployee, useTaskLineActivities, useUpdateTaskEmployeeActivity, weeklyPlanTaskEmployeeProvider, type BoardTarget } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 
 type Props = {
     taskId: string;
+    lineCode: string;
     editable: boolean;
 }
 
-export function WeeklyPlanTaskEmployeesRoster({ taskId, editable }: Props) {
-    const navigate = useNavigate();
-    const location = useLocation();
-    const notification = useNotification();
-    const queryClient = useQueryClient();
+export function WeeklyPlanTaskEmployeesRoster({ taskId, lineCode, editable }: Props) {
+    const { handleRemove } = useRemoveTaskEmployee(taskId);
+    const { updateActivities, pendingMoves } = useUpdateTaskEmployeeActivity(taskId);
+    const activitiesQuery = useTaskLineActivities(lineCode);
 
     const { data, isLoading, isError, error } = useQuery({
-        queryKey: ['getWeeklyPlanTaskEmployees', taskId],
+        queryKey: taskEmployeesQueryKey(taskId),
         queryFn: () => weeklyPlanTaskEmployeeProvider.getEmployeesByTaskId(taskId),
         retry: false
     });
 
-    const refreshEmployees = () => queryClient.invalidateQueries({ queryKey: ['getWeeklyPlanTaskEmployees', taskId] });
-
-    const { mutate } = useMutation({
-        mutationFn: (id: string) => weeklyPlanTaskEmployeeProvider.deleteWeeklyPlanTaskEmployeeById(id),
-        onSuccess: (message) => {
-            notification.success(message);
-            refreshEmployees();
-        },
-        onError: (err) => {
-            notification.error(err.message);
-            refreshEmployees();
-        }
-    });
-
-    const handleRemove = (assignment: WeeklyPlanTaskEmployee) => notification.question(
-        `¿Desea quitar a ${assignment.name} de la tarea?`,
-        'Quitar',
-        'La asignación pasa al historial de la tarea',
-        () => mutate(`${assignment.id}`)
-    );
-
     const employees = data ?? [];
+    const cards = buildRosterBoardCards(employees, pendingMoves);
+    const slots = buildActivitySlots(activitiesQuery.data ?? [], getCardActivityIds(cards));
+    const missing = countMissingActivities(employees);
+
+    const handleMove = (keys: string[], target: BoardTarget) => {
+        if (target !== null) updateActivities(keys, target);
+    };
+
+    const handleRemoveCard = (key: string) => {
+        const assignment = findAssignmentByKey(employees, key);
+        if (assignment) handleRemove(assignment);
+    };
+
+    const view = getRosterView(isLoading, isError, employees.length);
 
     return (
-        <section className="space-y-3">
-            <div className="flex items-center justify-between gap-4">
-                <div className="flex items-baseline gap-3">
-                    <h3 className="text-sm font-semibold text-ink">Personal asignado</h3>
-                    {data && <span className="font-mono text-xs text-ink-subtle">{employees.length} empleados</span>}
+        <FadeSwitch switchKey={view}>
+            {view === 'board' ? (
+                <div className="space-y-6">
+                    <MissingActivitiesAlert count={missing} editable={editable} />
+
+                    <StaffActivityBoard
+                        slots={slots}
+                        cards={cards}
+                        isLoading={activitiesQuery.isLoading}
+                        errorMessage={activitiesQuery.error?.message}
+                        description={editable
+                            ? 'Para cambiar de actividad, toca a una o varias personas y pulsa «Colocar aquí» en la nueva actividad, o arrástralas.'
+                            : 'Personal de la tarea en cada actividad de la línea.'}
+                        poolTitle="Sin actividad"
+                        poolDescription="Asignados antes de las actividades por línea."
+                        showPool={missing > 0}
+                        readonly={!editable}
+                        pendingKeys={getPendingKeys(pendingMoves)}
+                        onMove={handleMove}
+                        actions={{ onRemove: employees.length > 1 ? handleRemoveCard : undefined }}
+                    />
                 </div>
-
-                {editable && (
-                    <CustomFilledButton
-                        type="button"
-                        label="Agregar empleado"
-                        icon={<UserPlusIcon className="size-4" />}
-                        onClick={() => handleSetQueryParam(location, navigate, 'addTaskEmployee', taskId)}
-                    />
-                )}
-            </div>
-
-            <div className="max-h-[28rem] divide-y divide-line overflow-y-auto overscroll-contain rounded-xl border border-line bg-surface">
-                {isLoading && <StaffListLoading />}
-
-                {isError && <StaffListError message={error.message} />}
-
-                {data && employees.length === 0 && (
-                    <StaffListEmpty
-                        title="Sin personal asignado"
-                        description="El personal aparecerá aquí cuando se confirme la asignación de la tarea."
-                    />
-                )}
-
-                {employees.map((assignment) => (
-                    <WeeklyPlanTaskEmployeeRow
-                        key={assignment.id}
-                        assignment={assignment}
-                        editable={editable}
-                        canRemove={employees.length > 1}
-                        onReplace={() => handleSetQueryParam(location, navigate, 'replaceTaskEmployee', `${assignment.id}`)}
-                        onRemove={() => handleRemove(assignment)}
-                    />
-                ))}
-            </div>
-        </section>
+            ) : (
+                <div className="overflow-hidden rounded-xl border border-line bg-surface">
+                    {view === 'loading' && <StaffListLoading />}
+                    {view === 'error' && <StaffListError message={error?.message ?? ''} />}
+                    {view === 'empty' && (
+                        <StaffListEmpty
+                            title="Sin personal asignado"
+                            description="El personal aparecerá aquí cuando se confirme la asignación de la tarea."
+                        />
+                    )}
+                </div>
+            )}
+        </FadeSwitch>
     )
 }

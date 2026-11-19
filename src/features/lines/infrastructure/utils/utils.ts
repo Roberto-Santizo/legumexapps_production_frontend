@@ -11,3 +11,6 @@ export const linesOptions = (skus: Line[]): Option[] => {
 
     return options;
 }
+
+export * from './lineSectionTabs';
+export * from './lineCoverage';
