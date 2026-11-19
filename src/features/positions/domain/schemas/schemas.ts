@@ -4,7 +4,9 @@ import { z } from "zod";
 export const PositionSchema = z.object({
     id: z.number(),
     code: z.string(),
-    activity: z.string(),
+    activity_id: z.number().nullable(),
+    activity: z.string().nullable(),
+    unit: z.string().nullable(),
     line_id: z.number(),
     line: z.string(),
     status: z.boolean()

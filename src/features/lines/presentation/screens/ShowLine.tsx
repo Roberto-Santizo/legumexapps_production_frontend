@@ -53,7 +53,7 @@ export function ShowLine() {
 
                 <LineFieldsConfigurator lineCode={data.code} captureType={data.capture_type} />
                 <LineActivitiesConfigurator lineCode={data.code} />
-                <PositionsByLine code={data.code} />
+                <PositionsByLine lineId={data.id} lineCode={data.code} />
                 <LineDependenciesByLine id={data.id} />
             </div>
         )

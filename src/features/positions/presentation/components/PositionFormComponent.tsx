@@ -1,22 +1,16 @@
-import { linesRepositoryProvider } from "@/features/lines/lines";
 import { SelectFormField, TextFormField } from "@/features/shared/shared";
-import { useQuery } from "@tanstack/react-query";
 import type { Control, FieldErrors, UseFormRegister } from "react-hook-form";
-import type { PositionForm } from "@/features/positions/positions";
+import { toLineActivityOptions, usePositionLineActivities, type PositionForm } from "@/features/positions/positions";
 
 type Props = {
     register: UseFormRegister<PositionForm>;
     errors: FieldErrors<PositionForm>;
-    control: Control<PositionForm, any>;
+    control: Control<PositionForm>;
+    lineCode: string;
 }
 
-export function PositionFormComponent({ register, errors, control }: Props) {
-    const { data } = useQuery({
-        queryKey: ['getLines'],
-        queryFn: () => linesRepositoryProvider.getLines('', '')
-    });
-
-    const lineOptions = data?.data.map(line => ({ value: line.id, label: line.name })) ?? [];
+export function PositionFormComponent({ register, errors, control, lineCode }: Props) {
+    const { data: lineActivities, isFetching } = usePositionLineActivities(lineCode);
 
     return (
         <>
@@ -30,24 +24,19 @@ export function PositionFormComponent({ register, errors, control }: Props) {
                 errorMessage={errors.code?.message}
             />
 
-            <TextFormField<PositionForm>
-                name="activity"
-                label="Actividad"
-                placeholder="Actividad del puesto"
-                register={register}
-                type="text"
-                validation={{ required: 'El campo es requerido' }}
-                errorMessage={errors.activity?.message}
-            />
-
             <SelectFormField<PositionForm>
-                name="line_id"
-                label="Línea"
+                name="activity_id"
+                label="Actividad"
                 control={control}
                 validation={{ required: 'El campo es requerido' }}
-                options={lineOptions}
-                errorMessage={errors.line_id?.message}
+                options={toLineActivityOptions(lineActivities ?? [])}
+                disabled={isFetching}
+                errorMessage={errors.activity_id?.message}
             />
+
+            {lineActivities?.length === 0 && (
+                <p className="text-xs text-ink-muted">La línea no tiene actividades asignadas. Asígnalas en Dotación de personal.</p>
+            )}
         </>
     )
 }
