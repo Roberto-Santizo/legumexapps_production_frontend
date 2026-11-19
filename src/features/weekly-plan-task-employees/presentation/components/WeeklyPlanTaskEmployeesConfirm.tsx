@@ -7,9 +7,10 @@ type Props = {
     taskId: string;
     lineCode: string;
     showCandidates: boolean;
+    allowUnassigned?: boolean;
 }
 
-export function WeeklyPlanTaskEmployeesConfirm({ taskId, lineCode, showCandidates }: Props) {
+export function WeeklyPlanTaskEmployeesConfirm({ taskId, lineCode, showCandidates, allowUnassigned = false }: Props) {
     const notification = useNotification();
 
     const candidatesQuery = useQuery({
@@ -34,7 +35,7 @@ export function WeeklyPlanTaskEmployeesConfirm({ taskId, lineCode, showCandidate
     const cards = buildConfirmBoardCards(rows, additions, replacementEmployees);
     const summary = getConfirmSummary(rows, additions);
     const isLoadingData = candidatesQuery.isLoading || activitiesQuery.isLoading;
-    const blockReason = isLoadingData ? 'Cargando candidatos y actividades' : getConfirmBlockReason(summary, slots);
+    const blockReason = isLoadingData ? 'Cargando candidatos y actividades' : getConfirmBlockReason(summary, slots, allowUnassigned);
 
     const cardActions: BoardCardActions = {
         onRemove: removeCard,
@@ -46,7 +47,7 @@ export function WeeklyPlanTaskEmployeesConfirm({ taskId, lineCode, showCandidate
 
     const handleConfirm = () => {
         const { title, description } = getConfirmQuestion(summary.finalCount);
-        notification.question(title, 'Confirmar', description, () => confirm(buildConfirmBody(rows, additions, replacementEmployees)));
+        notification.question(title, 'Confirmar', description, () => confirm(buildConfirmBody(rows, additions, replacementEmployees, allowUnassigned)));
     };
 
     const handleReset = () => {
@@ -67,7 +68,9 @@ export function WeeklyPlanTaskEmployeesConfirm({ taskId, lineCode, showCandidate
                 errorMessage={activitiesQuery.error?.message ?? candidatesQuery.error?.message}
                 description="Toca a una o varias personas y pulsa «Colocar aquí» en su actividad, o arrástralas. Para sumar un alta, búscala en la actividad donde trabajará."
                 poolTitle="Por asignar"
-                poolDescription="Candidatos de la línea que aún no tienen actividad. Reemplázalos o dalos de baja desde su tarjeta."
+                poolDescription={allowUnassigned
+                    ? "Empleados sin actividad. En líneas de comodines pueden confirmarse sin actividad asignada."
+                    : "Candidatos de la línea que aún no tienen actividad. Reemplázalos o dalos de baja desde su tarjeta."}
                 showPool
                 allowUnassign
                 onMove={assignCards}

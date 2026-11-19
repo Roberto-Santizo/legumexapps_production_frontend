@@ -3,6 +3,7 @@ import { ErrorComponent, FadeSwitch, Loading } from "@/features/shared/shared";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { WeeklyPlanTaskHeader, weeklyPlanTaskProvider } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
+import { useLineByCode } from "@/features/lines/lines";
 import { ConfirmByPositionPanel, getStaffMode, hasTaskPositions, WeeklyPlanTaskEmployeesConfirm, WeeklyPlanTaskEmployeesRoster, WeeklyPlanTaskStaffHeader } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 
 export function WeeklyPlanTaskAssignPersonel() {
@@ -14,11 +15,14 @@ export function WeeklyPlanTaskAssignPersonel() {
     retry: false
   });
 
-  if (isLoading) return <Loading />
+  const lineQuery = useLineByCode(data?.line_code ?? '', Boolean(data));
+
+  if (isLoading || lineQuery.isLoading) return <Loading />
   if (isError) return <ErrorComponent message={error.message} />
   if (data) {
     const mode = getStaffMode(data.status);
-    const showCandidates = hasTaskPositions(data.positions);
+    const isWildcard = lineQuery.data?.is_wildcard ?? false;
+    const showCandidates = !isWildcard && hasTaskPositions(data.positions);
 
     return (
       <MotionConfig reducedMotion="user">
@@ -31,7 +35,7 @@ export function WeeklyPlanTaskAssignPersonel() {
             {mode === 'confirm' && showCandidates && <ConfirmByPositionPanel taskId={id!} />}
 
             {mode === 'confirm'
-              ? <WeeklyPlanTaskEmployeesConfirm taskId={id!} lineCode={data.line_code} showCandidates={showCandidates} />
+              ? <WeeklyPlanTaskEmployeesConfirm taskId={id!} lineCode={data.line_code} showCandidates={showCandidates} allowUnassigned={isWildcard} />
               : <WeeklyPlanTaskEmployeesRoster taskId={id!} lineCode={data.line_code} editable={mode === 'edit'} />}
           </FadeSwitch>
         </div>

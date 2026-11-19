@@ -5,7 +5,7 @@ export type WeeklyPlanEmployee = z.infer<typeof WeeklyPlanEmployeeSchema>;
 export type WeeklyPlanTaskEmployee = z.infer<typeof WeeklyPlanTaskEmployeeSchema>;
 
 export type ConfirmedWeeklyPlanTaskEmployee = Pick<WeeklyPlanEmployee, 'code' | 'name' | 'position'> & {
-    line_activity_id: number;
+    line_activity_id: number | null;
 }
 
 export type ConfirmWeeklyPlanTaskEmployeesForm = {
