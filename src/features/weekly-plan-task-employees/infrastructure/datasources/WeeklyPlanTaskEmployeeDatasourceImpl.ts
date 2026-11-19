@@ -1,6 +1,6 @@
 import { ApiResponseSchema } from "@/features/shared/shared";
 import { isAxiosError, type AxiosInstance } from "axios";
-import { WeeklyPlanEmployeeSchema, WeeklyPlanTaskEmployeeSchema, type ConfirmWeeklyPlanTaskEmployeesForm, type UpdateWeeklyPlanTaskEmployeeActivityForm, type WeeklyPlanEmployee, type WeeklyPlanTaskEmployee, type WeeklyPlanTaskEmployeeDatasource } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
+import { WeeklyPlanEmployeeSchema, WeeklyPlanTaskEmployeeSchema, type ConfirmWeeklyPlanTaskEmployeesByPositionForm, type ConfirmWeeklyPlanTaskEmployeesForm, type UpdateWeeklyPlanTaskEmployeeActivityForm, type WeeklyPlanEmployee, type WeeklyPlanTaskEmployee, type WeeklyPlanTaskEmployeeDatasource } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 import { z } from "zod";
 
 export class WeeklyPlanTaskEmployeeDatasourceImpl implements WeeklyPlanTaskEmployeeDatasource {
@@ -49,6 +49,24 @@ export class WeeklyPlanTaskEmployeeDatasourceImpl implements WeeklyPlanTaskEmplo
     async confirmEmployeesByTaskId(taskId: string, payload: ConfirmWeeklyPlanTaskEmployeesForm): Promise<string> {
         try {
             const url = `${this.tasksUrl}/${taskId}/confirmEmployees`;
+            const { data } = await this.api.post(url, payload);
+            const response = ApiResponseSchema.safeParse(data);
+
+            if (response.success) {
+                return response.data.message;
+            }
+
+            throw new Error("Información no válida");
+        } catch (error) {
+            if (isAxiosError(error)) throw new Error(error.response?.data.message);
+
+            throw new Error("Error no controlado");
+        }
+    }
+
+    async confirmEmployeesByPositionByTaskId(taskId: string, payload: ConfirmWeeklyPlanTaskEmployeesByPositionForm): Promise<string> {
+        try {
+            const url = `${this.tasksUrl}/${taskId}/confirmEmployeesByPosition`;
             const { data } = await this.api.post(url, payload);
             const response = ApiResponseSchema.safeParse(data);
 

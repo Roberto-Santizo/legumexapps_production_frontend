@@ -1,5 +1,5 @@
 import { BulkUploadModal } from "@/features/shared/shared";
-import { countActivePositions, invalidatePositionQueries, ModalCreatePosition, ModalEditPosition, ModalShowPosition, positionBulkUploadColumns, positionProvider, PositionRow, PositionsEmptyState, PositionsHeader, useDeletePosition, usePositionModals, usePositionsByLine } from "@/features/positions/positions";
+import { countActivePositions, invalidatePositionQueries, ModalCreatePosition, ModalEditPosition, ModalShowPosition, positionBulkUploadColumns, positionProvider, PositionsEmptyState, PositionsHeader, PositionsTable, useDeletePosition, usePositionModals, usePositionsByLine } from "@/features/positions/positions";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import type { Line } from "@/features/lines/lines";
@@ -49,21 +49,7 @@ export function PositionsByLine({ lineId, lineCode }: Props) {
             )}
 
             {positions.length > 0 && (
-                <div className="relative">
-                    <div className="absolute inset-y-5 left-[1.6rem] w-px bg-line" aria-hidden="true" />
-
-                    <ul className="divide-y divide-line">
-                        {positions.map(position => (
-                            <PositionRow
-                                key={position.id}
-                                position={position}
-                                onShow={() => openShow(position.id)}
-                                onEdit={() => openEdit(position.id)}
-                                onRemove={() => handleDeletePosition(position)}
-                            />
-                        ))}
-                    </ul>
-                </div>
+                <PositionsTable positions={positions} onShow={openShow} onEdit={openEdit} onRemove={handleDeletePosition} />
             )}
 
             <ModalCreatePosition open={create} close={() => setCreate(false)} lineId={lineId} lineCode={lineCode} />

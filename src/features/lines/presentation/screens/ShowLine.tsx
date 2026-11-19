@@ -1,16 +1,16 @@
-import { ErrorComponent, Loading, Title } from "@/features/shared/shared";
-import { captureTypeDescriptions, captureTypeLabels } from "@/features/capture-fields/capture-fields";
+import { ErrorComponent, Loading } from "@/features/shared/shared";
 import { LineActivitiesConfigurator } from "@/features/line-activities/line-activities";
 import { LineDependenciesByLine } from "@/features/line-dependencies/line-dependencies";
 import { LineFieldsConfigurator } from "@/features/line-fields/line-fields";
-import { linesRepositoryProvider } from "@/features/lines/lines";
-import { MoonIcon, SunIcon } from "lucide-react";
+import { LineHeader, LineSectionTabs, linesRepositoryProvider, type LineSectionTab } from "@/features/lines/lines";
 import { PositionsByLine } from "@/features/positions/positions";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 
 export function ShowLine() {
     const { id } = useParams();
+    const [tab, setTab] = useState<LineSectionTab>('fields');
 
     const { data, isLoading, isError, error } = useQuery({
         queryKey: ['getLineByCode', id],
@@ -24,37 +24,16 @@ export function ShowLine() {
 
         return (
             <div className="space-y-6">
-                <div className="flex flex-wrap items-center justify-between gap-4">
-                    <Title title="Línea" subtitle="Información de la línea" />
+                <LineHeader line={data} />
 
-                    <span className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3.5 py-1.5 text-sm font-medium text-ink">
-                        {data.shift ? <SunIcon className="size-4 text-ink-muted" /> : <MoonIcon className="size-4 text-ink-muted" />}
-                        Turno {data.shift ? 'AM' : 'PM'}
-                    </span>
+                <LineSectionTabs value={tab} onChange={setTab} />
+
+                <div role="tabpanel">
+                    <div className={tab === 'fields' ? '' : 'hidden'}><LineFieldsConfigurator lineCode={data.code} captureType={data.capture_type} /></div>
+                    <div className={tab === 'activities' ? '' : 'hidden'}><LineActivitiesConfigurator lineCode={data.code} /></div>
+                    <div className={tab === 'positions' ? '' : 'hidden'}><PositionsByLine lineId={data.id} lineCode={data.code} /></div>
+                    <div className={tab === 'dependencies' ? '' : 'hidden'}><LineDependenciesByLine id={data.id} /></div>
                 </div>
-
-                <section className="grid grid-cols-1 divide-y divide-line overflow-hidden rounded-xl border border-line bg-surface sm:grid-cols-3 sm:divide-x sm:divide-y-0">
-                    <div className="p-5">
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-subtle">Código</p>
-                        <p className="mt-2 font-mono text-3xl tracking-tight text-ink">{data.code}</p>
-                    </div>
-
-                    <div className="p-5">
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-subtle">Nombre</p>
-                        <p className="mt-2 text-lg font-medium text-ink">{data.name}</p>
-                    </div>
-
-                    <div className="p-5">
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-subtle">Familia de captura</p>
-                        <p className="mt-2 text-lg font-medium text-ink">{captureTypeLabels[data.capture_type]}</p>
-                        <p className="mt-0.5 text-xs text-ink-muted">{captureTypeDescriptions[data.capture_type]}</p>
-                    </div>
-                </section>
-
-                <LineFieldsConfigurator lineCode={data.code} captureType={data.capture_type} />
-                <LineActivitiesConfigurator lineCode={data.code} />
-                <PositionsByLine lineId={data.id} lineCode={data.code} />
-                <LineDependenciesByLine id={data.id} />
             </div>
         )
     }

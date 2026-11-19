@@ -8,3 +8,4 @@ export * from './taskEmployeeQueries';
 export * from './boardCards';
 export * from './boardView';
 export * from './boardMotion';
+export * from './confirmByPosition';

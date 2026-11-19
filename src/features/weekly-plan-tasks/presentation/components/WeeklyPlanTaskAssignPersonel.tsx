@@ -3,7 +3,7 @@ import { ErrorComponent, FadeSwitch, Loading } from "@/features/shared/shared";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { WeeklyPlanTaskHeader, weeklyPlanTaskProvider } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
-import { getStaffMode, hasTaskPositions, WeeklyPlanTaskEmployeesConfirm, WeeklyPlanTaskEmployeesRoster, WeeklyPlanTaskStaffHeader } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
+import { ConfirmByPositionPanel, getStaffMode, hasTaskPositions, WeeklyPlanTaskEmployeesConfirm, WeeklyPlanTaskEmployeesRoster, WeeklyPlanTaskStaffHeader } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 
 export function WeeklyPlanTaskAssignPersonel() {
   const { id } = useParams();
@@ -27,6 +27,8 @@ export function WeeklyPlanTaskAssignPersonel() {
 
           <FadeSwitch switchKey={mode} className="space-y-6">
             <WeeklyPlanTaskStaffHeader status={data.status} />
+
+            {mode === 'confirm' && showCandidates && <ConfirmByPositionPanel taskId={id!} />}
 
             {mode === 'confirm'
               ? <WeeklyPlanTaskEmployeesConfirm taskId={id!} lineCode={data.line_code} showCandidates={showCandidates} />

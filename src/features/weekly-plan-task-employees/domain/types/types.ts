@@ -12,6 +12,10 @@ export type ConfirmWeeklyPlanTaskEmployeesForm = {
     employees: ConfirmedWeeklyPlanTaskEmployee[];
 }
 
+export type ConfirmWeeklyPlanTaskEmployeesByPositionForm = {
+    employees: Pick<WeeklyPlanEmployee, 'code' | 'name' | 'position'>[];
+}
+
 export type UpdateWeeklyPlanTaskEmployeeActivityForm = {
     line_activity_id: number;
 }

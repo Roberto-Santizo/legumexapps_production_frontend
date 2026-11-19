@@ -25,3 +25,4 @@ export * from './PoolSearchField';
 export * from './PoolSelectAll';
 export * from './SummaryFigure';
 export * from './ConfirmSummaryBubble';
+export * from './ConfirmByPositionPanel';

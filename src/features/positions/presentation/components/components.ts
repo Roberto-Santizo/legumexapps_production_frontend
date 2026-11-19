@@ -8,3 +8,6 @@ export * from './PositionDetails';
 export * from './ModalCreatePosition';
 export * from './ModalEditPosition';
 export * from './ModalShowPosition';
+
+export * from './PositionTableRow';
+export * from './PositionsTable';
