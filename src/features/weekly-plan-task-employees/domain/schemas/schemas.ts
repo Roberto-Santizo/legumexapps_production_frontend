@@ -18,3 +18,14 @@ export const WeeklyPlanTaskEmployeeSchema = z.object({
     activity: z.string().nullable(),
     unit: z.string().nullable(),
 });
+
+export const PreviousEmployeeSchema = z.object({
+    code: z.string(),
+    name: z.string(),
+    position: z.string().nullable(),
+    line_activity_id: z.number().nullable(),
+});
+
+export const PreviousEmployeesConfigurationSchema = z.object({
+    employees: z.array(PreviousEmployeeSchema),
+});

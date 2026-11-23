@@ -1,4 +1,4 @@
-import type { ConfirmWeeklyPlanTaskEmployeesByPositionForm, ConfirmWeeklyPlanTaskEmployeesForm, UpdateWeeklyPlanTaskEmployeeActivityForm, WeeklyPlanEmployee, WeeklyPlanTaskEmployee, WeeklyPlanTaskEmployeeDatasource, WeeklyPlanTaskEmployeeRepository } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
+import type { ConfirmWeeklyPlanTaskEmployeesByPositionForm, ConfirmWeeklyPlanTaskEmployeesForm, PreviousEmployeesConfiguration, UpdateWeeklyPlanTaskEmployeeActivityForm, WeeklyPlanEmployee, WeeklyPlanTaskEmployee, WeeklyPlanTaskEmployeeDatasource, WeeklyPlanTaskEmployeeRepository } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 
 export class WeeklyPlanTaskEmployeeRepositoryImpl implements WeeklyPlanTaskEmployeeRepository {
     constructor(private datasource: WeeklyPlanTaskEmployeeDatasource) { }
@@ -9,6 +9,10 @@ export class WeeklyPlanTaskEmployeeRepositoryImpl implements WeeklyPlanTaskEmplo
 
     getEmployeesByTaskId(taskId: string): Promise<WeeklyPlanTaskEmployee[]> {
         return this.datasource.getEmployeesByTaskId(taskId);
+    }
+
+    getLastEmployeesConfigurationByLineCode(lineCode: string): Promise<PreviousEmployeesConfiguration> {
+        return this.datasource.getLastEmployeesConfigurationByLineCode(lineCode);
     }
 
     confirmEmployeesByTaskId(taskId: string, payload: ConfirmWeeklyPlanTaskEmployeesForm): Promise<string> {

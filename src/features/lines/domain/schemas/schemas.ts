@@ -8,6 +8,8 @@ export const LineSchema = z.object({
     code: z.string(),
     shift: z.number(),
     capture_type: CaptureTypeSchema,
+    is_wildcard: z.boolean(),
+    supervisor_code: z.string().nullable(),
     activities: z.number(),
     positions: z.number()
 });

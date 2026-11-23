@@ -26,3 +26,5 @@ export * from './PoolSelectAll';
 export * from './SummaryFigure';
 export * from './ConfirmSummaryBubble';
 export * from './ConfirmByPositionPanel';
+export * from './LoadPreviousConfigurationPanel';
+export * from './UnavailableEmployeesAlert';

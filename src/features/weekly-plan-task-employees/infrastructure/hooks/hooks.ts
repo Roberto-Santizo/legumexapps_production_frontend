@@ -5,3 +5,4 @@ export * from './useConfirmTaskEmployees';
 export * from './useRemoveTaskEmployee';
 export * from './useActivityBoard';
 export * from './useConfirmTaskEmployeesByPosition';
+export * from './useLoadPreviousConfiguration';

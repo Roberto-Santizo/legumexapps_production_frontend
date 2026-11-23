@@ -33,6 +33,16 @@ export function LineFormComponent({ register, errors, control, captureTypeLocked
                 errorMessage={errors.code?.message}
             />
 
+            <TextFormField<LineForm>
+                name="supervisor_code"
+                label="Código de supervisor"
+                placeholder="Código del supervisor (opcional)"
+                register={register}
+                validation={{}}
+                type="text"
+                errorMessage={errors.supervisor_code?.message}
+            />
+
             <SelectFormField<LineForm>
                 name="shift"
                 label="Turno"
@@ -59,6 +69,14 @@ export function LineFormComponent({ register, errors, control, captureTypeLocked
                     </p>
                 )}
             </div>
+
+            <label className="flex cursor-pointer items-start gap-3 rounded-lg border border-line px-3 py-2.5 transition-colors hover:border-line-strong">
+                <input type="checkbox" {...register('is_wildcard')} className="mt-0.5 size-4 accent-ink" />
+                <span>
+                    <span className="block text-sm font-medium text-ink">Línea de comodines</span>
+                    <span className="block text-xs text-ink-muted">Marca la línea como línea de comodines.</span>
+                </span>
+            </label>
         </>
     )
 }

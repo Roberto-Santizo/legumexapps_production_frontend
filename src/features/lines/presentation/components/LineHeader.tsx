@@ -1,6 +1,6 @@
 import { captureTypeDescriptions, captureTypeLabels } from "@/features/capture-fields/capture-fields";
 import { MoonIcon, SunIcon } from "lucide-react";
-import { LineCoverageChart, type Line } from "@/features/lines/lines";
+import { LineCoverageChart, lineWildcardLabel, lineSupervisorLabel, type Line } from "@/features/lines/lines";
 
 type Props = {
     line: Line;
@@ -29,6 +29,14 @@ export function LineHeader({ line }: Props) {
                             {line.shift ? <SunIcon className="size-4 text-ink-muted" /> : <MoonIcon className="size-4 text-ink-muted" />}
                             {line.shift ? 'AM' : 'PM'}
                         </dd>
+                    </div>
+                    <div>
+                        <dt className="text-xs text-ink-muted">Tipo</dt>
+                        <dd className="mt-0.5 font-medium text-ink">{lineWildcardLabel(line.is_wildcard)}</dd>
+                    </div>
+                    <div>
+                        <dt className="text-xs text-ink-muted">Supervisor</dt>
+                        <dd className={`mt-0.5 font-medium ${line.supervisor_code ? 'font-mono text-ink' : 'text-ink-muted'}`}>{lineSupervisorLabel(line.supervisor_code)}</dd>
                     </div>
                 </dl>
 

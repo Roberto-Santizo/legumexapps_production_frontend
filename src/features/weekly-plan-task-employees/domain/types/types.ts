@@ -1,11 +1,13 @@
-import { WeeklyPlanEmployeeSchema, WeeklyPlanTaskEmployeeSchema } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
+import { PreviousEmployeeSchema, PreviousEmployeesConfigurationSchema, WeeklyPlanEmployeeSchema, WeeklyPlanTaskEmployeeSchema } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 import type { z } from "zod";
 
 export type WeeklyPlanEmployee = z.infer<typeof WeeklyPlanEmployeeSchema>;
 export type WeeklyPlanTaskEmployee = z.infer<typeof WeeklyPlanTaskEmployeeSchema>;
+export type PreviousEmployee = z.infer<typeof PreviousEmployeeSchema>;
+export type PreviousEmployeesConfiguration = z.infer<typeof PreviousEmployeesConfigurationSchema>;
 
 export type ConfirmedWeeklyPlanTaskEmployee = Pick<WeeklyPlanEmployee, 'code' | 'name' | 'position'> & {
-    line_activity_id: number;
+    line_activity_id: number | null;
 }
 
 export type ConfirmWeeklyPlanTaskEmployeesForm = {
@@ -34,6 +36,22 @@ export type CandidateRowChange = Omit<CandidateRow, 'candidate'>;
 export type AdditionRow = {
     employeeId: string;
     lineActivityId?: number;
+}
+
+export type StaffDistribution = {
+    changes: Record<string, CandidateRowChange>;
+    additions: AdditionRow[];
+}
+
+export type PreviousDistribution = StaffDistribution & {
+    placedCount: number;
+    unavailable: PreviousEmployee[];
+}
+
+export type PreviousDistributionSources = {
+    candidates: WeeklyPlanEmployee[];
+    replacementEmployees: WeeklyPlanEmployee[];
+    activityIds: number[];
 }
 
 export type AddedEmployee = {
