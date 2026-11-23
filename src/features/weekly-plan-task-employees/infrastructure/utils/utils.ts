@@ -9,3 +9,4 @@ export * from './boardCards';
 export * from './boardView';
 export * from './boardMotion';
 export * from './confirmByPosition';
+export * from './previousConfiguration';

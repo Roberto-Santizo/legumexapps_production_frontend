@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { buildCandidateRows, parseBoardCardKey, type AdditionRow, type BoardTarget, type CandidateAction, type CandidateRowChange, type WeeklyPlanEmployee } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
+import { buildCandidateRows, parseBoardCardKey, type AdditionRow, type BoardTarget, type CandidateAction, type CandidateRowChange, type StaffDistribution, type WeeklyPlanEmployee } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 
 export function useCandidateRows(candidates: WeeklyPlanEmployee[]) {
     const [changes, setChanges] = useState<Record<string, CandidateRowChange>>({});
@@ -61,10 +61,15 @@ export function useCandidateRows(candidates: WeeklyPlanEmployee[]) {
         else removeAddition(id);
     };
 
+    const applyDistribution = (distribution: StaffDistribution) => {
+        setChanges(distribution.changes);
+        setAdditions(distribution.additions);
+    };
+
     const reset = () => {
         setChanges({});
         setAdditions([]);
     };
 
-    return { rows, additions, hasChanges, addAddition, assignCards, replaceCard, undoReplaceCard, removeCard, restoreCandidate, reset };
+    return { rows, additions, hasChanges, addAddition, assignCards, replaceCard, undoReplaceCard, removeCard, restoreCandidate, applyDistribution, reset };
 }

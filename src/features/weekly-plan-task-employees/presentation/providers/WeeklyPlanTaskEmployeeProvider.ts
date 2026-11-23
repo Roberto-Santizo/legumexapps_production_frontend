@@ -1,4 +1,4 @@
-import { type ConfirmWeeklyPlanTaskEmployeesByPositionForm, type ConfirmWeeklyPlanTaskEmployeesForm, type UpdateWeeklyPlanTaskEmployeeActivityForm, type WeeklyPlanEmployee, type WeeklyPlanTaskEmployee, type WeeklyPlanTaskEmployeeRepository } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
+import { type ConfirmWeeklyPlanTaskEmployeesByPositionForm, type ConfirmWeeklyPlanTaskEmployeesForm, type PreviousEmployeesConfiguration, type UpdateWeeklyPlanTaskEmployeeActivityForm, type WeeklyPlanEmployee, type WeeklyPlanTaskEmployee, type WeeklyPlanTaskEmployeeRepository } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 import { WeeklyPlanTaskEmployeeDatasourceImpl, WeeklyPlanTaskEmployeeRepositoryImpl } from "@/features/weekly-plan-task-employees/infrastructure/infrastructure";
 import api from "@/config/http/axios";
 
@@ -11,6 +11,10 @@ export class WeeklyPlanTaskEmployeeProvider {
 
     getEmployeesByTaskId(taskId: string): Promise<WeeklyPlanTaskEmployee[]> {
         return this.repository.getEmployeesByTaskId(taskId);
+    }
+
+    getLastEmployeesConfigurationByLineCode(lineCode: string): Promise<PreviousEmployeesConfiguration> {
+        return this.repository.getLastEmployeesConfigurationByLineCode(lineCode);
     }
 
     confirmEmployeesByTaskId(taskId: string, payload: ConfirmWeeklyPlanTaskEmployeesForm): Promise<string> {
