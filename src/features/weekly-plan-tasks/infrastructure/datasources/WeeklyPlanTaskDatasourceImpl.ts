@@ -1,6 +1,6 @@
 import { ApiResponseSchema, setQueryParams } from "@/features/shared/shared";
 import { isAxiosError, type AxiosInstance } from "axios";
-import { WeeklyPlanTaskSchema, PaginatedWeeklyPlanTasksSchema, type WeeklyPlanTaskDatasource, type WeeklyPlanTask, type WeeklyPlanTaskCreateForm, type WeeklyPlanTaskUpdateForm, type PaginatedWeeklyPlanTasks, type AssignOperationDateForm, type SplitWeeklyPlanTaskForm, type WeeklyPlanTaskPackingMaterialItem, WeeklyPlanTaskPackingMaterialItemSchema, type WeeklyPlanTaskFilters, type WeeklyPlanTaskEndForm } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
+import { WeeklyPlanTaskSchema, toEndTaskError, PaginatedWeeklyPlanTasksSchema, type WeeklyPlanTaskDatasource, type WeeklyPlanTask, type WeeklyPlanTaskCreateForm, type WeeklyPlanTaskUpdateForm, type PaginatedWeeklyPlanTasks, type AssignOperationDateForm, type SplitWeeklyPlanTaskForm, type WeeklyPlanTaskPackingMaterialItem, WeeklyPlanTaskPackingMaterialItemSchema, type WeeklyPlanTaskFilters, type WeeklyPlanTaskEndPayload, type WeeklyPlanTaskEndResult } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
 import { z } from "zod";
 
 export class WeeklyPlanTaskDatasourceImpl implements WeeklyPlanTaskDatasource {
@@ -24,19 +24,20 @@ export class WeeklyPlanTaskDatasourceImpl implements WeeklyPlanTaskDatasource {
         }
     }
 
-    async endWeeklyPlanTask(id: string, payload: WeeklyPlanTaskEndForm): Promise<string> {
+    async endWeeklyPlanTask(id: string, payload: WeeklyPlanTaskEndPayload): Promise<WeeklyPlanTaskEndResult> {
         try {
             const url = `${this.url}/${id}/end`;
             const { data } = await this.api.post(url, payload);
             const response = ApiResponseSchema.safeParse(data);
+            const task = WeeklyPlanTaskSchema.safeParse(data['data']);
 
-            if (response.success) {
-                return response.data.message;
+            if (response.success && task.success) {
+                return { message: response.data.message, task: task.data };
             }
 
             throw new Error("Información no válida");
         } catch (error) {
-            if (isAxiosError(error)) throw new Error(error.response?.data.message);
+            if (isAxiosError(error)) throw toEndTaskError(error);
 
             throw new Error("Error no controlado");
         }

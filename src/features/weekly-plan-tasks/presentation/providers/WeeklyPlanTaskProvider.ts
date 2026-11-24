@@ -1,4 +1,4 @@
-import { type WeeklyPlanTask, type WeeklyPlanTaskCreateForm, type WeeklyPlanTaskUpdateForm, type WeeklyPlanTaskRepository, type PaginatedWeeklyPlanTasks, type AssignOperationDateForm, type SplitWeeklyPlanTaskForm, type WeeklyPlanTaskFilters, type WeeklyPlanTaskEndForm } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
+import { type WeeklyPlanTask, type WeeklyPlanTaskCreateForm, type WeeklyPlanTaskUpdateForm, type WeeklyPlanTaskRepository, type PaginatedWeeklyPlanTasks, type AssignOperationDateForm, type SplitWeeklyPlanTaskForm, type WeeklyPlanTaskFilters, type WeeklyPlanTaskEndPayload } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
 import { WeeklyPlanTaskDatasourceImpl, WeeklyPlanTaskRepositoryImpl, } from "@/features/weekly-plan-tasks/infrastructure/infrastructure";
 import api from "@/config/http/axios";
 
@@ -41,7 +41,7 @@ export class WeeklyPlanTaskProvider {
         return this.repository.startWeeklyPlanTask(id);
     }
 
-    endWeeklyPlanTask(id: string, payload: WeeklyPlanTaskEndForm) {
+    endWeeklyPlanTask(id: string, payload: WeeklyPlanTaskEndPayload) {
         return this.repository.endWeeklyPlanTask(id, payload);
     }
 }

@@ -2,7 +2,7 @@ import { DateFormField, SelectFormField, TextFormField } from "@/features/shared
 import { peformancesOptions, performanceProvider } from "@/features/performances/performances";
 import { useQuery } from "@tanstack/react-query";
 import type { Control, FieldErrors, UseFormRegister } from "react-hook-form";
-import type { WeeklyPlanTaskUpdateForm } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
+import { toNullableNumber, type WeeklyPlanTaskUpdateForm } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
 
 type Props = {
     register: UseFormRegister<WeeklyPlanTaskUpdateForm>;
@@ -95,6 +95,19 @@ export function WeeklyPlanTaskUpdateFormComponent({ register, errors, control }:
                 type="number"
                 validation={{ }}
                 errorMessage={errors.weighed_pounds?.message}
+            />
+
+            <TextFormField<WeeklyPlanTaskUpdateForm>
+                name="waste_pounds"
+                label="Libras de Desecho"
+                placeholder="Cantidad de libras de desecho"
+                register={register}
+                type="number"
+                validation={{
+                    setValueAs: toNullableNumber,
+                    min: { value: 0, message: 'Las libras de desecho no pueden ser negativas' }
+                }}
+                errorMessage={errors.waste_pounds?.message}
             />
 
             <DateFormField<WeeklyPlanTaskUpdateForm>

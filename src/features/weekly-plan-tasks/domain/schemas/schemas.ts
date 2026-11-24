@@ -11,6 +11,7 @@ export const WeeklyPlanTaskSchema = z.object({
     timeout_hours: z.number(),
     open_timeout_id: z.number().nullable(),
     weighed_pounds: z.number().nullable(),
+    waste_pounds: z.number().nullable(),
     recorded_pounds: z.number(),
     planned_pounds: z.number(),
     destination: z.string(),
