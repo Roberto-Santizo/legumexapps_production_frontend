@@ -1,4 +1,4 @@
-import type { WeeklyPlanTaskDatasource, WeeklyPlanTask, WeeklyPlanTaskCreateForm, WeeklyPlanTaskUpdateForm, WeeklyPlanTaskRepository, PaginatedWeeklyPlanTasks, AssignOperationDateForm, SplitWeeklyPlanTaskForm, WeeklyPlanTaskPackingMaterialItem, WeeklyPlanTaskFilters, WeeklyPlanTaskEndPayload } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
+import type { WeeklyPlanTaskDatasource, WeeklyPlanTask, WeeklyPlanTaskCreateForm, WeeklyPlanTaskUpdateForm, WeeklyPlanTaskRepository, PaginatedWeeklyPlanTasks, AssignOperationDateForm, SplitWeeklyPlanTaskForm, WeeklyPlanTaskPackingMaterialItem, WeeklyPlanTaskFilters, WeeklyPlanTaskEndPayload, WeeklyPlanTaskEndResult } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
 
 export class WeeklyPlanTaskRepositoryImpl implements WeeklyPlanTaskRepository {
     constructor(private datasource: WeeklyPlanTaskDatasource) { }
@@ -7,7 +7,7 @@ export class WeeklyPlanTaskRepositoryImpl implements WeeklyPlanTaskRepository {
         return this.datasource.startWeeklyPlanTask(id);
     }
 
-    endWeeklyPlanTask(id: string, payload: WeeklyPlanTaskEndPayload): Promise<string> {
+    endWeeklyPlanTask(id: string, payload: WeeklyPlanTaskEndPayload): Promise<WeeklyPlanTaskEndResult> {
         return this.datasource.endWeeklyPlanTask(id, payload);
     }
 
