@@ -22,4 +22,5 @@ export * from './SplitAllocationMeter';
 export * from './SplitPortionRow';
 export * from './ModalEndWeeklyPlanTask';
 export * from './EndTaskSummary';
+export * from './EndTaskFormComponent';
 export * from './WeeklyPlanTaskCaptureRecordsPanel';

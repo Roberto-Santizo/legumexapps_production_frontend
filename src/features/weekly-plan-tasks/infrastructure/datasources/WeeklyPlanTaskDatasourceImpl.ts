@@ -1,6 +1,6 @@
 import { ApiResponseSchema, setQueryParams } from "@/features/shared/shared";
 import { isAxiosError, type AxiosInstance } from "axios";
-import { WeeklyPlanTaskSchema, PaginatedWeeklyPlanTasksSchema, type WeeklyPlanTaskDatasource, type WeeklyPlanTask, type WeeklyPlanTaskCreateForm, type WeeklyPlanTaskUpdateForm, type PaginatedWeeklyPlanTasks, type AssignOperationDateForm, type SplitWeeklyPlanTaskForm, type WeeklyPlanTaskPackingMaterialItem, WeeklyPlanTaskPackingMaterialItemSchema, type WeeklyPlanTaskFilters, type WeeklyPlanTaskEndForm } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
+import { WeeklyPlanTaskSchema, PaginatedWeeklyPlanTasksSchema, type WeeklyPlanTaskDatasource, type WeeklyPlanTask, type WeeklyPlanTaskCreateForm, type WeeklyPlanTaskUpdateForm, type PaginatedWeeklyPlanTasks, type AssignOperationDateForm, type SplitWeeklyPlanTaskForm, type WeeklyPlanTaskPackingMaterialItem, WeeklyPlanTaskPackingMaterialItemSchema, type WeeklyPlanTaskFilters, type WeeklyPlanTaskEndPayload } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
 import { z } from "zod";
 
 export class WeeklyPlanTaskDatasourceImpl implements WeeklyPlanTaskDatasource {
@@ -24,7 +24,7 @@ export class WeeklyPlanTaskDatasourceImpl implements WeeklyPlanTaskDatasource {
         }
     }
 
-    async endWeeklyPlanTask(id: string, payload: WeeklyPlanTaskEndForm): Promise<string> {
+    async endWeeklyPlanTask(id: string, payload: WeeklyPlanTaskEndPayload): Promise<string> {
         try {
             const url = `${this.url}/${id}/end`;
             const { data } = await this.api.post(url, payload);

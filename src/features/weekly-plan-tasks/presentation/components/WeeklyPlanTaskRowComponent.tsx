@@ -118,6 +118,7 @@ export function WeeklyPlanTaskRowComponent({ task, captureType, refetch }: Props
                     closeModal={() => setEndModal(false)}
                     refetch={refetch}
                     task={task}
+                    captureType={captureType}
                 />
             )}
         </article>
