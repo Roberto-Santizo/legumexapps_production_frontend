@@ -21,6 +21,7 @@ export type WeeklyPlanTaskUpdateForm = {
     produced_pallets: number | null;
     hours: number;
     weighed_pounds: number | null;
+    waste_pounds: number | null;
     destination: string;
     operation_date: string | null;
     start_date: string | null;
@@ -47,6 +48,21 @@ export type SplitWeeklyPlanTaskForm = {
 export type WeeklyPlanTaskEndForm = {
     produced_boxes: number;
     weighed_pounds: number;
+    waste_pounds: number;
+}
+
+export type WeeklyPlanTaskEndPayload = Omit<WeeklyPlanTaskEndForm, 'waste_pounds'> & {
+    waste_pounds?: number | null;
+}
+
+export type WeeklyPlanTaskEndResult = {
+    message: string;
+    task: WeeklyPlanTask;
+}
+
+export type WeeklyPlanTaskErrorResponse = {
+    message: string;
+    errors?: Record<string, string[]>;
 }
 
 export type PackingMaterialItemsByTaskDeliveryForm = Omit<PackingMaterialTransactionCreateForm, 'weekly_plan_task_id'>;
