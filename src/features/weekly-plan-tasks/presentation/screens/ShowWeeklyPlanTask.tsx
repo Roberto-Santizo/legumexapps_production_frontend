@@ -1,4 +1,4 @@
-import { ErrorComponent, formatNumber, Loading, TimelineStep } from "@/features/shared/shared";
+import { ErrorComponent, Loading, TimelineStep } from "@/features/shared/shared";
 import { ModalCreateWeeklyPlanTaskObservation, WeeklyPlanTaskObservationsPanel } from "@/features/weekly-plan-task-observations/weekly-plan-task-observations";
 import { ModalUpdateWeeklyPlanTaskPerformanceRecord, PoundsProgressMeter } from "@/features/weekly-plan-task-performance-records/weekly-plan-task-performance-records";
 import { ModalUpdateWeeklyPlanTaskLotRecord } from "@/features/weekly-plan-task-lot-records/weekly-plan-task-lot-records";
@@ -6,7 +6,7 @@ import { ModalUpdateWeeklyPlanTaskProductRecord } from "@/features/weekly-plan-t
 import { useLineByCode } from "@/features/lines/lines";
 import { WeeklyPlanTaskEmployeesRoster } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 import { ModalEndWeeklyPlanTaskTimeout, ModalUpdateWeeklyPlanTaskTimeout, TimeoutHoursStat, WeeklyPlanTaskTimeoutsPanel } from "@/features/weekly-plan-task-timeouts/weekly-plan-task-timeouts";
-import { formatUtcDateTime, getRecordedPoundsLabel, ProductionMeter, WeeklyPlanTaskCaptureRecordsPanel, WeeklyPlanTaskHeader, weeklyPlanTaskProvider } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
+import { formatUtcDateTime, getRecordedPoundsLabel, PoundsStat, ProductionMeter, WeeklyPlanTaskCaptureRecordsPanel, WeeklyPlanTaskHeader, weeklyPlanTaskProvider } from "@/features/weekly-plan-tasks/weekly-plan-tasks";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 
@@ -37,7 +37,7 @@ export function ShowWeeklyPlanTask() {
                     <PoundsProgressMeter recorded={data.recorded_pounds} planned={data.planned_pounds} label={getRecordedPoundsLabel(captureType)} />
                 </div>
 
-                <div className="grid grid-cols-1 divide-y divide-line overflow-hidden rounded-xl border border-line bg-surface sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+                <div className="grid grid-cols-1 divide-y divide-line overflow-hidden rounded-xl border border-line bg-surface xl:grid-cols-4 xl:divide-x xl:divide-y-0">
                     <div className="flex items-baseline justify-between gap-3 px-5 py-4">
                         <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-subtle">Horas</p>
                         <p className="font-mono text-lg text-ink">{data.hours}</p>
@@ -45,12 +45,9 @@ export function ShowWeeklyPlanTask() {
 
                     <TimeoutHoursStat timeoutHours={data.timeout_hours} stopped={data.open_timeout_id !== null} />
 
-                    <div className="flex items-baseline justify-between gap-3 px-5 py-4">
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-subtle">Libras pesadas</p>
-                        <p className={`font-mono text-lg ${data.weighed_pounds !== null ? 'text-ink' : 'text-ink-subtle'}`}>
-                            {data.weighed_pounds !== null ? formatNumber(data.weighed_pounds) : 'Sin registrar'}
-                        </p>
-                    </div>
+                    <PoundsStat label="Libras pesadas" pounds={data.weighed_pounds} />
+
+                    <PoundsStat label="Libras de desecho" pounds={data.waste_pounds} />
                 </div>
             </section>
 

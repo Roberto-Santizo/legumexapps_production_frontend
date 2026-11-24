@@ -42,8 +42,8 @@ export function ModalUpdateWeeklyPlanTask({ modal, closeModal, refetch, taskId }
 
     useEffect(() => {
         if (data) {
-            const { boxes, produced_boxes, pallets, produced_pallets, hours, weighed_pounds, destination, operation_date, start_date, end_date, weekly_plan_id, line_sku_id } = data;
-            setValues({ boxes, produced_boxes, pallets, produced_pallets, hours, weighed_pounds, destination, operation_date, start_date, end_date, weekly_plan_id, line_sku_id });
+            const { boxes, produced_boxes, pallets, produced_pallets, hours, weighed_pounds, waste_pounds, destination, operation_date, start_date, end_date, weekly_plan_id, line_sku_id } = data;
+            setValues({ boxes, produced_boxes, pallets, produced_pallets, hours, weighed_pounds, waste_pounds, destination, operation_date, start_date, end_date, weekly_plan_id, line_sku_id });
         }
     }, [data]);
 
