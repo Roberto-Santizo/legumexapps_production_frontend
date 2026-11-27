@@ -5,12 +5,12 @@ import type { AssignLineActivityPayload, LineActivitiesRepository, LineActivity,
 export class LineActivitiesProvider {
     constructor(private repository: LineActivitiesRepository) { }
 
-    getLineActivities(lineCode: string): Promise<LineActivity[]> {
-        return this.repository.getLineActivities(lineCode);
+    getLineActivities(lineSkuId: number): Promise<LineActivity[]> {
+        return this.repository.getLineActivities(lineSkuId);
     }
 
-    assignLineActivity(lineCode: string, payload: AssignLineActivityPayload): Promise<string> {
-        return this.repository.assignLineActivity(lineCode, payload);
+    assignLineActivity(lineSkuId: number, payload: AssignLineActivityPayload): Promise<string> {
+        return this.repository.assignLineActivity(lineSkuId, payload);
     }
 
     updateLineActivityById(id: string, payload: UpdateLineActivityPayload): Promise<string> {

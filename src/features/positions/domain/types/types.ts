@@ -7,5 +7,5 @@ export type Position = z.infer<typeof PositionSchema>;
 export type PositionForm = {
     code: string;
     activity_id: number;
-    line_id: number;
+    line_sku_id: number;
 }

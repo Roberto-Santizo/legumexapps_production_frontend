@@ -9,9 +9,7 @@ export const LineSchema = z.object({
     shift: z.number(),
     capture_type: CaptureTypeSchema,
     is_wildcard: z.boolean(),
-    supervisor_code: z.string().nullable(),
-    activities: z.number(),
-    positions: z.number()
+    supervisor_code: z.string().nullable()
 });
 
 export const PaginatedLinesSchema = ApiPaginatedResponseSchema.extend({

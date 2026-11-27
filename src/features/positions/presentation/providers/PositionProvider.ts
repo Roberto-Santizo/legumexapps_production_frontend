@@ -9,8 +9,8 @@ export class PositionProvider {
         return this.repository.createPosition(payload);
     }
 
-    getPositions(limit: string, page: string, lineCode = '', filters?: PositionFilters): Promise<PaginatedPositions> {
-        return this.repository.getPositions(limit, page, lineCode, filters);
+    getPositions(limit: string, page: string, lineSkuId?: number, filters?: PositionFilters): Promise<PaginatedPositions> {
+        return this.repository.getPositions(limit, page, lineSkuId, filters);
     }
 
     getPositionById(id: string): Promise<Position> {

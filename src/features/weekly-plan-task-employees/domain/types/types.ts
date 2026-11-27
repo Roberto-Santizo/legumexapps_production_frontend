@@ -7,7 +7,7 @@ export type PreviousEmployee = z.infer<typeof PreviousEmployeeSchema>;
 export type PreviousEmployeesConfiguration = z.infer<typeof PreviousEmployeesConfigurationSchema>;
 
 export type ConfirmedWeeklyPlanTaskEmployee = Pick<WeeklyPlanEmployee, 'code' | 'name' | 'position'> & {
-    line_activity_id: number | null;
+    line_sku_activity_id: number | null;
 }
 
 export type ConfirmWeeklyPlanTaskEmployeesForm = {
@@ -19,7 +19,7 @@ export type ConfirmWeeklyPlanTaskEmployeesByPositionForm = {
 }
 
 export type UpdateWeeklyPlanTaskEmployeeActivityForm = {
-    line_activity_id: number;
+    line_sku_activity_id: number;
 }
 
 export type CandidateAction = 'keep' | 'remove' | 'replace';

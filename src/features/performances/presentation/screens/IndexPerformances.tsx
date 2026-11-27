@@ -1,7 +1,7 @@
-import { FiltersButton, FiltersDrawer, BulkUploadModal, type BulkUploadColumn, ActionsMenu, CustomFilledButton, Loading, Pagination, StatusTag, Table, Tbody, Td, Th, Thead, Title, Tr, useNotification, usePagination } from "@/features/shared/shared";
-import { EditIcon, EyeIcon, PlusIcon, TrashIcon, UploadIcon } from "lucide-react";
-import { performanceFilterFields, performanceProvider, usePerformancesFilters } from "@/features/performances/performances";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { FiltersButton, FiltersDrawer, BulkUploadModal, type BulkUploadColumn, CustomFilledButton, Loading, Pagination, Title, usePagination } from "@/features/shared/shared";
+import { PlusIcon, UploadIcon } from "lucide-react";
+import { createPerformancePath, editPerformancePath, invalidatePerformanceQueries, performanceFilterFields, performanceProvider, performancesQueryKey, PerformancesTable, showPerformancePath, useDeletePerformance, usePerformancesFilters, useTogglePerformanceStatus } from "@/features/performances/performances";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useState } from "react";
 
@@ -18,40 +18,18 @@ export function IndexPerformances() {
     const queryClient = useQueryClient();
     const [bulkUpload, setBulkUpload] = useState(false);
     const [showFilters, setShowFilters] = useState(false);
-    const notification = useNotification();
 
     const [searchParams, setSearchParams] = useSearchParams();
     const { filters, setFilters, clearFilters } = usePerformancesFilters();
     const { page, rowsPerPage } = usePagination(searchParams);
+    const { handleDeletePerformance } = useDeletePerformance();
+    const { toggleStatus } = useTogglePerformanceStatus();
 
-    const { data, isLoading, refetch } = useQuery({
-        queryKey: ['getPerformances', page + 1, rowsPerPage, filters],
+    const { data, isLoading } = useQuery({
+        queryKey: [...performancesQueryKey, page + 1, rowsPerPage, filters],
         queryFn: () => performanceProvider.getPerformances(`${rowsPerPage}`, `${page + 1}`, filters)
     });
 
-    const { mutate } = useMutation({
-        mutationFn: (id: string) => performanceProvider.deletePerformanceById(id),
-        onSuccess: (message) => {
-            notification.success(message);
-            refetch();
-        },
-        onError: (err) => {
-            notification.error(err.message);
-        }
-    });
-
-    const { mutate: toggleStatus } = useMutation({
-        mutationFn: (id: string) => performanceProvider.toggleStatus(id),
-        onSuccess: (message) => {
-            notification.success(message);
-            refetch();
-        },
-        onError: (err) => {
-            notification.error(err.message);
-        }
-    });
-
-    const handleDeleteItem = (id: string) => notification.question('¿Desea eliminar el rendimiento?', 'Eliminar', 'El rendimiento se eliminará del sistema', () => mutate(id));
     if (isLoading) return <Loading />
     if (data) return (
         <div className="space-y-5">
@@ -69,7 +47,7 @@ export function IndexPerformances() {
                         label="Crear Rendimiento"
                         type="button"
                         icon={<PlusIcon />}
-                        onClick={() => navigate('/rendimientos/crear')}
+                        onClick={() => navigate(createPerformancePath())}
                     />
                 </div>
             </div>
@@ -90,47 +68,18 @@ export function IndexPerformances() {
                 templateName="rendimientos_linea_sku"
                 columns={bulkUploadColumns}
                 upload={(file) => performanceProvider.uploadFile(file)}
-                onSuccess={() => queryClient.invalidateQueries({ queryKey: ['getPerformances'] })}
+                onSuccess={() => invalidatePerformanceQueries(queryClient)}
                 note="Las líneas y los SKUs deben estar registrados antes. El par SKU–Línea no puede repetirse."
             />
 
             <section>
-                <Table>
-                    <Thead>
-                        <Th text="SKU" />
-                        <Th text="Línea" />
-                        <Th text="Libras de Rendimiento" />
-                        <Th text="Porcentaje Aceptado" />
-                        <Th text="Método de Pago" />
-                        <Th text="Estado" />
-                        <Th text="Acciones" />
-                    </Thead>
-
-                    <Tbody>
-                        {data.data.map(item => (
-                            <Tr key={item.id}>
-                                <Td>{item.sku}</Td>
-                                <Td>{item.line}</Td>
-                                <Td>{item.lbs_performance}</Td>
-                                <Td>{item.accepted_percentage}</Td>
-                                <Td>{item.payment_method ? 'Horas Linea' : 'Horas Rendimiento'}</Td>
-                                <Td>
-                                    <StatusTag onClick={() => toggleStatus(`${item.id}`)} flag={item.status} />
-                                </Td>
-                                <Td className="flex gap-3">
-                                    <ActionsMenu
-                                        items={[
-                                            { label: "Ver Detalles", icon: <EyeIcon />, onClick: () => navigate(`/rendimientos/${item.id}`) },
-                                            { label: "Editar", icon: <EditIcon />, onClick: () => navigate(`/rendimientos/${item.id}/editar`) },
-                                            { label: "Eliminar", icon: <TrashIcon />, onClick: () => handleDeleteItem(`${item.id}`), danger: true },
-                                        ]}
-                                    />
-                                </Td>
-                            </Tr>
-
-                        ))}
-                    </Tbody>
-                </Table>
+                <PerformancesTable
+                    performances={data.data}
+                    onShow={item => navigate(showPerformancePath(item.id))}
+                    onEdit={item => navigate(editPerformancePath(item.id))}
+                    onDelete={handleDeletePerformance}
+                    onToggleStatus={item => toggleStatus(item.id)}
+                />
             </section>
 
             <Pagination

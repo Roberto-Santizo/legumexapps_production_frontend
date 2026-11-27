@@ -35,8 +35,8 @@ export function WeeklyPlanTaskAssignPersonel() {
             {mode === 'confirm' && showCandidates && <ConfirmByPositionPanel taskId={id!} />}
 
             {mode === 'confirm'
-              ? <WeeklyPlanTaskEmployeesConfirm taskId={id!} lineCode={data.line_code} showCandidates={showCandidates} allowUnassigned={isWildcard} />
-              : <WeeklyPlanTaskEmployeesRoster taskId={id!} lineCode={data.line_code} editable={mode === 'edit'} />}
+              ? <WeeklyPlanTaskEmployeesConfirm taskId={id!} lineSkuId={data.line_sku_id} showCandidates={showCandidates} allowUnassigned={isWildcard} />
+              : <WeeklyPlanTaskEmployeesRoster taskId={id!} lineSkuId={data.line_sku_id} editable={mode === 'edit'} />}
           </FadeSwitch>
         </div>
       </MotionConfig>

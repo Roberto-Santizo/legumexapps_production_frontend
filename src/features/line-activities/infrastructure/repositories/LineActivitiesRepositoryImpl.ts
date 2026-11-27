@@ -3,12 +3,12 @@ import type { AssignLineActivityPayload, LineActivitiesDatasource, LineActivitie
 export class LineActivitiesRepositoryImpl implements LineActivitiesRepository {
     constructor(private datasource: LineActivitiesDatasource) { }
 
-    getLineActivities(lineCode: string): Promise<LineActivity[]> {
-        return this.datasource.getLineActivities(lineCode);
+    getLineActivities(lineSkuId: number): Promise<LineActivity[]> {
+        return this.datasource.getLineActivities(lineSkuId);
     }
 
-    assignLineActivity(lineCode: string, payload: AssignLineActivityPayload): Promise<string> {
-        return this.datasource.assignLineActivity(lineCode, payload);
+    assignLineActivity(lineSkuId: number, payload: AssignLineActivityPayload): Promise<string> {
+        return this.datasource.assignLineActivity(lineSkuId, payload);
     }
 
     updateLineActivityById(id: string, payload: UpdateLineActivityPayload): Promise<string> {

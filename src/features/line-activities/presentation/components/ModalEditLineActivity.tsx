@@ -5,11 +5,11 @@ import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
 
 type Props = {
-    lineCode: string;
+    lineSkuId: number;
     activities: LineActivity[];
 }
 
-export function ModalEditLineActivity({ lineCode, activities }: Props) {
+export function ModalEditLineActivity({ lineSkuId, activities }: Props) {
     const location = useLocation();
     const navigate = useNavigate();
     const itemId = getQueryParam(location, 'editLineActivity') ?? '';
@@ -18,7 +18,7 @@ export function ModalEditLineActivity({ lineCode, activities }: Props) {
 
     const closeModal = () => handleDeleteQueryParam(location, navigate, 'editLineActivity');
 
-    const { updateQuantity, isUpdating } = useUpdateLineActivity({ lineCode, onSuccess: closeModal });
+    const { updateQuantity, isUpdating } = useUpdateLineActivity({ lineSkuId, onSuccess: closeModal });
 
     const {
         handleSubmit,
@@ -49,7 +49,7 @@ export function ModalEditLineActivity({ lineCode, activities }: Props) {
                             register={register}
                             errorMessage={errors.quantity?.message}
                         />
-                        <p className="text-xs text-ink-muted">Para cambiar de actividad, quítala de la línea y asigna la otra.</p>
+                        <p className="text-xs text-ink-muted">Para cambiar de actividad, quítala del SKU y asigna la otra.</p>
                         <CustomFilledButton type="submit" label="Guardar cambios" disabled={isUpdating} fullWitdh />
                     </CustomForm>
                 </div>

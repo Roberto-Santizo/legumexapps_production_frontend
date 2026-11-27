@@ -4,11 +4,11 @@ import { LineActivitySchema, type AssignLineActivityPayload, type LineActivities
 import { z } from "zod";
 
 export class LineActivitiesDatasourceImpl implements LineActivitiesDatasource {
-    constructor(private api: AxiosInstance, private url = '/line-activities', private linesUrl = '/lines') { }
+    constructor(private api: AxiosInstance, private url = '/line-sku-activities', private performancesUrl = '/performances') { }
 
-    async getLineActivities(lineCode: string): Promise<LineActivity[]> {
+    async getLineActivities(lineSkuId: number): Promise<LineActivity[]> {
         try {
-            const url = `${this.linesUrl}/${lineCode}/activities`;
+            const url = `${this.performancesUrl}/${lineSkuId}/activities`;
             const { data } = await this.api.get(url);
             const response = z.array(LineActivitySchema).safeParse(data['data']);
 
@@ -24,9 +24,9 @@ export class LineActivitiesDatasourceImpl implements LineActivitiesDatasource {
         }
     }
 
-    async assignLineActivity(lineCode: string, payload: AssignLineActivityPayload): Promise<string> {
+    async assignLineActivity(lineSkuId: number, payload: AssignLineActivityPayload): Promise<string> {
         try {
-            const url = `${this.linesUrl}/${lineCode}/activities`;
+            const url = `${this.performancesUrl}/${lineSkuId}/activities`;
             const { data } = await this.api.post(url, payload);
             const response = ApiResponseSchema.safeParse(data);
 

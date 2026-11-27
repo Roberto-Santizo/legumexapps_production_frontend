@@ -5,18 +5,18 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 type Props = {
-    lineCode: string;
+    lineSkuId: number;
 }
 
-export function LineActivitiesConfigurator({ lineCode }: Props) {
+export function LineActivitiesConfigurator({ lineSkuId }: Props) {
     const location = useLocation();
     const navigate = useNavigate();
     const [assign, setAssign] = useState(false);
-    const { handleRemoveActivity, isRemoving } = useRemoveLineActivity(lineCode);
+    const { handleRemoveActivity, isRemoving } = useRemoveLineActivity(lineSkuId);
 
     const { data, isLoading, isError, error } = useQuery({
-        queryKey: lineActivitiesQueryKey(lineCode),
-        queryFn: () => lineActivitiesProvider.getLineActivities(lineCode),
+        queryKey: lineActivitiesQueryKey(lineSkuId),
+        queryFn: () => lineActivitiesProvider.getLineActivities(lineSkuId),
         retry: false
     });
 
@@ -65,9 +65,9 @@ export function LineActivitiesConfigurator({ lineCode }: Props) {
                 </>
             )}
 
-            <ModalAssignLineActivity open={assign} close={() => setAssign(false)} lineCode={lineCode} assigned={activities} />
+            <ModalAssignLineActivity open={assign} close={() => setAssign(false)} lineSkuId={lineSkuId} assigned={activities} />
 
-            <ModalEditLineActivity lineCode={lineCode} activities={activities} />
+            <ModalEditLineActivity lineSkuId={lineSkuId} activities={activities} />
         </section>
     )
 }

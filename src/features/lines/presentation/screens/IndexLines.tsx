@@ -1,6 +1,6 @@
 import { FiltersButton, FiltersDrawer, BulkUploadModal, type BulkUploadColumn, ActionsMenu, CustomFilledButton, ErrorComponent, LoadingData, Pagination, Table, Tbody, Td, Th, Thead, Title, Tr, usePagination } from "@/features/shared/shared";
-import { EditIcon, EyeIcon, PlusIcon, UploadIcon } from "lucide-react";
-import { linesRepositoryProvider, useLineFilters, lineFilterFields, lineWildcardLabel, lineSupervisorLabel } from "@/features/lines/lines";
+import { EditIcon, EyeIcon, PlusIcon, SlidersHorizontalIcon, UploadIcon } from "lucide-react";
+import { linesRepositoryProvider, useLineFilters, lineFilterFields, lineWildcardLabel, lineSupervisorLabel, lineShiftLabel, lineConfigurationsPath } from "@/features/lines/lines";
 import { captureTypeLabels } from "@/features/capture-fields/capture-fields";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useState } from "react";
@@ -73,8 +73,9 @@ export function IndexLines() {
             <section>
                 <Table>
                     <Thead>
-                        <Th text="Linea" />
+                        <Th text="Línea" />
                         <Th text="Código" />
+                        <Th text="Turno" />
                         <Th text="Familia" />
                         <Th text="Tipo" />
                         <Th text="Supervisor" />
@@ -83,9 +84,10 @@ export function IndexLines() {
 
                     <Tbody>
                         {data.data.map(line => (
-                            <Tr>
+                            <Tr key={line.id}>
                                 <Td>{line.name}</Td>
                                 <Td>{line.code}</Td>
+                                <Td>{lineShiftLabel(line.shift)}</Td>
                                 <Td>{captureTypeLabels[line.capture_type]}</Td>
                                 <Td>{lineWildcardLabel(line.is_wildcard)}</Td>
                                 <Td>{lineSupervisorLabel(line.supervisor_code)}</Td>
@@ -93,6 +95,7 @@ export function IndexLines() {
                                     <ActionsMenu
                                         items={[
                                             { label: "Ver Detalles", icon: <EyeIcon />, onClick: () => navigate(`/lineas/${line.code}`) },
+                                            { label: "Configuraciones", icon: <SlidersHorizontalIcon />, onClick: () => navigate(lineConfigurationsPath(line.code)) },
                                             { label: "Editar", icon: <EditIcon />, onClick: () => navigate(`/lineas/${line.code}/editar`) },
                                         ]}
                                     />

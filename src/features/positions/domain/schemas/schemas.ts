@@ -7,8 +7,10 @@ export const PositionSchema = z.object({
     activity_id: z.number().nullable(),
     activity: z.string().nullable(),
     unit: z.string().nullable(),
+    line_sku_id: z.number(),
     line_id: z.number(),
     line: z.string(),
+    sku: z.string(),
     status: z.boolean()
 });
 

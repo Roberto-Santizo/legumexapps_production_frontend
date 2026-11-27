@@ -12,7 +12,7 @@ export const toConfirmedEmployee = (employee: WeeklyPlanEmployee, lineActivityId
     code: employee.code,
     name: employee.name,
     position,
-    line_activity_id: lineActivityId,
+    line_sku_activity_id: lineActivityId,
 });
 
 const resolveLineActivityId = (lineActivityId: number | undefined, allowUnassigned: boolean): number | null | undefined =>

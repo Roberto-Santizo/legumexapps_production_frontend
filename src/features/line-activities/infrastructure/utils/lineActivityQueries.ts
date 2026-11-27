@@ -1,9 +1,9 @@
 import type { QueryClient } from "@tanstack/react-query";
-import { lineByCodeQueryKey } from "@/features/lines/lines";
+import { invalidatePerformanceQueries } from "@/features/performances/performances";
 
-export const lineActivitiesQueryKey = (lineCode: string) => ['getLineActivities', lineCode];
+export const lineActivitiesQueryKey = (lineSkuId: number) => ['getLineSkuActivities', lineSkuId];
 
-export function invalidateLineActivityQueries(queryClient: QueryClient, lineCode: string) {
-    queryClient.invalidateQueries({ queryKey: lineActivitiesQueryKey(lineCode) });
-    queryClient.invalidateQueries({ queryKey: lineByCodeQueryKey(lineCode) });
+export function invalidateLineActivityQueries(queryClient: QueryClient, lineSkuId: number) {
+    queryClient.invalidateQueries({ queryKey: lineActivitiesQueryKey(lineSkuId) });
+    invalidatePerformanceQueries(queryClient);
 }

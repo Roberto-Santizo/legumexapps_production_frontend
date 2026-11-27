@@ -14,7 +14,7 @@ export const WeeklyPlanTaskEmployeeSchema = z.object({
     position_id: z.number().nullable(),
     position: z.string().nullable(),
     position_activity: z.string().nullable(),
-    line_activity_id: z.number().nullable(),
+    line_sku_activity_id: z.number().nullable(),
     activity: z.string().nullable(),
     unit: z.string().nullable(),
 });
@@ -23,7 +23,7 @@ export const PreviousEmployeeSchema = z.object({
     code: z.string(),
     name: z.string(),
     position: z.string().nullable(),
-    line_activity_id: z.number().nullable(),
+    line_sku_activity_id: z.number().nullable(),
 });
 
 export const PreviousEmployeesConfigurationSchema = z.object({

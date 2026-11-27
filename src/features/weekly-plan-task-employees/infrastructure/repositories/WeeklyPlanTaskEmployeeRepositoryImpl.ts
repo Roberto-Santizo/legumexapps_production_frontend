@@ -11,8 +11,8 @@ export class WeeklyPlanTaskEmployeeRepositoryImpl implements WeeklyPlanTaskEmplo
         return this.datasource.getEmployeesByTaskId(taskId);
     }
 
-    getLastEmployeesConfigurationByLineCode(lineCode: string): Promise<PreviousEmployeesConfiguration> {
-        return this.datasource.getLastEmployeesConfigurationByLineCode(lineCode);
+    getLastEmployeesConfigurationByLineSkuId(lineSkuId: number): Promise<PreviousEmployeesConfiguration> {
+        return this.datasource.getLastEmployeesConfigurationByLineSkuId(lineSkuId);
     }
 
     confirmEmployeesByTaskId(taskId: string, payload: ConfirmWeeklyPlanTaskEmployeesForm): Promise<string> {

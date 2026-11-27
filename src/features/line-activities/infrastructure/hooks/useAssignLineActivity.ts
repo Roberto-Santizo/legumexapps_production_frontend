@@ -3,19 +3,19 @@ import { useNotification } from "@/features/shared/shared";
 import { invalidateLineActivityQueries, lineActivitiesProvider, type AssignLineActivityPayload } from "@/features/line-activities/line-activities";
 
 type Options = {
-    lineCode: string;
+    lineSkuId: number;
     onSuccess?: () => void;
 }
 
-export function useAssignLineActivity({ lineCode, onSuccess }: Options) {
+export function useAssignLineActivity({ lineSkuId, onSuccess }: Options) {
     const notification = useNotification();
     const queryClient = useQueryClient();
 
     const { mutate, isPending } = useMutation({
-        mutationFn: (payload: AssignLineActivityPayload) => lineActivitiesProvider.assignLineActivity(lineCode, payload),
+        mutationFn: (payload: AssignLineActivityPayload) => lineActivitiesProvider.assignLineActivity(lineSkuId, payload),
         onSuccess: (message) => {
             notification.success(message);
-            invalidateLineActivityQueries(queryClient, lineCode);
+            invalidateLineActivityQueries(queryClient, lineSkuId);
             onSuccess?.();
         },
         onError: (err) => notification.error(err.message)

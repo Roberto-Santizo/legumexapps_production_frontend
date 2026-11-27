@@ -4,14 +4,14 @@ import { buildActivitySlots, buildRosterBoardCards, countMissingActivities, find
 
 type Props = {
     taskId: string;
-    lineCode: string;
+    lineSkuId: number;
     editable: boolean;
 }
 
-export function WeeklyPlanTaskEmployeesRoster({ taskId, lineCode, editable }: Props) {
+export function WeeklyPlanTaskEmployeesRoster({ taskId, lineSkuId, editable }: Props) {
     const { handleRemove } = useRemoveTaskEmployee(taskId);
     const { updateActivities, pendingMoves } = useUpdateTaskEmployeeActivity(taskId);
-    const activitiesQuery = useTaskLineActivities(lineCode);
+    const activitiesQuery = useTaskLineActivities(lineSkuId);
 
     const { data, isLoading, isError, error } = useQuery({
         queryKey: taskEmployeesQueryKey(taskId),

@@ -13,8 +13,8 @@ export class WeeklyPlanTaskEmployeeProvider {
         return this.repository.getEmployeesByTaskId(taskId);
     }
 
-    getLastEmployeesConfigurationByLineCode(lineCode: string): Promise<PreviousEmployeesConfiguration> {
-        return this.repository.getLastEmployeesConfigurationByLineCode(lineCode);
+    getLastEmployeesConfigurationByLineSkuId(lineSkuId: number): Promise<PreviousEmployeesConfiguration> {
+        return this.repository.getLastEmployeesConfigurationByLineSkuId(lineSkuId);
     }
 
     confirmEmployeesByTaskId(taskId: string, payload: ConfirmWeeklyPlanTaskEmployeesForm): Promise<string> {

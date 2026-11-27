@@ -11,3 +11,10 @@ export const peformancesOptions = (performances: Performance[]): Option[] => {
 
     return options;
 }
+
+export * from './performanceCoverage';
+export * from './performanceQueries';
+export * from './performanceLabels';
+export * from './performanceMappers';
+export * from './performanceNavigation';
+export * from './performanceSectionTabs';

@@ -30,7 +30,7 @@ export function LineActivityRow({ item, shade, busy, onEdit, onRemove }: Props) 
                 <button type="button" className={iconButton} onClick={onEdit} disabled={busy} aria-label={`Cambiar cantidad de ${item.activity}`} title="Cambiar cantidad">
                     <PencilIcon className="size-4" />
                 </button>
-                <button type="button" className={`${iconButton} hover:text-red-600`} onClick={onRemove} disabled={busy} aria-label={`Quitar ${item.activity}`} title="Quitar de la línea">
+                <button type="button" className={`${iconButton} hover:text-red-600`} onClick={onRemove} disabled={busy} aria-label={`Quitar ${item.activity}`} title="Quitar del SKU">
                     <Trash2Icon className="size-4" />
                 </button>
             </div>

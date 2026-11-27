@@ -18,7 +18,7 @@ export function LineActivitiesHeader({ total, count, onAdd }: Props) {
                     <p className="mt-0.5 text-xs text-ink-muted">
                         {count > 0
                             ? `${peopleLabel(total)} en ${count} ${count === 1 ? 'actividad' : 'actividades'} · máximo por actividad al asignar personal`
-                            : 'Cuántas personas de cada actividad necesita la línea'}
+                            : 'Cuántas personas de cada actividad necesita este SKU'}
                     </p>
                 </div>
             </div>

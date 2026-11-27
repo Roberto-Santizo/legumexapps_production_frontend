@@ -6,11 +6,11 @@ type Props = {
     register: UseFormRegister<PositionForm>;
     errors: FieldErrors<PositionForm>;
     control: Control<PositionForm>;
-    lineCode: string;
+    lineSkuId: number;
 }
 
-export function PositionFormComponent({ register, errors, control, lineCode }: Props) {
-    const { data: lineActivities, isFetching } = usePositionLineActivities(lineCode);
+export function PositionFormComponent({ register, errors, control, lineSkuId }: Props) {
+    const { data: lineActivities, isFetching } = usePositionLineActivities(lineSkuId);
 
     return (
         <>
@@ -35,7 +35,7 @@ export function PositionFormComponent({ register, errors, control, lineCode }: P
             />
 
             {lineActivities?.length === 0 && (
-                <p className="text-xs text-ink-muted">La línea no tiene actividades asignadas. Asígnalas en Dotación de personal.</p>
+                <p className="text-xs text-ink-muted">El SKU no tiene actividades asignadas. Asígnalas en la pestaña Actividades.</p>
             )}
         </>
     )

@@ -3,20 +3,19 @@ import { useNotification } from "@/features/shared/shared";
 import { invalidatePositionQueries, positionProvider, type PositionForm } from "@/features/positions/positions";
 
 type Options = {
-    lineId: number;
-    lineCode: string;
+    lineSkuId: number;
     onSuccess?: () => void;
 }
 
-export function useCreatePosition({ lineId, lineCode, onSuccess }: Options) {
+export function useCreatePosition({ lineSkuId, onSuccess }: Options) {
     const notification = useNotification();
     const queryClient = useQueryClient();
 
     const { mutate, isPending } = useMutation({
-        mutationFn: (form: PositionForm) => positionProvider.createPosition({ ...form, line_id: lineId }),
+        mutationFn: (form: PositionForm) => positionProvider.createPosition({ ...form, line_sku_id: lineSkuId }),
         onSuccess: (message) => {
             notification.success(message);
-            invalidatePositionQueries(queryClient, lineCode);
+            invalidatePositionQueries(queryClient, lineSkuId);
             onSuccess?.();
         },
         onError: (err) => notification.error(err.message)

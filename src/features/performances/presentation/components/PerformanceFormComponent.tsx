@@ -9,9 +9,10 @@ type Props = {
     register: UseFormRegister<PerformanceForm>;
     errors: FieldErrors<PerformanceForm>;
     control: Control<PerformanceForm, any>;
+    lineLocked?: boolean;
 }
 
-export function PerformanceFormComponent({ register, errors, control }: Props) {
+export function PerformanceFormComponent({ register, errors, control, lineLocked = false }: Props) {
     const { data: skusData } = useQuery({
         queryKey: ['getSkus'],
         queryFn: () => skuProvider.getSkus('', '')
@@ -40,6 +41,7 @@ export function PerformanceFormComponent({ register, errors, control }: Props) {
                 validation={{ required: 'El campo es requerido' }}
                 options={linesOptions(linesData.data)}
                 errorMessage={errors.line_id?.message}
+                disabled={lineLocked}
             />
 
             <TextFormField<PerformanceForm>

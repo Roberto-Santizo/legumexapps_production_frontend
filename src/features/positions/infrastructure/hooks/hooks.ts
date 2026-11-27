@@ -1,5 +1,5 @@
 export * from './usePositionLineActivities';
-export * from './usePositionsByLine';
+export * from './usePositionsByLineSku';
 export * from './usePositionById';
 export * from './useCreatePosition';
 export * from './useUpdatePosition';

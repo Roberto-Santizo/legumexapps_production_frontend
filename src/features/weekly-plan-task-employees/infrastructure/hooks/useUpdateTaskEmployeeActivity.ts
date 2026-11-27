@@ -11,7 +11,7 @@ export function useUpdateTaskEmployeeActivity(taskId: string) {
     const { mutate, isPending, variables } = useMutation({
         mutationFn: (moves: PendingActivityMove[]) => Promise.all(
             moves.map(({ id, lineActivityId }) =>
-                weeklyPlanTaskEmployeeProvider.updateWeeklyPlanTaskEmployeeActivityById(`${id}`, { line_activity_id: lineActivityId })
+                weeklyPlanTaskEmployeeProvider.updateWeeklyPlanTaskEmployeeActivityById(`${id}`, { line_sku_activity_id: lineActivityId })
             )
         ),
         onSuccess: (messages) => {

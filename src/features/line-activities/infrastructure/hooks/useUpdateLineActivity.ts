@@ -3,11 +3,11 @@ import { useNotification } from "@/features/shared/shared";
 import { invalidateLineActivityQueries, lineActivitiesProvider, type UpdateLineActivityPayload } from "@/features/line-activities/line-activities";
 
 type Options = {
-    lineCode: string;
+    lineSkuId: number;
     onSuccess?: () => void;
 }
 
-export function useUpdateLineActivity({ lineCode, onSuccess }: Options) {
+export function useUpdateLineActivity({ lineSkuId, onSuccess }: Options) {
     const notification = useNotification();
     const queryClient = useQueryClient();
 
@@ -16,7 +16,7 @@ export function useUpdateLineActivity({ lineCode, onSuccess }: Options) {
             lineActivitiesProvider.updateLineActivityById(`${id}`, payload),
         onSuccess: (message) => {
             notification.success(message);
-            invalidateLineActivityQueries(queryClient, lineCode);
+            invalidateLineActivityQueries(queryClient, lineSkuId);
             onSuccess?.();
         },
         onError: (err) => notification.error(err.message)

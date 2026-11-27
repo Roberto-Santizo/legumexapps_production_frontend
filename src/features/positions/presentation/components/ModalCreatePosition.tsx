@@ -5,11 +5,10 @@ import { useForm } from "react-hook-form";
 type Props = {
     open: boolean;
     close: () => void;
-    lineId: number;
-    lineCode: string;
+    lineSkuId: number;
 }
 
-export function ModalCreatePosition({ open, close, lineId, lineCode }: Props) {
+export function ModalCreatePosition({ open, close, lineSkuId }: Props) {
     const {
         handleSubmit,
         register,
@@ -23,14 +22,14 @@ export function ModalCreatePosition({ open, close, lineId, lineCode }: Props) {
         close();
     };
 
-    const { createPosition, isCreating } = useCreatePosition({ lineId, lineCode, onSuccess: handleClose });
+    const { createPosition, isCreating } = useCreatePosition({ lineSkuId, onSuccess: handleClose });
 
     const onSubmit = (form: PositionForm) => createPosition(form);
 
     return (
         <Modal modal={open} closeModal={handleClose} title="Crear posición" width="sm:max-w-lg">
             <CustomForm onSubmit={handleSubmit(onSubmit)} className="border-none p-0 shadow-none">
-                <PositionFormComponent register={register} errors={errors} control={control} lineCode={lineCode} />
+                <PositionFormComponent register={register} errors={errors} control={control} lineSkuId={lineSkuId} />
                 <CustomFilledButton type="submit" label="Crear posición" disabled={isCreating} fullWitdh />
             </CustomForm>
         </Modal>

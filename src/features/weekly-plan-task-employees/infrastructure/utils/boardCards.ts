@@ -76,7 +76,7 @@ export const buildRosterBoardCards = (assignments: WeeklyPlanTaskEmployee[], pen
         name: assignment.name,
         code: assignment.code,
         position: assignment.position,
-        activityId: findPendingMove(pendingMoves, assignment.id)?.lineActivityId ?? assignment.line_activity_id ?? undefined,
+        activityId: findPendingMove(pendingMoves, assignment.id)?.lineActivityId ?? assignment.line_sku_activity_id ?? undefined,
         tag: toPositionTag(assignment),
     }));
 

@@ -10,8 +10,8 @@ export class PerformanceRepositoryImpl implements PerformanceRepository {
         return this.datasource.createPerformance(payload);
     }
 
-    getPerformances(limit: string, page: string, filters?: PerformanceFilters): Promise<PaginatedPerformances> {
-        return this.datasource.getPerformances(limit, page, filters);
+    getPerformances(limit: string, page: string, filters?: PerformanceFilters, lineCode?: string): Promise<PaginatedPerformances> {
+        return this.datasource.getPerformances(limit, page, filters, lineCode);
     }
 
     getPerformanceById(id: string): Promise<Performance> {

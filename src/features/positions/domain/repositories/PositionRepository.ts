@@ -2,7 +2,7 @@ import type { Position, PositionForm, PaginatedPositions, PositionFilters } from
 
 export abstract class PositionRepository {
     abstract createPosition(payload: PositionForm): Promise<string>;
-    abstract getPositions(limit: string, page: string, lineCode: string, filters?: PositionFilters): Promise<PaginatedPositions>;
+    abstract getPositions(limit: string, page: string, lineSkuId?: number, filters?: PositionFilters): Promise<PaginatedPositions>;
     abstract getPositionById(id: string): Promise<Position>;
     abstract updatePositionById(id: string, payload: PositionForm): Promise<string>;
     abstract deletePositionById(id: string): Promise<string>;

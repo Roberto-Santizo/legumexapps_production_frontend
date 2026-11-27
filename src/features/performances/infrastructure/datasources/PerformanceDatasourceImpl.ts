@@ -40,9 +40,9 @@ export class PerformanceDatasourceImpl implements PerformanceDatasource {
         }
     }
 
-    async getPerformances(limit: string, page: string, filters?: PerformanceFilters): Promise<PaginatedPerformances> {
+    async getPerformances(limit: string, page: string, filters?: PerformanceFilters, lineCode?: string): Promise<PaginatedPerformances> {
         try {
-            const params = setQueryParams({ limit, page, ...filters });
+            const params = setQueryParams({ limit, page, lineCode, ...filters });
 
             const url = `${this.url}?${params.toString()}`;
             const { data } = await this.api.get(url);

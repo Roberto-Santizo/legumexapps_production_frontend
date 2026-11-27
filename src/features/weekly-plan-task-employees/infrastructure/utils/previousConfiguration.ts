@@ -23,7 +23,7 @@ export const buildPreviousDistribution = (employees: PreviousEmployee[], { candi
     const previousCodes = new Set(employees.map((employee) => employee.code));
 
     return employees.reduce<PreviousDistribution>((distribution, previous) => {
-        const lineActivityId = resolveActivityId(previous.line_activity_id, activityIds);
+        const lineActivityId = resolveActivityId(previous.line_sku_activity_id, activityIds);
         const candidate = findEmployeeByCode(candidates, previous.code);
 
         if (candidate) return withCandidateChange(distribution, candidate.id, { action: 'keep', lineActivityId });

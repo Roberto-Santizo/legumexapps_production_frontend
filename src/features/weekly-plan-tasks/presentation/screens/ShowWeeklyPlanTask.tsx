@@ -65,7 +65,7 @@ export function ShowWeeklyPlanTask() {
 
             <WeeklyPlanTaskCaptureRecordsPanel task={data} captureType={captureType} isLoading={line.isLoading} />
 
-            <WeeklyPlanTaskEmployeesRoster taskId={id!} lineCode={data.line_code} editable={false} />
+            <WeeklyPlanTaskEmployeesRoster taskId={id!} lineSkuId={data.line_sku_id} editable={false} />
 
             <WeeklyPlanTaskTimeoutsPanel weeklyPlanTaskId={id!} editable={data.status === 4} />
 

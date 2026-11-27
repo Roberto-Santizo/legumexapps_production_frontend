@@ -4,17 +4,17 @@ import { useNotification } from "@/features/shared/shared";
 import { buildPreviousDistribution, getPreviousConfigurationMessage, getPreviousConfigurationWarning, weeklyPlanTaskEmployeeProvider, type PreviousDistributionSources, type PreviousEmployee, type StaffDistribution } from "@/features/weekly-plan-task-employees/weekly-plan-task-employees";
 
 type Props = {
-    lineCode: string;
+    lineSkuId: number;
     sources: PreviousDistributionSources;
     onLoad: (distribution: StaffDistribution) => void;
 }
 
-export function useLoadPreviousConfiguration({ lineCode, sources, onLoad }: Props) {
+export function useLoadPreviousConfiguration({ lineSkuId, sources, onLoad }: Props) {
     const notification = useNotification();
     const [unavailable, setUnavailable] = useState<PreviousEmployee[]>([]);
 
     const { mutate, isPending } = useMutation({
-        mutationFn: () => weeklyPlanTaskEmployeeProvider.getLastEmployeesConfigurationByLineCode(lineCode),
+        mutationFn: () => weeklyPlanTaskEmployeeProvider.getLastEmployeesConfigurationByLineSkuId(lineSkuId),
         onSuccess: ({ employees }) => {
             const distribution = buildPreviousDistribution(employees, sources);
             setUnavailable(distribution.unavailable);

@@ -1,5 +1,5 @@
 export * from './PositionFormComponent';
-export * from './PositionsByLine';
+export * from './PositionsByLineSku';
 export * from './PositionOutlineButton';
 export * from './PositionsHeader';
 export * from './PositionsEmptyState';

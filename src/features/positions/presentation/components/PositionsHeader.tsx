@@ -17,7 +17,7 @@ export function PositionsHeader({ count, active, onAdd, onBulkUpload }: Props) {
                 <div>
                     <h3 className="text-sm font-semibold text-ink">Posiciones</h3>
                     <p className="mt-0.5 text-xs text-ink-muted">
-                        {count > 0 ? positionsSummaryLabel(count, active) : 'Puestos de la línea y la actividad que cubre cada uno'}
+                        {count > 0 ? positionsSummaryLabel(count, active) : 'Puestos del SKU y la actividad que cubre cada uno'}
                     </p>
                 </div>
             </div>

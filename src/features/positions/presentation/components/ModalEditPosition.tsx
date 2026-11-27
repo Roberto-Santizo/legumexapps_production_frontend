@@ -6,13 +6,12 @@ import { useForm } from "react-hook-form";
 type Props = {
     id: string;
     close: () => void;
-    lineId: number;
-    lineCode: string;
+    lineSkuId: number;
 }
 
-export function ModalEditPosition({ id, close, lineId, lineCode }: Props) {
+export function ModalEditPosition({ id, close, lineSkuId }: Props) {
     const { data, isLoading, isError, error } = usePositionById(id);
-    const { updatePosition, isUpdating } = useUpdatePosition({ lineId, lineCode, onSuccess: close });
+    const { updatePosition, isUpdating } = useUpdatePosition({ lineSkuId, onSuccess: close });
 
     const {
         handleSubmit,
@@ -36,7 +35,7 @@ export function ModalEditPosition({ id, close, lineId, lineCode }: Props) {
 
             {data && (
                 <CustomForm onSubmit={handleSubmit(onSubmit)} className="border-none p-0 shadow-none">
-                    <PositionFormComponent register={register} errors={errors} control={control} lineCode={lineCode} />
+                    <PositionFormComponent register={register} errors={errors} control={control} lineSkuId={lineSkuId} />
                     <CustomFilledButton type="submit" label="Guardar cambios" disabled={isUpdating} fullWitdh />
                 </CustomForm>
             )}

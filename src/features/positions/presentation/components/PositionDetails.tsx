@@ -23,6 +23,7 @@ export function PositionDetails({ position }: Props) {
                 </div>
                 <InformationField label="Unidad" value={position.unit ?? '—'} mono />
                 <InformationField label="Línea" value={position.line} mono />
+                <InformationField label="SKU" value={position.sku} mono />
             </div>
         </div>
     )

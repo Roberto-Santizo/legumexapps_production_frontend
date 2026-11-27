@@ -7,6 +7,6 @@ export const getPositionActivityLabel = (position: Pick<Position, 'activity'>): 
 
 export const toPositionForm = (position: Position): Partial<PositionForm> => ({
     code: position.code,
-    line_id: position.line_id,
+    line_sku_id: position.line_sku_id,
     activity_id: position.activity_id ?? undefined
 });

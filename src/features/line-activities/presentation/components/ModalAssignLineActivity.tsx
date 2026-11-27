@@ -8,11 +8,11 @@ import { Link } from "react-router-dom";
 type Props = {
     open: boolean;
     close: () => void;
-    lineCode: string;
+    lineSkuId: number;
     assigned: LineActivity[];
 }
 
-export function ModalAssignLineActivity({ open, close, lineCode, assigned }: Props) {
+export function ModalAssignLineActivity({ open, close, lineSkuId, assigned }: Props) {
     const {
         handleSubmit,
         register,
@@ -26,7 +26,7 @@ export function ModalAssignLineActivity({ open, close, lineCode, assigned }: Pro
         close();
     };
 
-    const { assignActivity, isAssigning } = useAssignLineActivity({ lineCode, onSuccess: handleClose });
+    const { assignActivity, isAssigning } = useAssignLineActivity({ lineSkuId, onSuccess: handleClose });
 
     const { data, isLoading, isError, error } = useQuery({
         queryKey: [...activitiesQueryKey, 'catalog'],
@@ -47,7 +47,7 @@ export function ModalAssignLineActivity({ open, close, lineCode, assigned }: Pro
 
             {data && options.length === 0 && (
                 <div className="rounded-xl border border-dashed border-line-strong px-5 py-8 text-center">
-                    <p className="text-sm text-ink-muted">Todas las actividades del catálogo ya están asignadas a esta línea.</p>
+                    <p className="text-sm text-ink-muted">Todas las actividades del catálogo ya están asignadas a este SKU.</p>
                     <Link to="/actividades/crear" className="mt-3 inline-block text-sm font-semibold text-ink underline underline-offset-4 hover:text-ink-muted">
                         Crear actividad
                     </Link>

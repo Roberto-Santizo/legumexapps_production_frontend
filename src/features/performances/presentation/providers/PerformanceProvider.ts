@@ -9,8 +9,8 @@ export class PerformanceProvider {
         return this.repository.createPerformance(payload);
     }
 
-    getPerformances(limit: string, page: string, filters?: PerformanceFilters): Promise<PaginatedPerformances> {
-        return this.repository.getPerformances(limit, page, filters);
+    getPerformances(limit: string, page: string, filters?: PerformanceFilters, lineCode?: string): Promise<PaginatedPerformances> {
+        return this.repository.getPerformances(limit, page, filters, lineCode);
     }
 
     getPerformanceById(id: string): Promise<Performance> {

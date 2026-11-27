@@ -1,29 +1,26 @@
-import { Loading, Title } from "@/features/shared/shared";
-import { performanceProvider } from "@/features/performances/performances";
+import { ErrorComponent, Loading } from "@/features/shared/shared";
+import { LineActivitiesConfigurator } from "@/features/line-activities/line-activities";
+import { PerformanceHeader, PerformanceSectionTabs, usePerformanceById, usePerformanceSectionTab } from "@/features/performances/performances";
+import { PositionsByLineSku } from "@/features/positions/positions";
 import { useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
 
 export function ShowPerformance() {
     const { id } = useParams();
-
-    const { data, isLoading } = useQuery({
-        queryKey: ['getPerformanceById', id],
-        queryFn: () => performanceProvider.getPerformanceById(id!)
-    });
-
+    const { tab, changeTab } = usePerformanceSectionTab();
+    const { data, isLoading, isError, error } = usePerformanceById(id ?? '');
 
     if (isLoading) return <Loading />
+    if (isError) return <ErrorComponent message={error.message} />
     if (data) return (
-        <div className="space-y-5">
-            <Title title="Rendimiento" subtitle="Información del rendimiento" />
+        <div className="space-y-6">
+            <PerformanceHeader performance={data} />
 
-            <section>
-                <p className="">{data.sku}</p>
-                <p className="">{data.line}</p>
-                <p className="">{data.lbs_performance}</p>
-                <p className="">{data.accepted_percentage}</p>
-                <p className="">{data.payment_method ? 'Horas Linea' : 'Horas Rendimiento'}</p>
-            </section>
+            <PerformanceSectionTabs value={tab} onChange={changeTab} />
+
+            <div role="tabpanel">
+                <div className={tab === 'activities' ? '' : 'hidden'}><LineActivitiesConfigurator lineSkuId={data.id} /></div>
+                <div className={tab === 'positions' ? '' : 'hidden'}><PositionsByLineSku lineSkuId={data.id} sku={data.sku} line={data.line} /></div>
+            </div>
         </div>
     )
 }

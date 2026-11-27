@@ -46,9 +46,9 @@ export class WeeklyPlanTaskEmployeeDatasourceImpl implements WeeklyPlanTaskEmplo
         }
     }
 
-    async getLastEmployeesConfigurationByLineCode(lineCode: string): Promise<PreviousEmployeesConfiguration> {
+    async getLastEmployeesConfigurationByLineSkuId(lineSkuId: number): Promise<PreviousEmployeesConfiguration> {
         try {
-            const url = `${this.tasksUrl}/lines/${lineCode}/lastEmployeesConfiguration`;
+            const url = `${this.tasksUrl}/performances/${lineSkuId}/lastEmployeesConfiguration`;
             const { data } = await this.api.get(url);
             const response = PreviousEmployeesConfigurationSchema.safeParse(data['data']);
 

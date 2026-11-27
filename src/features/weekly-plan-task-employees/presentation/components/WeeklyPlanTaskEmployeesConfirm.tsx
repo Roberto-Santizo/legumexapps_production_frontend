@@ -5,12 +5,12 @@ import { ActivityCapacityAlert, buildActivitySlots, buildConfirmBoardCards, buil
 
 type Props = {
     taskId: string;
-    lineCode: string;
+    lineSkuId: number;
     showCandidates: boolean;
     allowUnassigned?: boolean;
 }
 
-export function WeeklyPlanTaskEmployeesConfirm({ taskId, lineCode, showCandidates, allowUnassigned = false }: Props) {
+export function WeeklyPlanTaskEmployeesConfirm({ taskId, lineSkuId, showCandidates, allowUnassigned = false }: Props) {
     const notification = useNotification();
 
     const candidatesQuery = useQuery({
@@ -26,7 +26,7 @@ export function WeeklyPlanTaskEmployeesConfirm({ taskId, lineCode, showCandidate
         retry: false
     });
 
-    const activitiesQuery = useTaskLineActivities(lineCode);
+    const activitiesQuery = useTaskLineActivities(lineSkuId);
     const { confirm, isPending, errors, clearErrors } = useConfirmTaskEmployees(taskId);
 
     const replacementEmployees = replacementEmployeesQuery.data ?? [];
@@ -42,7 +42,7 @@ export function WeeklyPlanTaskEmployeesConfirm({ taskId, lineCode, showCandidate
     const canLoadPrevious = replacementEmployeesQuery.isSuccess && activitiesQuery.isSuccess && (!showCandidates || candidatesQuery.isSuccess);
 
     const previousConfiguration = useLoadPreviousConfiguration({
-        lineCode,
+        lineSkuId,
         sources: { candidates, replacementEmployees, activityIds: activities.map((activity) => activity.id) },
         onLoad: (distribution) => {
             clearErrors();
